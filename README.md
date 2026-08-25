@@ -1,5 +1,7 @@
 # Creator Launch OS
 
+[![Template CI](https://github.com/frankxai/creator-launch-os/actions/workflows/ci.yml/badge.svg)](https://github.com/frankxai/creator-launch-os/actions/workflows/ci.yml)
+
 A free, deployable storefront and release studio for independent creators. Built with Next.js 16, TypeScript, Tailwind CSS 4, and the App Router.
 
 Creator Launch OS is designed around one complete customer path:

@@ -38,12 +38,12 @@
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
   "verification": {
-    "typeCheck": "pending",
-    "lint": "pending",
-    "contractTests": "pending",
-    "productionBuild": "pending",
-    "cleanAccountDeploy": "pending",
-    "browserDesktop": "pending",
-    "browserMobile": "pending"
+    "typeCheck": "passed: GitHub Actions run 32874050448",
+    "lint": "passed: GitHub Actions run 32874050448",
+    "contractTests": "passed: GitHub Actions run 32874050448 (5/5)",
+    "productionBuild": "passed: GitHub Actions run 32874050448 and Vercel deployment dpl_9rXeWbxdEVYmtEY3w1qf33dDvvVc",
+    "cleanAccountDeploy": "passed: https://creator-launch-r9qac4j5x-starlight-intelligence.vercel.app",
+    "browserDesktop": "pending: workspace browser-QA preflight hold",
+    "browserMobile": "pending: workspace browser-QA preflight hold"
   }
 }
