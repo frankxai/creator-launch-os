@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, Github, MoveRight } from "lucide-react"
+import { ArrowRight, CheckCircle2, MoveRight } from "lucide-react"
 import Link from "next/link"
 
 import { LaunchConsole } from "@/components/launch-console"
@@ -117,7 +117,6 @@ export default function HomePage() {
               rel="noreferrer"
               className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-paper px-6 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
             >
-              <Github className="size-4" aria-hidden="true" />
               Read the source
             </a>
           </div>
