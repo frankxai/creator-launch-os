@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader);
+  --color-paper: #f2efe6;
+  --color-paper-bright: #fbfaf5;
+  --color-ink: #11120f;
+  --color-ink-soft: #24261f;
+  --color-muted: #66685f;
+  --color-line: #c9c6ba;
+  --color-coral: #f05a3c;
+  --color-acid: #d9ff5a;
+  --color-blue: #5e78ff;
+}
+
+:root {
+  color-scheme: light;
+  --paper: #f2efe6;
+  --paper-bright: #fbfaf5;
+  --ink: #11120f;
+  --ink-soft: #24261f;
+  --muted: #66685f;
+  --line: #c9c6ba;
+  --coral: #f05a3c;
+  --acid: #d9ff5a;
+  --blue: #5e78ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--paper);
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--acid);
+  color: var(--ink);
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+.shell {
+  width: min(100% - 2rem, 1180px);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.69rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.poster-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.signal-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.signal-line::after {
+  position: absolute;
+  inset: 0 auto 0 -35%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+  content: "";
+  animation: signal-scan 5s ease-in-out infinite;
+}
+
+@keyframes signal-scan {
+  0%,
+  18% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    transform: translateX(450%);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .signal-line::after {
+    animation: none;
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .shell {
+    width: min(100% - 3rem, 1180px);
+  }
+}

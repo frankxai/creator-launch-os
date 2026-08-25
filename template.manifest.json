@@ -1,0 +1,49 @@
+{
+  "$schema": "./docs/template-manifest.schema.json",
+  "id": "creator-launch-os",
+  "name": "Creator Launch OS",
+  "version": "1.0.0",
+  "license": "MIT",
+  "maturity": "remixable",
+  "audiences": [
+    "digital-product creators",
+    "authors",
+    "educators",
+    "independent studios",
+    "community builders"
+  ],
+  "jobToBeDone": "Publish, explain, sell, and operate a small catalog of digital products from one owned website.",
+  "stack": {
+    "framework": "Next.js 16 App Router",
+    "language": "TypeScript strict",
+    "styling": "Tailwind CSS 4",
+    "deployment": "Vercel"
+  },
+  "routes": [
+    "/",
+    "/products",
+    "/products/[slug]",
+    "/checkout/[slug]",
+    "/studio",
+    "/api/health"
+  ],
+  "requiredEnvironmentVariables": [],
+  "optionalEnvironmentVariables": [
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_CONTACT_EMAIL",
+    "NEXT_PUBLIC_CHECKOUT_GUIDE_URL",
+    "NEXT_PUBLIC_CHECKOUT_CONSOLE_URL",
+    "NEXT_PUBLIC_CHECKOUT_AUDIO_URL"
+  ],
+  "sourceRepository": "https://github.com/frankxai/creator-launch-os",
+  "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
+  "verification": {
+    "typeCheck": "pending",
+    "lint": "pending",
+    "contractTests": "pending",
+    "productionBuild": "pending",
+    "cleanAccountDeploy": "pending",
+    "browserDesktop": "pending",
+    "browserMobile": "pending"
+  }
+}

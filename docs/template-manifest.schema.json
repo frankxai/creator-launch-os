@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frankx.ai/schemas/v0-template-manifest.json",
+  "title": "FrankX community template manifest",
+  "type": "object",
+  "required": ["id", "name", "version", "license", "maturity", "audiences", "jobToBeDone", "stack", "routes", "sourceRepository", "deployUrl", "verification"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string", "minLength": 3 },
+    "version": { "type": "string" },
+    "license": { "type": "string" },
+    "maturity": {
+      "enum": ["concept", "interactive-demo", "remixable", "deployable-free-template", "commercial-kit"]
+    },
+    "audiences": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "jobToBeDone": { "type": "string", "minLength": 20 },
+    "stack": { "type": "object" },
+    "routes": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "requiredEnvironmentVariables": { "type": "array", "items": { "type": "string" } },
+    "optionalEnvironmentVariables": { "type": "array", "items": { "type": "string" } },
+    "sourceRepository": { "type": "string", "format": "uri" },
+    "deployUrl": { "type": "string", "format": "uri" },
+    "verification": {
+      "type": "object",
+      "required": ["typeCheck", "lint", "contractTests", "productionBuild", "cleanAccountDeploy", "browserDesktop", "browserMobile"]
+    }
+  },
+  "additionalProperties": false
+}
