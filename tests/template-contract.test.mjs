@@ -69,3 +69,23 @@ test("the public UI avoids dead links and emoji chrome", () => {
   assert.doesNotMatch(source, /href=["']#["']/)
   assert.doesNotMatch(source, /[🚀✨🔥💎⚡]/u)
 })
+
+test("the public UI keeps interface copy in sentence case", () => {
+  const files = [
+    "app/checkout/[slug]/page.tsx",
+    "app/globals.css",
+    "app/opengraph-image.tsx",
+    "app/page.tsx",
+    "app/products/[slug]/page.tsx",
+    "app/studio/page.tsx",
+    "components/launch-console.tsx",
+    "components/product-card.tsx",
+    "components/product-explorer.tsx",
+    "components/site-header.tsx",
+  ]
+  const source = files.map(read).join("\n")
+
+  assert.doesNotMatch(source, /\buppercase\b/)
+  assert.doesNotMatch(source, /text-transform\s*:\s*uppercase/i)
+  assert.doesNotMatch(source, /textTransform\s*:\s*["']uppercase["']/)
+})

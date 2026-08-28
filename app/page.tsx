@@ -53,7 +53,7 @@ export default function HomePage() {
                 <MoveRight className="size-4" aria-hidden="true" />
               </Link>
             </div>
-            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-line pt-5 font-mono text-[10px] uppercase tracking-[0.13em] text-muted">
+            <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-line pt-5 font-mono text-[10px] tracking-[0.13em] text-muted">
               <span>Next.js 16</span>
               <span>Zero-secret demo</span>
               <span>MIT licensed</span>

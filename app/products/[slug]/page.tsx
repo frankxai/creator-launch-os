@@ -62,10 +62,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div className={cn("relative flex min-h-[430px] flex-col justify-between overflow-hidden rounded-[2rem] p-7 sm:p-9", accentStyles[product.accent])}>
             <div className="flex items-start justify-between gap-5">
               <span className="eyebrow opacity-65">Edition {product.edition}</span>
-              <span className="rounded-full border border-current/20 px-3 py-1 font-mono text-[10px] uppercase tracking-wider">{product.category}</span>
+              <span className="rounded-full border border-current/20 px-3 py-1 font-mono text-[10px] tracking-wider">{product.category}</span>
             </div>
             <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] opacity-60">{product.format}</p>
+              <p className="font-mono text-[10px] tracking-[0.16em] opacity-60">{product.format}</p>
               <h1 className="text-balance mt-3 max-w-xl font-serif text-6xl leading-[0.92] sm:text-7xl">{product.title}</h1>
             </div>
             <span aria-hidden="true" className="absolute -bottom-16 -right-10 font-serif text-[15rem] leading-none opacity-[0.08]">{product.edition}</span>
@@ -81,7 +81,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="mt-10 border-t border-line pt-6">
               <div className="flex flex-wrap items-end justify-between gap-5">
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted">One-time purchase</p>
+                  <p className="font-mono text-[10px] tracking-[0.15em] text-muted">One-time purchase</p>
                   <p className="mt-1 text-4xl font-semibold tracking-tight">{formatPrice(product.price)}</p>
                 </div>
                 <Link
