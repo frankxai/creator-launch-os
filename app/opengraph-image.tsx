@@ -19,7 +19,7 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ border: "2px solid #11120f", display: "flex", flex: 1, flexDirection: "column", justifyContent: "space-between", padding: 48 }}>
-          <div style={{ display: "flex", fontSize: 24, justifyContent: "space-between", letterSpacing: 4, textTransform: "uppercase" }}>
+          <div style={{ display: "flex", fontSize: 24, justifyContent: "space-between", letterSpacing: 4 }}>
             <span>Edition Zero</span>
             <span>Free template · 2026</span>
           </div>

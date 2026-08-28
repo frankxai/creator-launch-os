@@ -13,7 +13,7 @@ export function LaunchConsole() {
       <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
         <div className="flex items-center gap-2">
           <Radio className="size-4 text-acid" aria-hidden="true" />
-          <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/70">Release 01</span>
+          <span className="font-mono text-[11px] tracking-[0.16em] text-white/70">Release 01</span>
         </div>
         <span className="rounded-full border border-white/15 px-2.5 py-1 font-mono text-[10px] text-white/55">
           Demo data
@@ -45,7 +45,7 @@ export function LaunchConsole() {
                 <span className="block text-sm font-medium">{step.label}</span>
                 <span className="mt-1 block text-xs text-white/45">{step.detail}</span>
               </span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">
+              <span className="font-mono text-[10px] tracking-wider text-white/35">
                 {step.done ? "Ready" : "Next"}
               </span>
             </li>

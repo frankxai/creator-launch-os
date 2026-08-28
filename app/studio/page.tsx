@@ -49,7 +49,7 @@ export default function StudioPage() {
           ].map((metric) => (
             <div key={metric.label} className="border-l border-white/15 pl-5">
               <p className="font-mono text-4xl text-acid">{metric.value}</p>
-              <p className="mt-2 text-xs uppercase tracking-[0.14em] text-white/40">{metric.label}</p>
+              <p className="mt-2 text-xs tracking-[0.14em] text-white/40">{metric.label}</p>
             </div>
           ))}
         </div>
@@ -61,14 +61,14 @@ export default function StudioPage() {
                 <p className="eyebrow text-white/40">Current release</p>
                 <h2 className="mt-3 font-serif text-3xl">The Systems Field Guide</h2>
               </div>
-              <span className="rounded-full bg-acid px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-ink">Demo</span>
+              <span className="rounded-full bg-acid px-3 py-1 font-mono text-[10px] font-semibold tracking-wider text-ink">Demo</span>
             </div>
             <div className="mt-7 divide-y divide-white/10 border-y border-white/10">
               {readiness.map((item) => (
                 <div key={item.label} className="flex items-center gap-3 py-4">
                   {item.state === "Ready" ? <Check className="size-4 text-acid" aria-hidden="true" /> : <Circle className="size-3.5 text-coral" aria-hidden="true" />}
                   <span className="flex-1 text-sm text-white/72">{item.label}</span>
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-white/35">{item.state}</span>
+                  <span className="font-mono text-[10px] tracking-wider text-white/35">{item.state}</span>
                 </div>
               ))}
             </div>

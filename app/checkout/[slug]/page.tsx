@@ -40,7 +40,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                   <p className="mt-1 text-xs text-white/45">No payment is collected on this screen</p>
                 </div>
               </div>
-              <span className="rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white/55">Demo mode</span>
+              <span className="rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] tracking-wider text-white/55">Demo mode</span>
             </div>
           </div>
 

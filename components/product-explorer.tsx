@@ -70,7 +70,7 @@ export function ProductExplorer({ products }: { products: Product[] }) {
         </label>
       </div>
 
-      <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.14em] text-muted" aria-live="polite">
+      <p className="mt-5 font-mono text-[11px] tracking-[0.14em] text-muted" aria-live="polite">
         {filteredProducts.length} {filteredProducts.length === 1 ? "release" : "releases"}
       </p>
 

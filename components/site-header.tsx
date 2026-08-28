@@ -13,7 +13,7 @@ export function SiteHeader() {
           </span>
           <span>
             <span className="block text-sm font-semibold leading-none">{siteConfig.name}</span>
-            <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
+            <span className="mt-1 block font-mono text-[10px] tracking-[0.16em] text-muted">
               Independent releases
             </span>
           </span>
