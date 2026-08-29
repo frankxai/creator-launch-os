@@ -17,7 +17,7 @@ test("complete Next.js states are present", () => {
   const requiredFiles = [
     "app/layout.tsx",
     "app/page.tsx",
-    "app/loading.tsx",
+    "app/checkout/[slug]/loading.tsx",
     "app/error.tsx",
     "app/not-found.tsx",
     "app/products/page.tsx",
@@ -33,6 +33,12 @@ test("complete Next.js states are present", () => {
   for (const file of requiredFiles) {
     assert.equal(existsSync(new URL(`../${file}`, import.meta.url)), true, `${file} must exist`)
   }
+
+  assert.equal(
+    existsSync(new URL("../app/loading.tsx", import.meta.url)),
+    false,
+    "global loading UI must not stream static storefront pages behind a JavaScript swap",
+  )
 })
 
 test("checkout fallback is honest and never embeds a secret", () => {
@@ -41,6 +47,8 @@ test("checkout fallback is honest and never embeds a secret", () => {
 
   assert.match(checkout, /NEXT_PUBLIC_CHECKOUT_GUIDE_URL/)
   assert.doesNotMatch(checkout, /API_KEY|SECRET|TOKEN/)
+  assert.match(checkout, /url\.protocol === "https:"/)
+  assert.match(checkout, /!url\.username && !url\.password/)
   assert.match(checkoutPage, /No payment is collected/)
   assert.match(checkoutPage, /Never expose API keys/)
 })
@@ -68,6 +76,8 @@ test("the public UI avoids dead links and emoji chrome", () => {
 
   assert.doesNotMatch(source, /href=["']#["']/)
   assert.doesNotMatch(source, /[🚀✨🔥💎⚡]/u)
+  assert.doesNotMatch(read("lib/site.ts"), /studio@example\.com/)
+  assert.match(read("lib/site.ts"), /VERCEL_PROJECT_PRODUCTION_URL/)
 })
 
 test("the public UI keeps interface copy in sentence case", () => {
@@ -119,6 +129,12 @@ test("muted interface labels preserve readable contrast", () => {
     /text-ink\/(?:[0-4]\d|5[0-7])\b/,
     "ink text on the paper surface must use at least 58% opacity",
   )
+
+  for (const file of ["components/product-card.tsx", "app/products/[slug]/page.tsx"]) {
+    const source = read(file)
+    assert.match(source, /blue: "bg-blue text-ink"/)
+    assert.doesNotMatch(source, /opacity-(?:60|65|70)\b/)
+  }
 })
 
 test("premium motion stays inside one responsive, self-cleaning boundary", () => {

@@ -7,7 +7,7 @@ import { formatPrice, type Product } from "@/lib/products"
 const accentStyles = {
   coral: "bg-coral text-ink",
   acid: "bg-acid text-ink",
-  blue: "bg-blue text-white",
+  blue: "bg-blue text-ink",
 } as const
 
 export function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
@@ -27,11 +27,11 @@ export function ProductCard({ product, priority = false }: { product: Product; p
         )}
       >
         <div className="flex items-start justify-between gap-4">
-          <span className="eyebrow opacity-70">Edition {product.edition}</span>
+          <span className="eyebrow">Edition {product.edition}</span>
           <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" aria-hidden="true" />
         </div>
         <div>
-          <span className="font-mono text-[10px] tracking-[0.16em] opacity-65">{product.format}</span>
+          <span className="font-mono text-[10px] tracking-[0.16em]">{product.format}</span>
           <p className="mt-2 max-w-sm font-serif text-4xl leading-[0.98] sm:text-5xl">{product.title}</p>
         </div>
         <span aria-hidden="true" className="absolute -bottom-12 -right-8 font-serif text-[10rem] leading-none opacity-[0.08]">

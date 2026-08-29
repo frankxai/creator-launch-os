@@ -13,9 +13,20 @@ export function SiteFooter() {
           </p>
         </div>
         <div className="sm:text-right">
-          <a className="text-sm font-semibold underline decoration-line underline-offset-4" href={`mailto:${siteConfig.email}`}>
-            {siteConfig.email}
-          </a>
+          {siteConfig.email ? (
+            <a className="text-sm font-semibold underline decoration-line underline-offset-4" href={`mailto:${siteConfig.email}`}>
+              {siteConfig.email}
+            </a>
+          ) : (
+            <a
+              className="text-sm font-semibold underline decoration-line underline-offset-4"
+              href={siteConfig.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Remix the source
+            </a>
+          )}
           <p className="mt-3 text-xs leading-5 text-muted">
             Free and open source. Replace the sample products, connect your checkout, and publish.
           </p>
