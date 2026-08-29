@@ -53,6 +53,24 @@ test("checkout fallback is honest and never embeds a secret", () => {
   assert.match(checkoutPage, /Never expose API keys/)
 })
 
+test("public routes ship a conservative security-header baseline", () => {
+  const nextConfig = read("next.config.ts")
+
+  for (const header of [
+    "Content-Security-Policy",
+    "Permissions-Policy",
+    "Referrer-Policy",
+    "X-Content-Type-Options",
+    "X-Frame-Options",
+  ]) {
+    assert.match(nextConfig, new RegExp(`key: ["']${header}["']`))
+  }
+
+  assert.match(nextConfig, /frame-ancestors 'none'/)
+  assert.match(nextConfig, /object-src 'none'/)
+  assert.match(nextConfig, /source: ["']\/:path\*["']/)
+})
+
 test("sample metrics and transactions are labeled as demo data", () => {
   const studio = read("app/studio/page.tsx")
   const consoleComponent = read("components/launch-console.tsx")
