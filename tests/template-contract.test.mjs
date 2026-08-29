@@ -90,6 +90,37 @@ test("the public UI keeps interface copy in sentence case", () => {
   assert.doesNotMatch(source, /textTransform\s*:\s*["']uppercase["']/)
 })
 
+test("muted interface labels preserve readable contrast", () => {
+  const darkSurfaceFiles = [
+    "app/checkout/[slug]/page.tsx",
+    "app/page.tsx",
+    "app/studio/page.tsx",
+    "components/launch-console.tsx",
+  ]
+  const lightSurfaceFiles = [
+    "app/checkout/[slug]/page.tsx",
+    "app/page.tsx",
+    "app/products/[slug]/page.tsx",
+    "app/products/page.tsx",
+    "app/studio/page.tsx",
+    "components/product-card.tsx",
+    "components/product-explorer.tsx",
+    "components/site-footer.tsx",
+    "components/site-header.tsx",
+  ]
+
+  assert.doesNotMatch(
+    darkSurfaceFiles.map(read).join("\n"),
+    /text-white\/(?:[0-3]\d|4[0-4])\b/,
+    "white text on the ink surface must use at least 45% opacity",
+  )
+  assert.doesNotMatch(
+    lightSurfaceFiles.map(read).join("\n"),
+    /text-ink\/(?:[0-4]\d|5[0-7])\b/,
+    "ink text on the paper surface must use at least 58% opacity",
+  )
+})
+
 test("premium motion stays inside one responsive, self-cleaning boundary", () => {
   const motion = read("components/home-motion.tsx")
   const home = read("app/page.tsx")

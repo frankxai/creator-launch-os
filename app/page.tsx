@@ -78,7 +78,7 @@ export default function HomePage() {
               </div>
               <div data-hero-follow className="mt-10 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-white/12 pt-5 sm:flex sm:flex-wrap">
                 {trustSignals.map((signal) => (
-                  <span key={signal} className="font-mono text-[10px] tracking-[0.13em] text-white/38">
+                  <span key={signal} className="font-mono text-[10px] tracking-[0.13em] text-white/55">
                     {signal}
                   </span>
                 ))}
@@ -119,7 +119,7 @@ export default function HomePage() {
                     <span className="font-mono text-xs text-muted">{layer.number}</span>
                     <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">{layer.title}</h3>
                     <p className="max-w-xl text-[15px] leading-7 text-ink/62">{layer.detail}</p>
-                    <p className="font-mono text-[10px] tracking-[0.14em] text-ink/42">{layer.value}</p>
+                    <p className="font-mono text-[10px] tracking-[0.14em] text-ink/62">{layer.value}</p>
                   </article>
                 ))}
               </div>
@@ -136,7 +136,7 @@ export default function HomePage() {
                       <div key={layer.number} data-story-panel className={`story-panel ${index === 0 ? "is-first" : ""}`}>
                         <div className="flex items-start justify-between gap-5">
                           <div>
-                            <p className="font-mono text-[10px] tracking-[0.16em] text-white/38">Signal {layer.number}</p>
+                            <p className="font-mono text-[10px] tracking-[0.16em] text-white/55">Signal {layer.number}</p>
                             <p className="mt-4 font-serif text-5xl leading-none">{layer.signal}</p>
                           </div>
                           <span className="rounded-full border border-white/12 px-3 py-1.5 font-mono text-[10px] text-acid">Verified shape</span>
@@ -144,13 +144,13 @@ export default function HomePage() {
                         <div className="mt-14 border-y border-white/10">
                           {layer.proof.map((item, proofIndex) => (
                             <div key={item} className="grid grid-cols-[40px_1fr_auto] items-center gap-4 border-b border-white/10 py-5 last:border-b-0">
-                              <span className="font-mono text-[10px] text-white/28">0{proofIndex + 1}</span>
+                              <span className="font-mono text-[10px] text-white/50">0{proofIndex + 1}</span>
                               <span className="text-sm text-white/72">{item}</span>
                               <CheckCircle2 className="size-4 text-acid" aria-hidden="true" />
                             </div>
                           ))}
                         </div>
-                        <p className="mt-9 max-w-md text-sm leading-7 text-white/46">{layer.detail}</p>
+                        <p className="mt-9 max-w-md text-sm leading-7 text-white/58">{layer.detail}</p>
                       </div>
                     ))}
                   </div>
@@ -180,7 +180,7 @@ export default function HomePage() {
         <section className="bg-ink py-20 text-paper sm:py-28">
           <div className="shell grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <div>
-              <p className="eyebrow text-white/45">The template contract</p>
+              <p className="eyebrow text-white/55">The template contract</p>
               <h2 className="text-balance mt-5 font-serif text-5xl leading-[1.02] sm:text-6xl">Free should still mean complete.</h2>
               <p className="mt-6 max-w-xl text-base leading-7 text-white/58">
                 This starter does not hide a broken product behind an attractive homepage. It includes the routes, states, content model, setup notes, and verification hooks needed to make a real first release.

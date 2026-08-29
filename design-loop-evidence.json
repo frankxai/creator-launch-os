@@ -76,7 +76,7 @@
       "path_or_url": "app/page.tsx",
       "kind": "web",
       "inspected": true,
-      "notes": "Source-reviewed premium composition using the real release console, semantic lenses, and one operating narrative."
+      "notes": "Source-reviewed premium composition using the real release console, semantic lenses, one operating narrative, and a declared-background contrast audit."
     },
     {
       "path_or_url": "components/home-motion.tsx",
@@ -105,7 +105,17 @@
     {
       "name": "implementation",
       "status": "pass",
-      "evidence": "Premium source composition and GSAP boundary are implemented; 8/8 contract tests and the Anti-Slop verifier at 100/100 pass."
+      "evidence": "Premium source composition and GSAP boundary are implemented; 9/9 contract tests and the Anti-Slop verifier at 100/100 pass."
+    },
+    {
+      "name": "contrast-guardrail",
+      "status": "pass",
+      "evidence": "Small muted labels were raised above the declared ink/paper contrast floors, and a contract test rejects white below 45% on ink or ink below 58% on paper."
+    },
+    {
+      "name": "dependency-script-policy",
+      "status": "pass",
+      "evidence": "pnpm allowBuilds explicitly rejects the unneeded unrs-resolver lifecycle script; pnpm reports no implicitly ignored builds and the frozen lock remains unchanged."
     },
     {
       "name": "cloud-ci",
@@ -141,8 +151,8 @@
   "decision": "iterate",
   "known_risks": [
     "The machine currently admits interactive editing but holds build and browser-QA workloads.",
-    "The Vercel project has no public production deployment and the validated preview is protected by team SSO.",
-    "GitHub branch protection, dependency alerts, CodeQL, and draft-light CI are not yet configured.",
+    "The Vercel project has no public production deployment, the validated preview is protected by team SSO, and the final branch head has not received its pre-merge preview yet.",
+    "The pull request remains draft; the full ready-PR production build and independent review gate have not run.",
     "No Tier B video may ship until provenance, poster, compression, crops, and exports are inspected."
   ]
 }

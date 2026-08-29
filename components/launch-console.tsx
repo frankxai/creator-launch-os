@@ -43,9 +43,9 @@ export function LaunchConsole() {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">{step.label}</span>
-                <span className="mt-1 block text-xs text-white/45">{step.detail}</span>
+                <span className="mt-1 block text-xs text-white/58">{step.detail}</span>
               </span>
-              <span className="font-mono text-[10px] tracking-wider text-white/35">
+              <span className="font-mono text-[10px] tracking-wider text-white/55">
                 {step.done ? "Ready" : "Next"}
               </span>
             </li>
