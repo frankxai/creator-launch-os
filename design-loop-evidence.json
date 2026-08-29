@@ -83,6 +83,12 @@
       "kind": "motion-source",
       "inspected": true,
       "notes": "Source-reviewed useGSAP boundary with matchMedia routes, one hero timeline, one ScrollTrigger timeline, bounded quickTo pointer response, and cleanup."
+    },
+    {
+      "path_or_url": "https://creator-launch-mbrl9wxdq-starlight-intelligence.vercel.app",
+      "kind": "web-preview",
+      "inspected": false,
+      "notes": "Vercel deployment dpl_BDnmZqwwV6H5eQx4mAAdZcfw1dcW is READY and returns the complete prerendered page through a temporary protected share. Visual inspection remains blocked by the browser-QA machine gate."
     }
   ],
   "checks": [
@@ -100,6 +106,21 @@
       "name": "implementation",
       "status": "pass",
       "evidence": "Premium source composition and GSAP boundary are implemented; 8/8 contract tests and the Anti-Slop verifier at 100/100 pass."
+    },
+    {
+      "name": "cloud-ci",
+      "status": "pass",
+      "evidence": "Draft pull request 2 passed install, TypeScript, ESLint, 8/8 contracts, and CodeQL for Actions and JavaScript/TypeScript."
+    },
+    {
+      "name": "preview-build",
+      "status": "pass",
+      "evidence": "Vercel preview dpl_BDnmZqwwV6H5eQx4mAAdZcfw1dcW built all 13 routes and reached READY on commit 6a5af985a5e70278f6514eb820f883aed6b130ee."
+    },
+    {
+      "name": "preview-http",
+      "status": "pass",
+      "evidence": "The protected preview returned HTTP 200, x-nextjs-prerender: 1, and the complete premium server-rendered document; no runtime error clusters were present."
     },
     {
       "name": "export-inspection",
@@ -120,7 +141,7 @@
   "decision": "iterate",
   "known_risks": [
     "The machine currently admits interactive editing but holds build and browser-QA workloads.",
-    "The Vercel project has no public production deployment and the ready preview is protected by team SSO.",
+    "The Vercel project has no public production deployment and the validated preview is protected by team SSO.",
     "GitHub branch protection, dependency alerts, CodeQL, and draft-light CI are not yet configured.",
     "No Tier B video may ship until provenance, poster, compression, crops, and exports are inspected."
   ]

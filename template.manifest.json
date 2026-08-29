@@ -39,11 +39,11 @@
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
   "verification": {
-    "typeCheck": "pending: premium motion branch",
-    "lint": "pending: premium motion branch",
-    "contractTests": "pending: premium motion branch",
-    "productionBuild": "pending: premium motion branch",
-    "cleanAccountDeploy": "previous preview ready but protected by team SSO; public production replacement pending",
+    "typeCheck": "passed: GitHub Actions run 33236128278 on pull request 2",
+    "lint": "passed: GitHub Actions run 33236128278 on pull request 2",
+    "contractTests": "passed: GitHub Actions run 33236128278 (8/8) on pull request 2",
+    "productionBuild": "passed: Vercel preview deployment dpl_BDnmZqwwV6H5eQx4mAAdZcfw1dcW",
+    "cleanAccountDeploy": "pending: preview returns HTTP 200 through a temporary protected share; public production replacement still required",
     "browserDesktop": "pending: workspace browser-QA preflight hold",
     "browserMobile": "pending: workspace browser-QA preflight hold"
   }
