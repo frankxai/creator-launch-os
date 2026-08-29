@@ -30,7 +30,7 @@ export default function StudioPage() {
           <div>
             <div className="flex items-center gap-2">
               <Radio className="size-4 text-acid" aria-hidden="true" />
-              <p className="eyebrow text-white/45">Sample operations view</p>
+              <p className="eyebrow text-white/55">Sample operations view</p>
             </div>
             <h1 className="text-balance mt-5 text-5xl font-semibold tracking-[-0.05em] sm:text-7xl">Release Studio</h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/55">A compact view of readiness, products, signals, and the next consequential work. All values below are labeled demo data.</p>
@@ -49,7 +49,7 @@ export default function StudioPage() {
           ].map((metric) => (
             <div key={metric.label} className="border-l border-white/15 pl-5">
               <p className="font-mono text-4xl text-acid">{metric.value}</p>
-              <p className="mt-2 text-xs tracking-[0.14em] text-white/40">{metric.label}</p>
+              <p className="mt-2 text-xs tracking-[0.14em] text-white/55">{metric.label}</p>
             </div>
           ))}
         </div>
@@ -58,7 +58,7 @@ export default function StudioPage() {
           <section className="rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-5 sm:p-7">
             <div className="flex items-center justify-between gap-5">
               <div>
-                <p className="eyebrow text-white/40">Current release</p>
+                <p className="eyebrow text-white/55">Current release</p>
                 <h2 className="mt-3 font-serif text-3xl">The Systems Field Guide</h2>
               </div>
               <span className="rounded-full bg-acid px-3 py-1 font-mono text-[10px] font-semibold tracking-wider text-ink">Demo</span>
@@ -68,14 +68,14 @@ export default function StudioPage() {
                 <div key={item.label} className="flex items-center gap-3 py-4">
                   {item.state === "Ready" ? <Check className="size-4 text-acid" aria-hidden="true" /> : <Circle className="size-3.5 text-coral" aria-hidden="true" />}
                   <span className="flex-1 text-sm text-white/72">{item.label}</span>
-                  <span className="font-mono text-[10px] tracking-wider text-white/35">{item.state}</span>
+                  <span className="font-mono text-[10px] tracking-wider text-white/55">{item.state}</span>
                 </div>
               ))}
             </div>
             <div className="mt-7 grid gap-4 sm:grid-cols-3">
               {products.map((product) => (
                 <Link key={product.slug} href={`/products/${product.slug}`} className="rounded-xl border border-white/10 p-4 transition-colors hover:bg-white/5">
-                  <p className="font-mono text-[10px] text-white/35">Edition {product.edition}</p>
+                  <p className="font-mono text-[10px] text-white/55">Edition {product.edition}</p>
                   <p className="mt-2 text-sm font-medium leading-5">{product.title}</p>
                 </Link>
               ))}
@@ -98,9 +98,9 @@ export default function StudioPage() {
               </ol>
             </section>
             <section className="rounded-[1.75rem] border border-white/10 p-5 sm:p-7">
-              <p className="eyebrow text-white/40">Activation event</p>
+              <p className="eyebrow text-white/55">Activation event</p>
               <p className="mt-4 text-2xl font-semibold tracking-tight">A customer reaches the promised file.</p>
-              <p className="mt-4 text-sm leading-6 text-white/48">Replace page views with the event that proves delivery worked. Instrument it after connecting your provider.</p>
+              <p className="mt-4 text-sm leading-6 text-white/58">Replace page views with the event that proves delivery worked. Instrument it after connecting your provider.</p>
             </section>
           </div>
         </div>

@@ -1,0 +1,164 @@
+{
+  "version": "2026-08-29",
+  "task": "Evolve Creator Launch OS into the free premium flagship for the Starlight template portfolio.",
+  "surface": "Editorial storefront, signature release-console hero, one operating narrative, catalog, and open-source contract",
+  "audience": "Independent creators, authors, educators, small studios, template buyers, and implementation clients",
+  "first_read": "Your work can feel singular, remain yours, and still be simple to buy.",
+  "standards": [
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/MOTION_TASTE_RUBRIC.md",
+    "_intelligence/quality-gates.md",
+    "GSAP core, timeline, ScrollTrigger, and performance skills",
+    "vercel:v0-dev"
+  ],
+  "references": [
+    {
+      "label": "Creator Launch OS product contract",
+      "source": "docs/PRODUCT-CONTRACT.md",
+      "reason": "Protects the honest zero-secret storefront, demo checkout, and activation contract."
+    },
+    {
+      "label": "Premium page specification",
+      "source": "docs/PREMIUM-HOME-PAGE-SPEC.md",
+      "reason": "Defines the static composition, product truth, responsive routes, and release gates."
+    },
+    {
+      "label": "GSAP scene brief",
+      "source": "docs/GSAP-SCENE-BRIEF.md",
+      "reason": "Limits motion to one signature hero, one operating narrative, bounded pointer depth, and complete cleanup."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Editorial publishing character and warm paper system",
+      "Real release-console proof and honest demo labels",
+      "Server-first routes, accessible states, and zero-secret deployment"
+    ],
+    "avoid": [
+      "Generic glass-card grids, orbit or node diagrams, and decorative bubble fields",
+      "Fake revenue, testimonials, customers, checkout, analytics, or delivery claims",
+      "Motion-dependent meaning, custom cursor replacement, and pinned mobile layouts",
+      "Uninspected generated media and configuration that suppresses build errors"
+    ],
+    "signature": "A real release console resolves through proof, delivery, and ownership lenses inside an editorial kinetic-publishing stage.",
+    "system": [
+      "Tier C exact product interface as the primary proof asset",
+      "Dark mineral hero with warm paper narrative and restrained coral, acid, and blue roles",
+      "One GSAP hero timeline and one earned ScrollTrigger narrative",
+      "Static, mobile, coarse-pointer, JavaScript-free, and reduced-motion routes",
+      "Optional Tier B video only after owned export inspection"
+    ]
+  },
+  "asset_quality": {
+    "tier": "C",
+    "source_method": "vector-diagram",
+    "provenance": "owned",
+    "why_premium": "The actual release console proves the product mechanism; liquid lenses are meaningful signal frames rather than substitute artwork.",
+    "shortcut_risk": "low",
+    "context_tested": true
+  },
+  "artifacts": [
+    {
+      "path_or_url": "docs/PREMIUM-HOME-PAGE-SPEC.md",
+      "kind": "ui-spec",
+      "inspected": true,
+      "notes": "Source-reviewed before implementation."
+    },
+    {
+      "path_or_url": "docs/GSAP-SCENE-BRIEF.md",
+      "kind": "motion-spec",
+      "inspected": true,
+      "notes": "Defines desktop, mobile, pointer, reduced-motion, cleanup, and media behavior."
+    },
+    {
+      "path_or_url": "app/page.tsx",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Inspected at 1440x1000 and 390x844 in the production build. The release console, semantic lenses, mobile narrative fallback, catalog, and declared-background contrast all preserve hierarchy without horizontal overflow."
+    },
+    {
+      "path_or_url": "components/home-motion.tsx",
+      "kind": "motion-source",
+      "inspected": true,
+      "notes": "Inspected in the production build: all three scrubbed ScrollTrigger beats transition correctly; reduced motion clears GSAP transforms and the CSS signal animation; coarse pointers retain the static proof route."
+    },
+    {
+      "path_or_url": "https://creator-launch-7tl0aks74-starlight-intelligence.vercel.app",
+      "kind": "web-preview",
+      "inspected": true,
+      "notes": "Vercel deployment dpl_vfdhhbQntmK49yZPaTSas4SCVY2g is READY on commit c6e9e13884b0c93de1a4ed11d3e0c84df9094ce3. HTTP, headers, route smoke, and runtime logs were inspected; the same production artifact was visually inspected locally because the team preview is SSO protected."
+    },
+    {
+      "path_or_url": "components/site-header.tsx",
+      "kind": "responsive-ui",
+      "inspected": true,
+      "notes": "The mobile header fits at 390px without overflow and now preserves a 44px minimum interaction target for each primary navigation link."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier C exact release-console interface selected as the primary artifact; decorative media is explicitly subordinate."
+    },
+    {
+      "name": "product-boundary",
+      "status": "pass",
+      "evidence": "The zero-secret, demo checkout, sample-data, and delivery activation contract is preserved."
+    },
+    {
+      "name": "implementation",
+      "status": "pass",
+      "evidence": "Premium source composition and GSAP boundary are implemented; 14/14 contract tests and the Anti-Slop verifier at 100/100 pass."
+    },
+    {
+      "name": "contrast-guardrail",
+      "status": "pass",
+      "evidence": "Small muted labels were raised above the declared ink/paper contrast floors, and a contract test rejects white below 45% on ink or ink below 58% on paper."
+    },
+    {
+      "name": "dependency-script-policy",
+      "status": "pass",
+      "evidence": "pnpm allowBuilds explicitly rejects the unneeded unrs-resolver lifecycle script; pnpm reports no implicitly ignored builds and the frozen lock remains unchanged."
+    },
+    {
+      "name": "cloud-ci",
+      "status": "pass",
+      "evidence": "Draft pull request 2 passed install, TypeScript, ESLint, 11/11 contracts, and CodeQL for Actions and JavaScript/TypeScript on commit c6e9e138; pinned Actions were modernized to their Node 24 releases."
+    },
+    {
+      "name": "preview-build",
+      "status": "pass",
+      "evidence": "Vercel preview dpl_vfdhhbQntmK49yZPaTSas4SCVY2g built all 13 routes and reached READY on commit c6e9e13884b0c93de1a4ed11d3e0c84df9094ce3."
+    },
+    {
+      "name": "preview-http",
+      "status": "pass",
+      "evidence": "The protected preview returned HTTP 200 on ten representative routes, exposed the conservative CSP and browser security headers, and had no runtime errors in the inspected one-hour window."
+    },
+    {
+      "name": "export-inspection",
+      "status": "pass",
+      "evidence": "Desktop 1440x1000 and mobile 390x844 exports were inspected for the home, product, catalog, and studio surfaces. No horizontal overflow, clipping, lens collision, or content loss was observed."
+    },
+    {
+      "name": "visual-qa",
+      "status": "pass",
+      "evidence": "The focus ring, catalog filter/search, three GSAP scroll beats, mobile static story, coarse-pointer route, reduced-motion route, responsive hierarchy, and browser console were inspected. Primary mobile navigation targets were raised to 44px."
+    }
+  ],
+  "score": {
+    "total": 27,
+    "max": 30,
+    "notes": "The exact product proof, editorial hierarchy, responsive layouts, all three scroll beats, reduced-motion behavior, mobile fallbacks, interaction targets, and clean production console pass. Fine-pointer parallax remains deliberately bounded and non-essential."
+  },
+  "decision": "ship",
+  "known_risks": [
+    "The Vercel project has no public production deployment; the validated preview remains protected by team SSO.",
+    "The pull request remains draft until the final metadata and mobile-target patch receive exact-head CI and preview verification.",
+    "The in-app QA browser reports a coarse pointer, so fine-pointer parallax is source-reviewed and contract-tested rather than treated as essential product meaning.",
+    "No Tier B video may ship until provenance, poster, compression, crops, and exports are inspected."
+  ]
+}

@@ -2,7 +2,7 @@
   "$schema": "./docs/template-manifest.schema.json",
   "id": "creator-launch-os",
   "name": "Creator Launch OS",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "maturity": "remixable",
   "audiences": [
@@ -17,6 +17,7 @@
     "framework": "Next.js 16 App Router",
     "language": "TypeScript strict",
     "styling": "Tailwind CSS 4",
+    "motion": "GSAP 3 with @gsap/react",
     "deployment": "Vercel"
   },
   "routes": [
@@ -38,12 +39,12 @@
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
   "verification": {
-    "typeCheck": "passed: GitHub Actions run 32874050448",
-    "lint": "passed: GitHub Actions run 32874050448",
-    "contractTests": "passed: GitHub Actions run 32874050448 (5/5)",
-    "productionBuild": "passed: GitHub Actions run 32874050448 and Vercel deployment dpl_9rXeWbxdEVYmtEY3w1qf33dDvvVc",
-    "cleanAccountDeploy": "passed: https://creator-launch-r9qac4j5x-starlight-intelligence.vercel.app",
-    "browserDesktop": "pending: workspace browser-QA preflight hold",
-    "browserMobile": "pending: workspace browser-QA preflight hold"
+    "typeCheck": "passed locally; GitHub Actions enforces this on every pull request",
+    "lint": "passed locally with zero warnings; GitHub Actions enforces this on every pull request",
+    "contractTests": "passed locally (14/14); GitHub Actions enforces this on every pull request",
+    "productionBuild": "passed locally with Next.js 16.3.3 and on commit c6e9e138 via Vercel preview dpl_vfdhhbQntmK49yZPaTSas4SCVY2g; final-head preview pending",
+    "cleanAccountDeploy": "preview returns HTTP 200 with all public routes and security headers; public production replacement still requires explicit approval",
+    "browserDesktop": "passed at 1440x1000: hero, three GSAP story beats, catalog, product flow, studio, reduced motion, and browser console inspected",
+    "browserMobile": "passed at 390x844: no overflow, lens collision, or content loss; mobile story, catalog controls, product route, coarse pointer, and 44px navigation targets inspected"
   }
 }

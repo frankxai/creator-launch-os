@@ -37,7 +37,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                 <LockKeyhole className="size-5 text-acid" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-semibold">Checkout preview</p>
-                  <p className="mt-1 text-xs text-white/45">No payment is collected on this screen</p>
+                  <p className="mt-1 text-xs text-white/55">No payment is collected on this screen</p>
                 </div>
               </div>
               <span className="rounded-full border border-white/15 px-3 py-1 font-mono text-[10px] tracking-wider text-white/55">Demo mode</span>
