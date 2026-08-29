@@ -2,7 +2,7 @@
   "$schema": "./docs/template-manifest.schema.json",
   "id": "creator-launch-os",
   "name": "Creator Launch OS",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "maturity": "remixable",
   "audiences": [
@@ -17,6 +17,7 @@
     "framework": "Next.js 16 App Router",
     "language": "TypeScript strict",
     "styling": "Tailwind CSS 4",
+    "motion": "GSAP 3 with @gsap/react",
     "deployment": "Vercel"
   },
   "routes": [
@@ -38,11 +39,11 @@
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
   "verification": {
-    "typeCheck": "passed: GitHub Actions run 32874050448",
-    "lint": "passed: GitHub Actions run 32874050448",
-    "contractTests": "passed: GitHub Actions run 32874050448 (5/5)",
-    "productionBuild": "passed: GitHub Actions run 32874050448 and Vercel deployment dpl_9rXeWbxdEVYmtEY3w1qf33dDvvVc",
-    "cleanAccountDeploy": "passed: https://creator-launch-r9qac4j5x-starlight-intelligence.vercel.app",
+    "typeCheck": "pending: premium motion branch",
+    "lint": "pending: premium motion branch",
+    "contractTests": "pending: premium motion branch",
+    "productionBuild": "pending: premium motion branch",
+    "cleanAccountDeploy": "previous preview ready but protected by team SSO; public production replacement pending",
     "browserDesktop": "pending: workspace browser-QA preflight hold",
     "browserMobile": "pending: workspace browser-QA preflight hold"
   }

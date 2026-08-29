@@ -1,0 +1,127 @@
+{
+  "version": "2026-08-29",
+  "task": "Evolve Creator Launch OS into the free premium flagship for the Starlight template portfolio.",
+  "surface": "Editorial storefront, signature release-console hero, one operating narrative, catalog, and open-source contract",
+  "audience": "Independent creators, authors, educators, small studios, template buyers, and implementation clients",
+  "first_read": "Your work can feel singular, remain yours, and still be simple to buy.",
+  "standards": [
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/MOTION_TASTE_RUBRIC.md",
+    "_intelligence/quality-gates.md",
+    "GSAP core, timeline, ScrollTrigger, and performance skills",
+    "vercel:v0-dev"
+  ],
+  "references": [
+    {
+      "label": "Creator Launch OS product contract",
+      "source": "docs/PRODUCT-CONTRACT.md",
+      "reason": "Protects the honest zero-secret storefront, demo checkout, and activation contract."
+    },
+    {
+      "label": "Premium page specification",
+      "source": "docs/PREMIUM-HOME-PAGE-SPEC.md",
+      "reason": "Defines the static composition, product truth, responsive routes, and release gates."
+    },
+    {
+      "label": "GSAP scene brief",
+      "source": "docs/GSAP-SCENE-BRIEF.md",
+      "reason": "Limits motion to one signature hero, one operating narrative, bounded pointer depth, and complete cleanup."
+    }
+  ],
+  "direction": {
+    "keep": [
+      "Editorial publishing character and warm paper system",
+      "Real release-console proof and honest demo labels",
+      "Server-first routes, accessible states, and zero-secret deployment"
+    ],
+    "avoid": [
+      "Generic glass-card grids, orbit or node diagrams, and decorative bubble fields",
+      "Fake revenue, testimonials, customers, checkout, analytics, or delivery claims",
+      "Motion-dependent meaning, custom cursor replacement, and pinned mobile layouts",
+      "Uninspected generated media and configuration that suppresses build errors"
+    ],
+    "signature": "A real release console resolves through proof, delivery, and ownership lenses inside an editorial kinetic-publishing stage.",
+    "system": [
+      "Tier C exact product interface as the primary proof asset",
+      "Dark mineral hero with warm paper narrative and restrained coral, acid, and blue roles",
+      "One GSAP hero timeline and one earned ScrollTrigger narrative",
+      "Static, mobile, coarse-pointer, JavaScript-free, and reduced-motion routes",
+      "Optional Tier B video only after owned export inspection"
+    ]
+  },
+  "asset_quality": {
+    "tier": "C",
+    "source_method": "vector-diagram",
+    "provenance": "owned",
+    "why_premium": "The actual release console proves the product mechanism; liquid lenses are meaningful signal frames rather than substitute artwork.",
+    "shortcut_risk": "medium",
+    "context_tested": false
+  },
+  "artifacts": [
+    {
+      "path_or_url": "docs/PREMIUM-HOME-PAGE-SPEC.md",
+      "kind": "ui-spec",
+      "inspected": true,
+      "notes": "Source-reviewed before implementation."
+    },
+    {
+      "path_or_url": "docs/GSAP-SCENE-BRIEF.md",
+      "kind": "motion-spec",
+      "inspected": true,
+      "notes": "Defines desktop, mobile, pointer, reduced-motion, cleanup, and media behavior."
+    },
+    {
+      "path_or_url": "app/page.tsx",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Source-reviewed premium composition using the real release console, semantic lenses, and one operating narrative."
+    },
+    {
+      "path_or_url": "components/home-motion.tsx",
+      "kind": "motion-source",
+      "inspected": true,
+      "notes": "Source-reviewed useGSAP boundary with matchMedia routes, one hero timeline, one ScrollTrigger timeline, bounded quickTo pointer response, and cleanup."
+    }
+  ],
+  "checks": [
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier C exact release-console interface selected as the primary artifact; decorative media is explicitly subordinate."
+    },
+    {
+      "name": "product-boundary",
+      "status": "pass",
+      "evidence": "The zero-secret, demo checkout, sample-data, and delivery activation contract is preserved."
+    },
+    {
+      "name": "implementation",
+      "status": "pass",
+      "evidence": "Premium source composition and GSAP boundary are implemented; 8/8 contract tests and the Anti-Slop verifier at 100/100 pass."
+    },
+    {
+      "name": "export-inspection",
+      "status": "blocked",
+      "evidence": "Desktop and mobile browser QA are held by the current machine-performance gate."
+    },
+    {
+      "name": "visual-qa",
+      "status": "blocked",
+      "evidence": "Keyboard, coarse-pointer, reduced-motion, accessibility, and performance inspection remain required."
+    }
+  ],
+  "score": {
+    "total": 25,
+    "max": 30,
+    "notes": "Product truth, source composition, motion routes, cleanup contract, and anti-slop source gate are strong; actual desktop/mobile exports and performance behavior remain unverified, so the work cannot ship."
+  },
+  "decision": "iterate",
+  "known_risks": [
+    "The machine currently admits interactive editing but holds build and browser-QA workloads.",
+    "The Vercel project has no public production deployment and the ready preview is protected by team SSO.",
+    "GitHub branch protection, dependency alerts, CodeQL, and draft-light CI are not yet configured.",
+    "No Tier B video may ship until provenance, poster, compression, crops, and exports are inspected."
+  ]
+}

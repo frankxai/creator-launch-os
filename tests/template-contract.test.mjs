@@ -89,3 +89,28 @@ test("the public UI keeps interface copy in sentence case", () => {
   assert.doesNotMatch(source, /text-transform\s*:\s*uppercase/i)
   assert.doesNotMatch(source, /textTransform\s*:\s*["']uppercase["']/)
 })
+
+test("premium motion stays inside one responsive, self-cleaning boundary", () => {
+  const motion = read("components/home-motion.tsx")
+  const home = read("app/page.tsx")
+
+  assert.match(motion, /useGSAP/)
+  assert.match(motion, /gsap\.matchMedia\(\)/)
+  assert.match(motion, /prefers-reduced-motion: reduce/)
+  assert.match(motion, /pointer: fine/)
+  assert.match(motion, /removeEventListener/)
+  assert.match(motion, /media\.revert\(\)/)
+  assert.match(home, /data-hero-stage/)
+  assert.match(home, /data-release-story/)
+  assert.match(home, /data-story-panel/)
+})
+
+test("v0 remains the static composition lane while local code owns GSAP", () => {
+  const brief = read("docs/V0-BUILD-BRIEF.md")
+  const scene = read("docs/GSAP-SCENE-BRIEF.md")
+
+  assert.match(brief, /v0 owns static composition/i)
+  assert.match(brief, /do not author or replace GSAP code/i)
+  assert.match(scene, /one signature hero/i)
+  assert.match(scene, /one ScrollTrigger narrative/i)
+})

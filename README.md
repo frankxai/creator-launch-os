@@ -2,7 +2,7 @@
 
 [![Template CI](https://github.com/frankxai/creator-launch-os/actions/workflows/ci.yml/badge.svg)](https://github.com/frankxai/creator-launch-os/actions/workflows/ci.yml)
 
-A free, deployable storefront and release studio for independent creators. Built with Next.js 16, TypeScript, Tailwind CSS 4, and the App Router.
+A free, deployable storefront and release studio for independent creators. Built with Next.js 16, TypeScript, Tailwind CSS 4, GSAP, and the App Router.
 
 Creator Launch OS is designed around one complete customer path:
 
@@ -39,7 +39,9 @@ Public checkout URLs may be used in `NEXT_PUBLIC_CHECKOUT_*_URL`. Provider API k
 
 Import the GitHub repository using v0 Git Import, which creates its own branch for changes. Then paste the reviewed prompt from [`docs/V0-BUILD-BRIEF.md`](docs/V0-BUILD-BRIEF.md). Use prompts for structural changes and Design Mode for visual adjustments.
 
-The repository includes `components.json`, explicit design tokens, real sample density, and a small Client Component boundary so v0 can iterate without replacing the product architecture.
+The repository includes `components.json`, explicit design tokens, real sample density, and small Client Component boundaries so v0 can iterate without replacing the product architecture. v0 owns static hierarchy, responsive composition, component variants, and interaction hooks. Final movement stays in the canonical repository through `HomeMotion`, one hero timeline, and one operating narrative.
+
+Read [`docs/PREMIUM-HOME-PAGE-SPEC.md`](docs/PREMIUM-HOME-PAGE-SPEC.md) before changing the composition and [`docs/GSAP-SCENE-BRIEF.md`](docs/GSAP-SCENE-BRIEF.md) before changing motion. Both mobile and `prefers-reduced-motion` routes are product requirements.
 
 ## Routes
 
