@@ -26,7 +26,7 @@ export function SiteHeader() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="inline-flex items-center gap-1 text-sm font-medium text-ink/65 transition-colors hover:text-ink"
+                className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-ink/65 transition-colors hover:text-ink"
                 {...(isExternal ? { target: "_blank", rel: "noreferrer" } : {})}
               >
                 {item.label}

@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit",
+    "type-check": "next typegen && tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
     "verify": "pnpm run type-check && pnpm run lint && pnpm run test && pnpm run build"
   },

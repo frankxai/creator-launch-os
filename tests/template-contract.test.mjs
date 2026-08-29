@@ -81,6 +81,14 @@ test("GitHub Actions dependencies use immutable commit pins", () => {
   }
 })
 
+test("clean-account type checks generate Next.js route types first", () => {
+  const packageJson = JSON.parse(read("package.json"))
+  const gitignore = read(".gitignore")
+
+  assert.match(packageJson.scripts["type-check"], /^next typegen && tsc --noEmit$/)
+  assert.match(gitignore, /^next-env\.d\.ts$/m)
+})
+
 test("sample metrics and transactions are labeled as demo data", () => {
   const studio = read("app/studio/page.tsx")
   const consoleComponent = read("components/launch-console.tsx")
@@ -126,6 +134,12 @@ test("the public UI keeps interface copy in sentence case", () => {
   assert.doesNotMatch(source, /\buppercase\b/)
   assert.doesNotMatch(source, /text-transform\s*:\s*uppercase/i)
   assert.doesNotMatch(source, /textTransform\s*:\s*["']uppercase["']/)
+})
+
+test("primary navigation preserves mobile-sized interaction targets", () => {
+  const header = read("components/site-header.tsx")
+
+  assert.match(header, /className="[^"]*min-h-11[^"]*"/)
 })
 
 test("muted interface labels preserve readable contrast", () => {

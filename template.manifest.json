@@ -41,10 +41,10 @@
   "verification": {
     "typeCheck": "passed locally; GitHub Actions enforces this on every pull request",
     "lint": "passed locally with zero warnings; GitHub Actions enforces this on every pull request",
-    "contractTests": "passed locally (9/9); GitHub Actions enforces this on every pull request",
-    "productionBuild": "passed on premium runtime commit 6a5af985 via Vercel preview dpl_BDnmZqwwV6H5eQx4mAAdZcfw1dcW; final-head preview pending",
-    "cleanAccountDeploy": "pending: preview returns HTTP 200 through a temporary protected share; public production replacement still required",
-    "browserDesktop": "pending: workspace browser-QA preflight hold",
-    "browserMobile": "pending: workspace browser-QA preflight hold"
+    "contractTests": "passed locally (13/13); GitHub Actions enforces this on every pull request",
+    "productionBuild": "passed locally with Next.js 16.3.3 and on commit c6e9e138 via Vercel preview dpl_vfdhhbQntmK49yZPaTSas4SCVY2g; final-head preview pending",
+    "cleanAccountDeploy": "preview returns HTTP 200 with all public routes and security headers; public production replacement still requires explicit approval",
+    "browserDesktop": "passed at 1440x1000: hero, three GSAP story beats, catalog, product flow, studio, reduced motion, and browser console inspected",
+    "browserMobile": "passed at 390x844: no overflow, lens collision, or content loss; mobile story, catalog controls, product route, coarse pointer, and 44px navigation targets inspected"
   }
 }
