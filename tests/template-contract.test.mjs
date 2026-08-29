@@ -71,6 +71,16 @@ test("public routes ship a conservative security-header baseline", () => {
   assert.match(nextConfig, /source: ["']\/:path\*["']/)
 })
 
+test("GitHub Actions dependencies use immutable commit pins", () => {
+  const workflow = read(".github/workflows/ci.yml")
+  const actionRefs = [...workflow.matchAll(/uses:\s+[^@\s]+@([^\s]+)/g)].map((match) => match[1])
+
+  assert.ok(actionRefs.length >= 3, "the verification workflow must expose its action dependencies")
+  for (const ref of actionRefs) {
+    assert.match(ref, /^[a-f0-9]{40}$/, `${ref} must be a full immutable commit SHA`)
+  }
+})
+
 test("sample metrics and transactions are labeled as demo data", () => {
   const studio = read("app/studio/page.tsx")
   const consoleComponent = read("components/launch-console.tsx")
