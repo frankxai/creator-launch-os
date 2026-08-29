@@ -81,6 +81,13 @@ test("GitHub Actions dependencies use immutable commit pins", () => {
   }
 })
 
+test("marking a draft ready triggers the production-build gate", () => {
+  const workflow = read(".github/workflows/ci.yml")
+
+  assert.match(workflow, /types: \[opened, synchronize, reopened, ready_for_review\]/)
+  assert.match(workflow, /github\.event\.pull_request\.draft == false/)
+})
+
 test("clean-account type checks generate Next.js route types first", () => {
   const packageJson = JSON.parse(read("package.json"))
   const gitignore = read(".gitignore")

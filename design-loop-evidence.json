@@ -111,7 +111,7 @@
     {
       "name": "implementation",
       "status": "pass",
-      "evidence": "Premium source composition and GSAP boundary are implemented; 13/13 contract tests and the Anti-Slop verifier at 100/100 pass."
+      "evidence": "Premium source composition and GSAP boundary are implemented; 14/14 contract tests and the Anti-Slop verifier at 100/100 pass."
     },
     {
       "name": "contrast-guardrail",
