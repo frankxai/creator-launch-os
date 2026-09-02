@@ -20,7 +20,7 @@ Creator Launch OS is a Next.js 16 App Router storefront and release studio for d
 ## Technical boundaries
 
 - Keep pages as Server Components unless interaction requires a Client Component
-- Keep the catalog in `lib/products.ts`
+- Keep the catalog in `storefront.config.json`
 - Preserve strict TypeScript and the zero-secret default deployment path
 - Never expose provider secrets through `NEXT_PUBLIC_*`
 - Hosted checkout URLs are optional; absent URLs must continue to show the explicit demo checkout

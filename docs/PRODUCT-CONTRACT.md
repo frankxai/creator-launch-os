@@ -4,7 +4,9 @@ Creator Launch OS is a public, zero-secret starter for independent creators who 
 
 ## The user story
 
-A visitor discovers a release, understands the format and outcome, inspects exactly what is included, and reaches either a configured hosted checkout or an explicit no-payment demo. The creator can open `/studio` to see the operational shape behind the storefront.
+A visitor discovers a release, understands the format and outcome, inspects exactly what is included, and either leaves through the creator's own hosted checkout or is told plainly that the product is not for sale yet. The creator can open `/studio` to see the operational shape behind the storefront.
+
+The storefront is generated from one validated file, `storefront.config.json` (schema `storefront.v1`, eight node types: Release, Product, Price, CheckoutHandoff, Delivery, Proof, Campaign, StudioMetric). No route may hand-type a price, a checkout URL, or a metric — `node bin/validate-storefront.mjs` is the gate, and `tests/template-contract.test.mjs` fails the build if a route starts hard-coding commerce again.
 
 ## Free-template boundary
 
@@ -13,7 +15,9 @@ The free template includes:
 - Public storefront and catalog
 - Search and format filters
 - Product detail routes with static generation
-- Honest checkout fallback when no provider is configured
+- A schema-validated storefront config with a zero-dependency validator CLI
+- A checkout handoff to the creator's own hosted rail, and an honest "not for sale yet" state when there is none
+- Required disclosure on any affiliate link, and required openable evidence on any proof
 - Sample release studio with clearly labeled demo metrics
 - Metadata, sitemap, robots, Open Graph image, health endpoint, loading, error, empty, and not-found states
 - Environment-variable contract and one-click Vercel deployment metadata

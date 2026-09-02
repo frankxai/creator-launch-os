@@ -4,7 +4,7 @@ import Link from "next/link"
 import { HomeMotion } from "@/components/home-motion"
 import { LaunchConsole } from "@/components/launch-console"
 import { ProductExplorer } from "@/components/product-explorer"
-import { products } from "@/lib/products"
+import { catalog } from "@/lib/storefront/config"
 
 const operatingLayers = [
   {
@@ -172,7 +172,7 @@ export default function HomePage() {
               </p>
             </div>
             <div className="mt-10">
-              <ProductExplorer products={products} />
+              <ProductExplorer products={catalog} />
             </div>
           </div>
         </section>

@@ -1,0 +1,292 @@
+{
+  "schema": "storefront.v1",
+  "brand": {
+    "name": "Edition Zero",
+    "tagline": "A sample storefront shipped with Creator Launch OS. Replace it with your own catalog.",
+    "contactEmail": null,
+    "meta": {
+      "owner": "template",
+      "provenance": "sample",
+      "version": "1.0.0",
+      "visibility": "public",
+      "evaluation": "Replaced by the creator before first deploy; the storefront renders whatever is here verbatim."
+    }
+  },
+  "releases": [
+    {
+      "id": "edition-01",
+      "edition": "01",
+      "title": "Edition 01",
+      "summary": "The sample release that ships with the template, so the storefront has real density to design against.",
+      "status": "published",
+      "publishedAt": "2026-08-01",
+      "meta": {
+        "owner": "template",
+        "provenance": "sample",
+        "version": "1.0.0",
+        "visibility": "public",
+        "evaluation": "Delete this release once your own catalog exists; the validator does not care how many releases you keep."
+      },
+      "products": [
+        {
+          "slug": "systems-field-guide",
+          "eyebrow": "Flagship field guide",
+          "title": "The Systems Field Guide",
+          "description": "A concise operating manual for turning scattered expertise into a product people can understand and use.",
+          "longDescription": "A practical release companion for independent experts. The guide moves from audience signal to offer architecture, production, launch, and the first useful feedback loop.",
+          "category": "Guide",
+          "format": "PDF + worksheets",
+          "accent": "coral",
+          "featured": true,
+          "includes": [
+            "72-page field guide",
+            "Offer architecture worksheet",
+            "Release-readiness scorecard",
+            "Customer interview prompts"
+          ],
+          "outcomes": [
+            "Name the smallest valuable product you can ship",
+            "Build a credible proof path before launch day",
+            "Choose one activation metric that reflects real use"
+          ],
+          "price": null,
+          "checkoutHandoff": {
+            "rail": "none",
+            "url": null,
+            "note": "No rail configured. Add your hosted checkout URL and a price to open this product for sale.",
+            "meta": {
+              "owner": "template",
+              "provenance": "sample",
+              "version": "1.0.0",
+              "visibility": "public",
+              "evaluation": "Rail stays \"none\" until the creator pastes a real hosted checkout URL they control."
+            }
+          },
+          "delivery": {
+            "method": "Instant digital delivery",
+            "timing": "Immediately after the provider confirms payment",
+            "whatArrives": "One PDF and four printable worksheets, sent by the checkout provider.",
+            "meta": {
+              "owner": "template",
+              "provenance": "sample",
+              "version": "1.0.0",
+              "visibility": "public",
+              "evaluation": "True when a clean-account test purchase reaches the file without a support message."
+            }
+          },
+          "proofs": [
+            {
+              "kind": "source",
+              "statement": "The composition rules this page follows are published in the repository, not asserted in marketing copy.",
+              "evidenceUrl": "https://github.com/frankxai/creator-launch-os/blob/main/docs/PREMIUM-HOME-PAGE-SPEC.md",
+              "verifiedAt": "2026-09-02",
+              "meta": {
+                "owner": "template",
+                "provenance": "sample",
+                "version": "1.0.0",
+                "visibility": "public",
+                "evaluation": "The linked file resolves and describes the behaviour claimed here."
+              }
+            }
+          ],
+          "affiliate": null,
+          "meta": {
+            "owner": "template",
+            "provenance": "sample",
+            "version": "1.0.0",
+            "visibility": "public",
+            "evaluation": "Sample content. Replace every field before the storefront is public under your name."
+          }
+        },
+        {
+          "slug": "launch-week-console",
+          "eyebrow": "Release system",
+          "title": "Launch Week Console",
+          "description": "One operational view for assets, channels, dependencies, launch-day decisions, and the week-after review.",
+          "longDescription": "A calm control surface for small teams and solo creators. It makes dependencies visible, keeps launch content tied to evidence, and preserves decisions after the campaign ends.",
+          "category": "System",
+          "format": "Workspace + templates",
+          "accent": "acid",
+          "featured": false,
+          "includes": [
+            "Release command board",
+            "Asset and channel registry",
+            "Daily decision log",
+            "Seven-day review template"
+          ],
+          "outcomes": [
+            "See the critical path without another meeting",
+            "Separate launch signals from vanity activity",
+            "Turn one release into a reusable operating loop"
+          ],
+          "price": null,
+          "checkoutHandoff": {
+            "rail": "none",
+            "url": null,
+            "note": "No rail configured. Add your hosted checkout URL and a price to open this product for sale.",
+            "meta": {
+              "owner": "template",
+              "provenance": "sample",
+              "version": "1.0.0",
+              "visibility": "public",
+              "evaluation": "Rail stays \"none\" until the creator pastes a real hosted checkout URL they control."
+            }
+          },
+          "delivery": {
+            "method": "Workspace duplicate + files",
+            "timing": "Immediately after the provider confirms payment",
+            "whatArrives": "A duplicable workspace link and the template files referenced inside it.",
+            "meta": {
+              "owner": "template",
+              "provenance": "sample",
+              "version": "1.0.0",
+              "visibility": "public",
+              "evaluation": "True when a clean-account test purchase can duplicate the workspace without an invite."
+            }
+          },
+          "proofs": [
+            {
+              "kind": "source",
+              "statement": "What this free template does and does not include is written down in the product contract.",
+              "evidenceUrl": "https://github.com/frankxai/creator-launch-os/blob/main/docs/PRODUCT-CONTRACT.md",
+              "verifiedAt": "2026-09-02",
+              "meta": {
+                "owner": "template",
+                "provenance": "sample",
+                "version": "1.0.0",
+                "visibility": "public",
+                "evaluation": "The linked file resolves and lists the boundary claimed here."
+              }
+            }
+          ],
+          "affiliate": null,
+          "meta": {
+            "owner": "template",
+            "provenance": "sample",
+            "version": "1.0.0",
+            "visibility": "public",
+            "evaluation": "Sample content. Replace every field before the storefront is public under your name."
+          }
+        },
+        {
+          "slug": "studio-notes",
+          "eyebrow": "Audio workshop",
+          "title": "Studio Notes: Ship With Signal",
+          "description": "A focused audio workshop on editing an ambitious product down to the version customers can actually activate.",
+          "longDescription": "Four short studio sessions about scope, proof, onboarding, and the discipline of the second release. Built for listening between work sessions, with a compact written companion.",
+          "category": "Audio",
+          "format": "4 audio sessions + notes",
+          "accent": "blue",
+          "featured": false,
+          "includes": [
+            "Four studio conversations",
+            "Annotated session notes",
+            "Scope-cutting worksheet",
+            "Second-release checklist"
+          ],
+          "outcomes": [
+            "Find the real activation moment",
+            "Remove features that delay customer learning",
+            "Plan the release after launch before launch day"
+          ],
+          "price": null,
+          "checkoutHandoff": {
+            "rail": "none",
+            "url": null,
+            "note": "No rail configured. Add your hosted checkout URL and a price to open this product for sale.",
+            "meta": {
+              "owner": "template",
+              "provenance": "sample",
+              "version": "1.0.0",
+              "visibility": "public",
+              "evaluation": "Rail stays \"none\" until the creator pastes a real hosted checkout URL they control."
+            }
+          },
+          "delivery": {
+            "method": "Private audio feed + notes",
+            "timing": "Immediately after the provider confirms payment",
+            "whatArrives": "A private podcast feed URL and a Markdown companion for each session.",
+            "meta": {
+              "owner": "template",
+              "provenance": "sample",
+              "version": "1.0.0",
+              "visibility": "public",
+              "evaluation": "True when the feed URL plays in a podcast client that has never seen the storefront."
+            }
+          },
+          "proofs": [
+            {
+              "kind": "source",
+              "statement": "Motion on this storefront is confined to one documented scene, which anyone can read before buying into the aesthetic.",
+              "evidenceUrl": "https://github.com/frankxai/creator-launch-os/blob/main/docs/GSAP-SCENE-BRIEF.md",
+              "verifiedAt": "2026-09-02",
+              "meta": {
+                "owner": "template",
+                "provenance": "sample",
+                "version": "1.0.0",
+                "visibility": "public",
+                "evaluation": "The linked file resolves and describes the single scene claimed here."
+              }
+            }
+          ],
+          "affiliate": null,
+          "meta": {
+            "owner": "template",
+            "provenance": "sample",
+            "version": "1.0.0",
+            "visibility": "public",
+            "evaluation": "Sample content. Replace every field before the storefront is public under your name."
+          }
+        }
+      ]
+    }
+  ],
+  "campaigns": [],
+  "studioMetrics": [
+    {
+      "id": "sample-releases",
+      "label": "Sample releases",
+      "value": "3",
+      "unit": null,
+      "source": null,
+      "measuredAt": "2026-09-02",
+      "meta": {
+        "owner": "template",
+        "provenance": "sample",
+        "version": "1.0.0",
+        "visibility": "public",
+        "evaluation": "Counts the products in this file. Replace with a number you measure."
+      }
+    },
+    {
+      "id": "products-for-sale",
+      "label": "Products for sale (sample catalog)",
+      "value": "0",
+      "unit": null,
+      "source": null,
+      "measuredAt": "2026-09-02",
+      "meta": {
+        "owner": "template",
+        "provenance": "sample",
+        "version": "1.0.0",
+        "visibility": "public",
+        "evaluation": "Zero until a product carries both a price and a checkout rail."
+      }
+    },
+    {
+      "id": "live-transactions",
+      "label": "Live transactions (sample data)",
+      "value": "0",
+      "unit": null,
+      "source": null,
+      "measuredAt": "2026-09-02",
+      "meta": {
+        "owner": "template",
+        "provenance": "sample",
+        "version": "1.0.0",
+        "visibility": "public",
+        "evaluation": "This template never processes payment, so this number is structurally zero here."
+      }
+    }
+  ]
+}

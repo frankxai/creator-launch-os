@@ -2,7 +2,7 @@ import { ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 
 import { cn } from "@/lib/utils"
-import { formatPrice, type Product } from "@/lib/products"
+import { commerceState, formatPrice, type CatalogEntry } from "@/lib/storefront/config"
 
 const accentStyles = {
   coral: "bg-coral text-ink",
@@ -10,7 +10,9 @@ const accentStyles = {
   blue: "bg-blue text-ink",
 } as const
 
-export function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
+export function ProductCard({ product, priority = false }: { product: CatalogEntry; priority?: boolean }) {
+  const forSale = commerceState(product) === "for-sale"
+
   return (
     <article
       className={cn(
@@ -46,8 +48,17 @@ export function ProductCard({ product, priority = false }: { product: Product; p
         </div>
         <div className="mt-8 flex items-end justify-between gap-4 border-t border-line pt-4">
           <div>
-            <p className="font-mono text-[10px] tracking-wider text-muted">One-time</p>
-            <p className="mt-1 text-xl font-semibold">{formatPrice(product.price)}</p>
+            {forSale && product.price ? (
+              <>
+                <p className="font-mono text-[10px] tracking-wider text-muted">{product.price.kind}</p>
+                <p className="mt-1 text-xl font-semibold">{formatPrice(product.price)}</p>
+              </>
+            ) : (
+              <>
+                <p className="font-mono text-[10px] tracking-wider text-muted">Status</p>
+                <p className="mt-1 text-xl font-semibold">Not for sale yet</p>
+              </>
+            )}
           </div>
           <Link
             href={`/products/${product.slug}`}

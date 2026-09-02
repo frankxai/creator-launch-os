@@ -1,10 +1,16 @@
 import type { Metadata } from "next"
-import { ArrowLeft, ArrowRight, Check, Clock3, PackageCheck } from "lucide-react"
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Clock3, PackageCheck } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { getCheckoutHref, hasLiveCheckout } from "@/lib/checkout"
-import { formatPrice, getProduct, products } from "@/lib/products"
+import {
+  catalog,
+  checkoutHandoffHref,
+  commerceState,
+  formatPrice,
+  getStorefrontProduct,
+  releaseForProduct,
+} from "@/lib/storefront/config"
 import { cn } from "@/lib/utils"
 
 type ProductPageProps = {
@@ -18,12 +24,12 @@ const accentStyles = {
 } as const
 
 export function generateStaticParams() {
-  return products.map((product) => ({ slug: product.slug }))
+  return catalog.map((product) => ({ slug: product.slug }))
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params
-  const product = getProduct(slug)
+  const product = getStorefrontProduct(slug)
 
   if (!product) {
     return { title: "Release not found" }
@@ -37,14 +43,15 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params
-  const product = getProduct(slug)
+  const product = getStorefrontProduct(slug)
+  const release = releaseForProduct(slug)
 
-  if (!product) {
+  if (!product || !release) {
     notFound()
   }
 
-  const checkoutHref = getCheckoutHref(product.slug)
-  const isLiveCheckout = hasLiveCheckout(product.slug)
+  const forSale = commerceState(product) === "for-sale"
+  const handoffHref = checkoutHandoffHref(product)
 
   return (
     <main id="main-content">
@@ -61,14 +68,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="shell grid gap-10 py-12 sm:py-16 lg:grid-cols-[0.92fr_1.08fr] lg:items-stretch">
           <div className={cn("relative flex min-h-[430px] flex-col justify-between overflow-hidden rounded-[2rem] p-7 sm:p-9", accentStyles[product.accent])}>
             <div className="flex items-start justify-between gap-5">
-              <span className="eyebrow">Edition {product.edition}</span>
+              <span className="eyebrow">Edition {release.edition}</span>
               <span className="rounded-full border border-current/20 px-3 py-1 font-mono text-[10px] tracking-wider">{product.category}</span>
             </div>
             <div>
               <p className="font-mono text-[10px] tracking-[0.16em]">{product.format}</p>
               <h1 className="text-balance mt-3 max-w-xl font-serif text-6xl leading-[0.92] sm:text-7xl">{product.title}</h1>
             </div>
-            <span aria-hidden="true" className="absolute -bottom-16 -right-10 font-serif text-[15rem] leading-none opacity-[0.08]">{product.edition}</span>
+            <span aria-hidden="true" className="absolute -bottom-16 -right-10 font-serif text-[15rem] leading-none opacity-[0.08]">{release.edition}</span>
           </div>
 
           <div className="flex flex-col justify-between py-2 lg:py-5">
@@ -79,23 +86,57 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </div>
 
             <div className="mt-10 border-t border-line pt-6">
-              <div className="flex flex-wrap items-end justify-between gap-5">
-                <div>
-                  <p className="font-mono text-[10px] tracking-[0.15em] text-muted">One-time purchase</p>
-                  <p className="mt-1 text-4xl font-semibold tracking-tight">{formatPrice(product.price)}</p>
+              {forSale && product.price && handoffHref ? (
+                <>
+                  <div className="flex flex-wrap items-end justify-between gap-5">
+                    <div>
+                      <p className="font-mono text-[10px] tracking-[0.15em] text-muted">{product.price.kind}</p>
+                      <p className="mt-1 text-4xl font-semibold tracking-tight">{formatPrice(product.price)}</p>
+                    </div>
+                    <a
+                      href={handoffHref}
+                      rel="noopener"
+                      className="inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
+                    >
+                      Buy on {product.checkoutHandoff.rail}
+                      <ArrowUpRight className="size-4" aria-hidden="true" />
+                    </a>
+                  </div>
+                  <p className="mt-4 text-xs leading-5 text-muted">
+                    Payment is handled entirely by {product.checkoutHandoff.rail}. This storefront never sees a card.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="flex flex-wrap items-end justify-between gap-5">
+                    <div>
+                      <p className="font-mono text-[10px] tracking-[0.15em] text-muted">Status</p>
+                      <p className="mt-1 text-4xl font-semibold tracking-tight">Not for sale yet</p>
+                    </div>
+                    <Link
+                      href={`/checkout/${product.slug}`}
+                      className="inline-flex min-h-12 items-center gap-2 rounded-full border border-ink/20 px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-paper"
+                    >
+                      Why not
+                      <ArrowRight className="size-4" aria-hidden="true" />
+                    </Link>
+                  </div>
+                  <p className="mt-4 max-w-xl text-xs leading-5 text-muted">{product.checkoutHandoff.note}</p>
+                </>
+              )}
+
+              {product.affiliate ? (
+                <div className="mt-6 rounded-xl border border-ink/15 p-4">
+                  <a
+                    href={product.affiliate.url}
+                    rel="noopener sponsored nofollow"
+                    className="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
+                  >
+                    {product.affiliate.network}
+                    <ArrowUpRight className="size-4" aria-hidden="true" />
+                  </a>
+                  <p className="mt-2 text-xs leading-5 text-muted">{product.affiliate.disclosure}</p>
                 </div>
-                <Link
-                  href={checkoutHref}
-                  className="inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
-                >
-                  {isLiveCheckout ? "Buy this release" : "Preview checkout"}
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-              </div>
-              {!isLiveCheckout ? (
-                <p className="mt-4 text-xs leading-5 text-muted">
-                  Demo mode is active. No payment is collected until a checkout URL is configured.
-                </p>
               ) : null}
             </div>
           </div>
@@ -131,19 +172,62 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
       </section>
 
+      {product.proofs.length > 0 ? (
+        <section className="border-t border-line py-16">
+          <div className="shell">
+            <p className="eyebrow text-muted">Proof</p>
+            <h2 className="mt-4 max-w-2xl text-4xl font-semibold tracking-[-0.04em]">
+              Every claim below links to something you can open.
+            </h2>
+            <ul className="mt-8 divide-y divide-line border-y border-line">
+              {product.proofs.map((proof) => (
+                <li key={proof.evidenceUrl} className="grid gap-3 py-5 sm:grid-cols-[1fr_auto] sm:items-center">
+                  <div>
+                    <p className="text-[15px] leading-7 text-ink/72">{proof.statement}</p>
+                    <p className="mt-1 font-mono text-[10px] tracking-wider text-muted">
+                      {proof.kind} · verified {proof.verifiedAt}
+                    </p>
+                  </div>
+                  <a
+                    href={proof.evidenceUrl}
+                    rel="noopener"
+                    className="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
+                  >
+                    Open the evidence
+                    <ArrowUpRight className="size-4" aria-hidden="true" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : null}
+
       <section className="border-y border-line py-12">
         <div className="shell grid gap-6 sm:grid-cols-3">
           <div className="flex gap-3">
             <PackageCheck className="size-5 text-coral" aria-hidden="true" />
-            <div><p className="text-sm font-semibold">Delivery</p><p className="mt-1 text-sm text-muted">{product.delivery}</p></div>
+            <div>
+              <p className="text-sm font-semibold">Delivery</p>
+              <p className="mt-1 text-sm text-muted">{product.delivery.method}</p>
+              <p className="mt-1 text-sm text-muted">{product.delivery.whatArrives}</p>
+              <p className="mt-1 text-sm text-muted">{product.delivery.timing}</p>
+            </div>
           </div>
           <div className="flex gap-3">
             <Clock3 className="size-5 text-coral" aria-hidden="true" />
-            <div><p className="text-sm font-semibold">Last updated</p><p className="mt-1 text-sm text-muted">{product.updatedAt}</p></div>
+            <div>
+              <p className="text-sm font-semibold">Release</p>
+              <p className="mt-1 text-sm text-muted">
+                {release.title} · published {release.publishedAt}
+              </p>
+            </div>
           </div>
           <div>
-            <p className="text-sm font-semibold">License</p>
-            <p className="mt-1 text-sm text-muted">Personal use · sample policy</p>
+            <p className="text-sm font-semibold">Provenance</p>
+            <p className="mt-1 text-sm text-muted">
+              {product.meta.provenance} · owned by {product.meta.owner} · v{product.meta.version}
+            </p>
           </div>
         </div>
       </section>

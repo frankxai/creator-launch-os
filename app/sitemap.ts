@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next"
 
-import { products } from "@/lib/products"
 import { siteConfig } from "@/lib/site"
+import { catalog } from "@/lib/storefront/config"
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = ["", "/products", "/studio"]
@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: route === "" ? ("weekly" as const) : ("monthly" as const),
       priority: route === "" ? 1 : 0.8,
     })),
-    ...products.map((product) => ({
+    ...catalog.map((product) => ({
       url: `${siteConfig.url}/products/${product.slug}`,
       lastModified: new Date("2026-08-25"),
       changeFrequency: "monthly" as const,

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 import { ProductExplorer } from "@/components/product-explorer"
-import { products } from "@/lib/products"
+import { catalog } from "@/lib/storefront/config"
 
 export const metadata: Metadata = {
   title: "Releases",
@@ -22,7 +22,7 @@ export default function ProductsPage() {
           </p>
         </div>
         <div className="mt-12">
-          <ProductExplorer products={products} />
+          <ProductExplorer products={catalog} />
         </div>
       </div>
     </main>

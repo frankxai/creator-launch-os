@@ -4,10 +4,10 @@ import { useDeferredValue, useMemo, useState } from "react"
 import { Search, X } from "lucide-react"
 
 import { ProductCard } from "@/components/product-card"
-import { productCategories, type Product } from "@/lib/products"
+import { categories, type CatalogEntry } from "@/lib/storefront/config"
 
-export function ProductExplorer({ products }: { products: Product[] }) {
-  const [category, setCategory] = useState<(typeof productCategories)[number]>("All")
+export function ProductExplorer({ products }: { products: CatalogEntry[] }) {
+  const [category, setCategory] = useState<string>("All")
   const [query, setQuery] = useState("")
   const deferredQuery = useDeferredValue(query)
 
@@ -30,7 +30,7 @@ export function ProductExplorer({ products }: { products: Product[] }) {
     <div>
       <div className="flex flex-col gap-4 border-y border-line py-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter releases by format">
-          {productCategories.map((item) => (
+          {categories.map((item) => (
             <button
               key={item}
               type="button"

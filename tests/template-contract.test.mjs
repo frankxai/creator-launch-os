@@ -41,16 +41,41 @@ test("complete Next.js states are present", () => {
   )
 })
 
-test("checkout fallback is honest and never embeds a secret", () => {
-  const checkout = read("lib/checkout.ts")
+test("checkout handoff is honest and never embeds a secret", () => {
+  // Replaces the env-variable checkout contract, which could only ever address the
+  // three sample slugs. The rail now lives in storefront.config.json and the same
+  // URL rules are enforced by the schema for every product a creator adds.
+  const schema = read("lib/storefront/schema.mjs")
+  const config = read("lib/storefront/config.ts")
   const checkoutPage = read("app/checkout/[slug]/page.tsx")
 
-  assert.match(checkout, /NEXT_PUBLIC_CHECKOUT_GUIDE_URL/)
-  assert.doesNotMatch(checkout, /API_KEY|SECRET|TOKEN/)
-  assert.match(checkout, /url\.protocol === "https:"/)
-  assert.match(checkout, /!url\.username && !url\.password/)
+  assert.match(schema, /url\.protocol !== "https:"/)
+  assert.match(schema, /url\.username \|\| url\.password/)
+  assert.match(schema, /E_PRICE_WITHOUT_RAIL/)
+  assert.match(schema, /E_RAIL_WITHOUT_PRICE/)
+  assert.doesNotMatch(schema, /API_KEY|process\.env/)
+  assert.match(config, /rail !== "none"/)
   assert.match(checkoutPage, /No payment is collected/)
   assert.match(checkoutPage, /Never expose API keys/)
+  assert.match(checkoutPage, /Not for sale yet/)
+})
+
+test("no route hand-types a price or a checkout URL", () => {
+  const surfaces = [
+    "app/page.tsx",
+    "app/products/page.tsx",
+    "app/products/[slug]/page.tsx",
+    "app/checkout/[slug]/page.tsx",
+    "app/studio/page.tsx",
+    "components/product-card.tsx",
+    "components/product-explorer.tsx",
+  ]
+
+  for (const file of surfaces) {
+    const source = read(file)
+    assert.doesNotMatch(source, /\$\d/, `${file} must read prices from storefront.config.json`)
+    assert.doesNotMatch(source, /https:\/\/(?!github\.com)/, `${file} must not hard-code an outbound commerce URL`)
+  }
 })
 
 test("public routes ship a conservative security-header baseline", () => {
@@ -99,11 +124,19 @@ test("clean-account type checks generate Next.js route types first", () => {
 test("sample metrics and transactions are labeled as demo data", () => {
   const studio = read("app/studio/page.tsx")
   const consoleComponent = read("components/launch-console.tsx")
+  const config = JSON.parse(read("storefront.config.json"))
 
   assert.match(studio, /Sample operations view/)
-  assert.match(studio, /Demo readiness/)
-  assert.match(studio, /Live transactions/)
+  assert.match(studio, /metric\.meta\.provenance/)
   assert.match(consoleComponent, /Demo data/)
+
+  // Stronger than a string match on the page: the label a reader sees must carry
+  // the marker, and the schema refuses any sample metric that does not.
+  assert.ok(config.studioMetrics.length > 0)
+  for (const metric of config.studioMetrics) {
+    assert.equal(metric.meta.provenance, "sample")
+    assert.match(metric.label, /sample|demo|example/i)
+  }
 })
 
 test("the public UI avoids dead links and emoji chrome", () => {

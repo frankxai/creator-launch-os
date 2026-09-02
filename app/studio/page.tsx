@@ -2,24 +2,35 @@ import type { Metadata } from "next"
 import { ArrowRight, Check, Circle, Radio, TrendingUp } from "lucide-react"
 import Link from "next/link"
 
-import { products } from "@/lib/products"
+import { catalog, commerceState, releases, storefront } from "@/lib/storefront/config"
 
 export const metadata: Metadata = {
   title: "Release Studio",
   description: "The sample operations view included with Creator Launch OS.",
 }
 
+const currentRelease = releases[0]
+const forSaleCount = catalog.filter((product) => commerceState(product) === "for-sale").length
+
+// Readiness is derived from the config, not asserted. A row can only read "Ready"
+// because something in storefront.config.json makes it true.
 const readiness = [
-  { label: "Product page", state: "Ready" },
-  { label: "Delivery test", state: "Ready" },
-  { label: "Checkout", state: "Demo" },
-  { label: "Launch note", state: "Draft" },
+  { label: "Product pages", state: catalog.length > 0 ? "Ready" : "Empty" },
+  {
+    label: "Delivery described",
+    state: catalog.every((product) => product.delivery.whatArrives.length > 0) ? "Ready" : "Missing",
+  },
+  { label: "Checkout rail", state: forSaleCount > 0 ? "Live" : "None" },
+  {
+    label: "Proof attached",
+    state: catalog.every((product) => product.proofs.length > 0) ? "Ready" : "Partial",
+  },
 ] as const
 
 const tasks = [
-  "Connect the production checkout URL",
-  "Replace sample customer questions",
-  "Send the clean-account delivery test",
+  "Replace the sample releases in storefront.config.json",
+  "Add a hosted checkout URL and a price to one product",
+  "Send the clean-account delivery test before announcing",
 ] as const
 
 export default function StudioPage() {
@@ -42,14 +53,16 @@ export default function StudioPage() {
         </div>
 
         <div className="grid gap-5 py-8 sm:grid-cols-3">
-          {[
-            { value: "3", label: "Sample releases" },
-            { value: "92%", label: "Demo readiness" },
-            { value: "0", label: "Live transactions" },
-          ].map((metric) => (
-            <div key={metric.label} className="border-l border-white/15 pl-5">
-              <p className="font-mono text-4xl text-acid">{metric.value}</p>
+          {storefront.studioMetrics.map((metric) => (
+            <div key={metric.id} className="border-l border-white/15 pl-5">
+              <p className="font-mono text-4xl text-acid">
+                {metric.value}
+                {metric.unit ? <span className="text-2xl text-white/72"> {metric.unit}</span> : null}
+              </p>
               <p className="mt-2 text-xs tracking-[0.14em] text-white/55">{metric.label}</p>
+              <p className="mt-1 font-mono text-[10px] tracking-wider text-white/55">
+                {metric.meta.provenance} · {metric.source ?? "no instrument"} · {metric.measuredAt}
+              </p>
             </div>
           ))}
         </div>
@@ -59,9 +72,11 @@ export default function StudioPage() {
             <div className="flex items-center justify-between gap-5">
               <div>
                 <p className="eyebrow text-white/55">Current release</p>
-                <h2 className="mt-3 font-serif text-3xl">The Systems Field Guide</h2>
+                <h2 className="mt-3 font-serif text-3xl">{currentRelease.title}</h2>
               </div>
-              <span className="rounded-full bg-acid px-3 py-1 font-mono text-[10px] font-semibold tracking-wider text-ink">Demo</span>
+              <span className="rounded-full bg-acid px-3 py-1 font-mono text-[10px] font-semibold tracking-wider text-ink">
+                {currentRelease.meta.provenance}
+              </span>
             </div>
             <div className="mt-7 divide-y divide-white/10 border-y border-white/10">
               {readiness.map((item) => (
@@ -73,9 +88,11 @@ export default function StudioPage() {
               ))}
             </div>
             <div className="mt-7 grid gap-4 sm:grid-cols-3">
-              {products.map((product) => (
+              {catalog.map((product) => (
                 <Link key={product.slug} href={`/products/${product.slug}`} className="rounded-xl border border-white/10 p-4 transition-colors hover:bg-white/5">
-                  <p className="font-mono text-[10px] text-white/55">Edition {product.edition}</p>
+                  <p className="font-mono text-[10px] text-white/55">
+                    {commerceState(product) === "for-sale" ? "For sale" : "Not for sale yet"}
+                  </p>
                   <p className="mt-2 text-sm font-medium leading-5">{product.title}</p>
                 </Link>
               ))}
