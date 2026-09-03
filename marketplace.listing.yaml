@@ -1,0 +1,29 @@
+schema_version: "1.0.0"
+listing_id: listing_creator_launch_os_canonical
+product_id: product_creator_launch_os
+sku_id: sku_creator_launch_os_v1
+state: qa_ready
+canonical_offer_url: pending_verified_production_url
+title: Creator Launch OS
+short_description: Deploy a clear multi-product storefront with an honest checkout handoff and a built-in release studio.
+buyer_job: launch_and_maintain_a_small_digital_product_catalog
+outcome: verified_deployable_storefront_and_repeatable_release_workflow
+includes: [source_code, product_catalog, product_pages, demo_checkout_fallback, studio_example, verification_scripts]
+excludes: [payment_api, customer_database, entitlements, email_automation, fabricated_analytics]
+price_state: free_core_paid_extension_decision_required
+license: MIT_for_repository
+support_url: https://github.com/frankxai/creator-launch-os/issues
+channels:
+  - id: github
+    state: existing_public_repository
+    url: https://github.com/frankxai/creator-launch-os
+  - id: vercel_templates
+    state: submission_not_verified
+  - id: gumroad
+    state: not_submitted
+preview_assets: []
+rights_record: pending
+maintenance:
+  last_checked: "2026-09-03"
+  next_review: "2026-10-03"
+  owner: FrankX
