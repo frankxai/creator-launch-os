@@ -1,0 +1,33 @@
+schema_version: "1.0.0"
+product_id: product_creator_launch_os
+sku_id: sku_creator_launch_os_v1
+name: Creator Launch OS
+brand_id: brand_gencreator
+repository: frankxai/creator-launch-os
+status: release_candidate
+format: web_template_and_operations_kit
+buyer:
+  segment: independent_creators_with_one_or_more_digital_products
+  job: publish_a_trustworthy_catalog_and_operate_release_work_without_custom_engineering
+promise:
+  outcome: a_deployable_storefront_with_honest_checkout_handoff_and_repeatable_release_operations
+  boundary: the_free_template_does_not_include_server_side_payments_entitlements_customer_data_or_automation
+mechanism: [nextjs_storefront, typed_catalog, product_pages, explicit_checkout_fallback, sample_studio, verification]
+activation_event: deployed_storefront_with_first_real_product_configured
+commercial:
+  price_state: decision_required
+  experiment_band: "paid extension 29-99; not a public price decision"
+  merchant: decision_required
+  license: MIT_for_free_template_commercial_terms_for_extension
+rights:
+  state: review_required_for_each_listing_asset_and_sample_product
+channels: [owned_storefront, github, vercel_templates, gumroad]
+shared_platform:
+  reuse_target_percent: 80
+  dependencies: [vercel, shared_design_contract, canonical_catalog_contract]
+support:
+  owner: FrankX
+  boundary: repository_documentation_and_versioned_release_notes_for_free_template
+maintenance:
+  cadence: monthly_and_on_nextjs_security_or_platform_change
+stop_rule: pause_paid_extension_if_checkout_delivery_or_support_cannot_be_proven_end_to_end
