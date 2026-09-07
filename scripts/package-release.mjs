@@ -92,6 +92,16 @@ export function buildRelease({ root = ROOT, output = join(root, "dist", "release
     const bytes = source(path)
     return { path, bytes: bytes.length, sha256: digest(bytes) }
   })
+  // Git also reads local/global attributes absent from the commit tree.
+  // They must not change the archive after we inventory immutable blobs.
+  const attributes = git(root, [
+    "check-attr", "--cached", "-z", "export-ignore", "export-subst", "--", ...files,
+  ]).toString().split("\0")
+  for (let i = 0; i + 2 < attributes.length; i += 3) {
+    if (!["unspecified", "unset"].includes(attributes[i + 2])) {
+      throw new Error("Archive export transforms would invalidate file receipts: " + attributes[i])
+    }
+  }
   const stem = pkg.name + "-" + pkg.version + "-" + revision.slice(0, 12)
   const archiveName = stem + ".zip"
   const archive = git(root, [

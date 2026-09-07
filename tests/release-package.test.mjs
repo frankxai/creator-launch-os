@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs"
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 import { test } from "node:test"
@@ -129,9 +129,15 @@ test("a missing license or duplicated path blocks packaging", (t) => {
 
 test("symlinks cannot turn an allowed file into an external read", (t) => {
   const root = fixture(t, ({ root, config }) => {
-    symlinkSync("/etc/hosts", join(root, "symlink.txt"))
+    // Represent the Git symlink as a normal file, as Windows checkouts do.
+    // Probe the committed mode without requiring OS symlink privileges.
+    git(root, ["config", "core.symlinks", "false"])
+    write(root, "symlink.txt", "../outside-secret")
     config.files.push("symlink.txt")
   })
+  const blob = git(root, ["hash-object", "-w", "--", "symlink.txt"]).toString().trim()
+  git(root, ["update-index", "--cacheinfo", "120000," + blob + ",symlink.txt"])
+  git(root, ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "-qm", "Symlink fixture"])
   assert.throws(() => buildRelease({ root }), /tracked regular files/)
 })
 
@@ -157,4 +163,20 @@ test("a prior delivery package is preserved on a duplicate build", (t) => {
   const receipt = readFileSync(join(result.directory, "receipt.json"))
   assert.throws(() => buildRelease({ root }))
   assert.deepEqual(readFileSync(join(result.directory, "receipt.json")), receipt)
+})
+
+for (const attribute of ["export-ignore", "export-subst"]) {
+  test("local Git attributes cannot change receipted bytes: " + attribute, (t) => {
+    const root = fixture(t)
+    write(root, ".git/info/attributes", "README.md " + attribute + "\n")
+    assert.throws(() => buildRelease({ root }), /export transforms/)
+  })
+}
+
+test("global Git attributes cannot silently exclude a delivery file", (t) => {
+  const root = fixture(t)
+  const attributes = join(root, ".git", "global-attributes")
+  write(root, ".git/global-attributes", "README.md export-ignore\n")
+  git(root, ["config", "core.attributesFile", attributes])
+  assert.throws(() => buildRelease({ root }), /export transforms/)
 })
