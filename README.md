@@ -65,6 +65,10 @@ pnpm build
 
 The release receipt is tracked in `template.manifest.json`. A maturity label is a claim: update it only when the corresponding checks have passed.
 
+## Delivery package
+
+Run `pnpm package:release` from a clean commit to create a versioned source ZIP, SHA-256 checksums and an exact-commit receipt. See [release packaging](docs/RELEASE-PACKAGING.md) for reproduction and review. Template CI also makes this package available as a downloadable workflow artifact.
+
 ## License
 
 MIT. Use it for personal or commercial projects. Attribution is appreciated but not required.
