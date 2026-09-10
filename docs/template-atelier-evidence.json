@@ -85,6 +85,18 @@
       "kind": "web",
       "inspected": true,
       "notes": "Preview dpl_43Kt2T7xvFY6pc8QAsrVJZYM1zRK at 00b2b50 built all 26 routes. Authenticated Chrome reached the six-direction editor, selected Operand and edited its brand. Partial desktop inspection only; mobile, import, audio and keyboard QA remain pending."
+    },
+    {
+      "path_or_url": "https://creator-launch-oszx00sb8-starlight-intelligence.vercel.app/studio/templates",
+      "kind": "web",
+      "inspected": false,
+      "notes": "READY full-app preview dpl_zTgJtysokEsvdF1uHgoE8fGw6TGk at 3e0d811 includes the audio origin guard. Identical product source passed the cloud browser flow checks; this Vercel URL itself has not been revisited after the laptop memory HOLD."
+    },
+    {
+      "path_or_url": "https://github.com/frankxai/creator-launch-os/actions/runs/34483542984",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Four Playwright checks passed in 23.3s: all six studies at 1440/768/375, six editors, genuine unknown-route 404s, import/export/cancel/apply/focus preservation, local audio decode/play/remove without network upload, and reduced-motion disclosure. Music and lab desktop/phone exports inspected. Initial screenshot capture could catch a GSAP entrance; the follow-up waits for settled opacity."
     }
   ],
   "checks": [
@@ -130,8 +142,8 @@
     },
     {
       "name": "export-inspection",
-      "status": "blocked",
-      "evidence": "Browser admission BOUNDED. Chrome disconnected during the loop; the available in-app browser needs its own Vercel login. Temporary access was queued in the app without committing a signed URL. No new local server was started."
+      "status": "partial",
+      "evidence": "22 browser exports captured in cloud CI; music and lab at desktop/phone inspected. Capture refinement now waits for GSAP opacity to settle before exporting. Remaining images and final settled exports need inspection."
     },
     {
       "name": "offline-brief-export",
@@ -145,8 +157,8 @@
     },
     {
       "name": "visual-qa",
-      "status": "blocked",
-      "evidence": "Desktop/mobile/keyboard/reduced-motion browser verification remains pending."
+      "status": "partial",
+      "evidence": "Real Chromium flow, overflow, route and reduced-motion checks passed in run 34483542984. Manual export inspection began; this is not an independent buyer or full accessibility certification."
     },
     {
       "name": "independent-buyer-critic",
@@ -156,12 +168,12 @@
     {
       "name": "audio-origin-boundary",
       "status": "pass",
-      "evidence": "32 affected tests pass on Node 22, including same-origin blob acceptance and rejection of malformed, remote, data, JavaScript and foreign-origin blob URLs. TypeScript and scoped ESLint pass. Fresh CodeQL still pending; no alert suppressed."
+      "evidence": "32 affected tests pass on Node 22, including same-origin blob acceptance and rejection of malformed, remote, data, JavaScript and foreign-origin blob URLs. TypeScript and scoped ESLint pass. Fresh CodeQL still pending; no alert suppressed. Fresh CodeQL at bfbb52d and 3e0d811 passed and marked the original alert fixed."
     }
   ],
   "refinement": {
     "strongest": "Distinct information structures plus real, honestly labeled local actions.",
-    "weakest": "No visual inspection yet, so typography, narrow-screen composition and playback behavior cannot be approved.",
+    "weakest": "Independent second-provider buyer critique remains unavailable; it must not be replaced by a self-assigned premium score.",
     "changed": [
       "Added explicit copy limits and blank-field defaults",
       "Excluded local media and progress from exported configuration",
@@ -173,7 +185,8 @@
       "Completed local configuration import with review, backup, explicit apply/cancel and focus restoration",
       "Added six static full-page study routes and six correctly initialized editor routes",
       "Raised canvas utility controls to 44px at all viewport widths",
-      "Restricted native audio sources to this page's non-opaque blob origin, with focused negative tests and release-package inclusion."
+      "Restricted native audio sources to this page's non-opaque blob origin, with focused negative tests and release-package inclusion.",
+      "Added built-app browser CI and refined screenshot capture to wait for GSAP entrance opacity, after inspecting a premature frame."
     ]
   },
   "score": {
@@ -183,7 +196,7 @@
   },
   "decision": "blocked",
   "known_risks": [
-    "Current full preview includes configuration import and all study/editor routes at 00b2b50. The subsequent audio-source guard is locally verified and awaits fresh security CI and preview.",
+    "Full product preview at 3e0d811 is READY. Later changes refine QA capture and evidence only; no production promotion was made.",
     "Saved v0 OAuth still needs refreshed tools and a verified billing balance before generation",
     "Six study names are illustrative, not approved product identities",
     "Release version and marketplace claims intentionally unchanged",

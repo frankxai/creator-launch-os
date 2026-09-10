@@ -3,6 +3,19 @@ import { readFile } from "node:fs/promises"
 
 const directions = ["music", "lab", "tool", "portfolio", "creator", "challenge"]
 
+async function settleComposition(page) {
+  await page.evaluate(async () => {
+    await document.fonts.ready
+    await new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    )
+  })
+  // Playwright's animations option stops CSS animations, not GSAP's entrance.
+  for (const item of await page.locator("[data-motion-item]").all()) {
+    await expect(item).toHaveCSS("opacity", "1")
+  }
+}
+
 test("all studies and editors render at desktop, tablet and phone widths", async ({
   page,
 }, info) => {
@@ -19,7 +32,7 @@ test("all studies and editors render at desktop, tablet and phone widths", async
         "content",
         /noindex.*nofollow/,
       )
-      await page.evaluate(() => document.fonts.ready)
+      await settleComposition(page)
       expect(
         await page.evaluate(
           () =>
@@ -37,6 +50,7 @@ test("all studies and editors render at desktop, tablet and phone widths", async
     await expect(
       page.getByRole("heading", { name: "Template atelier." }),
     ).toBeVisible()
+    await settleComposition(page)
     expect(
       await page.evaluate(
         () =>
@@ -145,13 +159,11 @@ test("selected audio plays from a local blob and can be removed without a networ
       Math.round(Math.sin((i * 2 * Math.PI * 220) / 8000) * 1000),
       44 + i * 2,
     )
-  await page
-    .getByLabel("Choose an audio file")
-    .setInputFiles({
-      name: "local-tone.wav",
-      mimeType: "audio/wav",
-      buffer: wav,
-    })
+  await page.getByLabel("Choose an audio file").setInputFiles({
+    name: "local-tone.wav",
+    mimeType: "audio/wav",
+    buffer: wav,
+  })
   const audio = page.locator("audio")
   await expect(audio).toHaveAttribute(
     "src",
@@ -182,6 +194,7 @@ test("reduced motion leaves the research content and keyboard disclosures usable
   await expect(row).toHaveAttribute("open", "")
   await expect(row.locator("p")).toBeVisible()
   await expect(page.locator("[data-motion-item]").first()).toBeVisible()
+  await settleComposition(page)
   await page.screenshot({
     path: info.outputPath("lab-reduced-motion.png"),
     fullPage: true,
