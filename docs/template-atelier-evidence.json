@@ -4,50 +4,190 @@
   "surface": "Creator Launch OS studio workbench, /studio/templates",
   "audience": "Music producers, AI labs, AI tools, independent portfolios, creators and challenge hosts",
   "first_read": "Choose a direction, try a useful interaction, edit the copy and export the brief.",
-  "standards": ["design-agent-standards/OUTCOMES.md", "design-agent-standards/AGENTIC_DESIGN_LOOP.md", "design-agent-standards/PREMIUM_ASSET_STANDARD.md", "_intelligence/quality-gates.md"],
+  "standards": [
+    "design-agent-standards/OUTCOMES.md",
+    "design-agent-standards/AGENTIC_DESIGN_LOOP.md",
+    "design-agent-standards/PREMIUM_ASSET_STANDARD.md",
+    "_intelligence/quality-gates.md"
+  ],
   "references": [
-    { "label": "Page and scene specification", "source": "docs/TEMPLATE-ATELIER.md", "reason": "Audience, first read, composition, boundaries and acceptance criteria" },
-    { "label": "Bandcamp", "source": "https://bandcamp.com/", "reason": "Listening and editorial discovery before purchase, not a visual clone" },
-    { "label": "Anthropic Research", "source": "https://www.anthropic.com/research", "reason": "Questions, methods and publication index before promotional claims" }
+    {
+      "label": "Page and scene specification",
+      "source": "docs/TEMPLATE-ATELIER.md",
+      "reason": "Audience, first read, composition, boundaries and acceptance criteria"
+    },
+    {
+      "label": "Bandcamp",
+      "source": "https://bandcamp.com/",
+      "reason": "Listening and editorial discovery before purchase, not a visual clone"
+    },
+    {
+      "label": "Anthropic Research",
+      "source": "https://www.anthropic.com/research",
+      "reason": "Questions, methods and publication index before promotional claims"
+    }
   ],
   "direction": {
-    "keep": ["Six different visitor jobs and compositions", "Existing Geist, Newsreader and Geist Mono type system", "Local-only interactions with explicit production boundaries"],
-    "avoid": ["Fictional metrics or commercial wiring", "All-caps interface copy", "Copied identities", "Unapproved generated media", "Decorative glass wallpaper"],
+    "keep": [
+      "Six different visitor jobs and compositions",
+      "Existing Geist, Newsreader and Geist Mono type system",
+      "Local-only interactions with explicit production boundaries"
+    ],
+    "avoid": [
+      "Fictional metrics or commercial wiring",
+      "All-caps interface copy",
+      "Copied identities",
+      "Unapproved generated media",
+      "Decorative glass wallpaper"
+    ],
     "signature": "An editorial specimen desk showing working UI, not a fake product screenshot",
-    "system": ["Scoped CSS modules and container-query preview widths", "Plum/citron, ivory/vermillion, cobalt, paper, forest and coral studies", "One short transform-and-opacity GSAP entrance with responsive cleanup and reduced-motion bypass"]
+    "system": [
+      "Scoped CSS modules and container-query preview widths",
+      "Plum/citron, ivory/vermillion, cobalt, paper, forest and coral studies",
+      "One short transform-and-opacity GSAP entrance with responsive cleanup and reduced-motion bypass"
+    ]
   },
   "asset_quality": {
-    "tier": "C", "source_method": "product-capture", "provenance": "owned",
+    "tier": "C",
+    "source_method": "product-capture",
+    "provenance": "owned",
     "why_premium": "The intended asset is exact, editable product UI. Typographic covers are illustrative studies, not proof of real products. Actual visual quality remains unverified until browser inspection.",
-    "shortcut_risk": "medium", "context_tested": false
+    "shortcut_risk": "medium",
+    "context_tested": false
   },
   "artifacts": [
-    { "path_or_url": "components/template-atelier.tsx", "kind": "ui", "inspected": false, "notes": "Source checked; no desktop/mobile browser export captured yet." },
-    { "path_or_url": "components/template-preview.tsx", "kind": "ui", "inspected": false, "notes": "Six interactive studies; actual playback and keyboard flows still need browser verification." },
-    { "path_or_url": "app/studio/templates/[templateId]/page.tsx", "kind": "ui", "inspected": false, "notes": "Six static full-page studies and six editor routes built locally. Generated HTML checked for correct template, one h1 and noindex. Not deployed or browser-inspected." },
-    { "path_or_url": "https://creator-launch-gb4llgxkk-starlight-intelligence.vercel.app/studio/templates", "kind": "web", "inspected": false, "notes": "Protected preview dpl_BBdXRp52wMgPnkZJr1YakKqLTGPB is READY. Both sourceCommit and githubCommitSha equal aa73e34c300fe9de896a5c8e7d537bd34d6a3978. In-app browser reaches Vercel/GitHub sign-in, not the application; authenticated fetch returned 302, not verified HTML." }
+    {
+      "path_or_url": "components/template-atelier.tsx",
+      "kind": "ui",
+      "inspected": false,
+      "notes": "Source checked; no desktop/mobile browser export captured yet."
+    },
+    {
+      "path_or_url": "components/template-preview.tsx",
+      "kind": "ui",
+      "inspected": false,
+      "notes": "Six interactive studies; actual playback and keyboard flows still need browser verification."
+    },
+    {
+      "path_or_url": "app/studio/templates/[templateId]/page.tsx",
+      "kind": "ui",
+      "inspected": false,
+      "notes": "Six static full-page studies and six editor routes built locally. Generated HTML checked for correct template, one h1 and noindex. Not deployed or browser-inspected."
+    },
+    {
+      "path_or_url": "https://creator-launch-gb4llgxkk-starlight-intelligence.vercel.app/studio/templates",
+      "kind": "web",
+      "inspected": false,
+      "notes": "Protected preview dpl_BBdXRp52wMgPnkZJr1YakKqLTGPB is READY. Both sourceCommit and githubCommitSha equal aa73e34c300fe9de896a5c8e7d537bd34d6a3978. In-app browser reaches Vercel/GitHub sign-in, not the application; authenticated fetch returned 302, not verified HTML."
+    },
+    {
+      "path_or_url": "https://creator-launch-iob6u58xa-starlight-intelligence.vercel.app/studio/templates",
+      "kind": "web",
+      "inspected": true,
+      "notes": "Preview dpl_43Kt2T7xvFY6pc8QAsrVJZYM1zRK at 00b2b50 built all 26 routes. Authenticated Chrome reached the six-direction editor, selected Operand and edited its brand. Partial desktop inspection only; mobile, import, audio and keyboard QA remain pending."
+    }
   ],
   "checks": [
-    { "name": "asset-tier", "status": "pass", "evidence": "Tier C: exact interactive UI is the correct medium; no third-party or generated commercial assets." },
-    { "name": "type-check", "status": "pass", "evidence": "pnpm run type-check: Next route type generation and TypeScript completed on 2026-09-10." },
-    { "name": "lint", "status": "pass", "evidence": "pnpm run lint passed after fixing one unescaped JSX apostrophe." },
-    { "name": "unit-and-contract-tests", "status": "pass", "evidence": "Full suite 48/48 passed. After keyboard focus restoration, all 31 affected template/export/contract tests passed again; final type check and lint also passed. Tests cover six round trips, malformed/version/direction/copy failures, exact UTF-8 size limits and exclusion of foreign runtime metadata/prototype keys." },
-    { "name": "anti-slop-heuristic", "status": "pass", "evidence": "Canonical scanner: 100/100 for the repo. This keyword heuristic is not a visual quality score." },
-    { "name": "secret-intake", "status": "pass", "evidence": "Repo scan found ten generic-key matches, all inside ignored .next cache/server manifests. No findings outside generated .next. Values were redacted; no global hook or scanner rule was disabled." },
-    { "name": "production-build", "status": "pass", "evidence": "Final pp admission BOUNDED, 11935 MB available. Final pnpm run build passed compilation, TypeScript and all 26 generated pages, including six study and six editor routes. Both new route families use generateStaticParams and dynamicParams=false." },
-    { "name": "prerender-contract", "status": "pass", "evidence": "All twelve generated study/editor HTML files have the expected data-template, exactly one h1 and noindex, nofollow. This is server HTML evidence, not browser, HTTP-404 or visual QA." },
-    { "name": "export-inspection", "status": "blocked", "evidence": "Browser admission BOUNDED. Chrome disconnected during the loop; the available in-app browser needs its own Vercel login. Temporary access was queued in the app without committing a signed URL. No new local server was started." },
-    { "name": "offline-brief-export", "status": "pass", "evidence": "Six Markdown briefs, six JSON configurations, an index and SHA-256 receipts exported by pnpm run template:briefs. Two added tests verify contents, repeatability, preservation of prior edits and packaging inclusion; 24 template/export/contract tests pass." },
-    { "name": "immutable-source-package", "status": "pass", "evidence": "63 files packaged from aa73e34c300fe9de896a5c8e7d537bd34d6a3978 with file hashes and archive checksum. Status PACKAGED_NOT_RELEASED; packaging does not assert application or launch verification." },
-    { "name": "visual-qa", "status": "blocked", "evidence": "Desktop/mobile/keyboard/reduced-motion browser verification remains pending." },
-    { "name": "independent-buyer-critic", "status": "blocked", "evidence": "Machine preflight pauses new swarms; no second-provider critique was claimed or fabricated." }
+    {
+      "name": "asset-tier",
+      "status": "pass",
+      "evidence": "Tier C: exact interactive UI is the correct medium; no third-party or generated commercial assets."
+    },
+    {
+      "name": "type-check",
+      "status": "pass",
+      "evidence": "pnpm run type-check: Next route type generation and TypeScript completed on 2026-09-10."
+    },
+    {
+      "name": "lint",
+      "status": "pass",
+      "evidence": "pnpm run lint passed after fixing one unescaped JSX apostrophe."
+    },
+    {
+      "name": "unit-and-contract-tests",
+      "status": "pass",
+      "evidence": "Full suite 48/48 passed. After keyboard focus restoration, all 31 affected template/export/contract tests passed again; final type check and lint also passed. Tests cover six round trips, malformed/version/direction/copy failures, exact UTF-8 size limits and exclusion of foreign runtime metadata/prototype keys."
+    },
+    {
+      "name": "anti-slop-heuristic",
+      "status": "pass",
+      "evidence": "Canonical scanner: 100/100 for the repo. This keyword heuristic is not a visual quality score."
+    },
+    {
+      "name": "secret-intake",
+      "status": "pass",
+      "evidence": "Repo scan found ten generic-key matches, all inside ignored .next cache/server manifests. No findings outside generated .next. Values were redacted; no global hook or scanner rule was disabled."
+    },
+    {
+      "name": "production-build",
+      "status": "pass",
+      "evidence": "Final pp admission BOUNDED, 11935 MB available. Final pnpm run build passed compilation, TypeScript and all 26 generated pages, including six study and six editor routes. Both new route families use generateStaticParams and dynamicParams=false."
+    },
+    {
+      "name": "prerender-contract",
+      "status": "pass",
+      "evidence": "All twelve generated study/editor HTML files have the expected data-template, exactly one h1 and noindex, nofollow. This is server HTML evidence, not browser, HTTP-404 or visual QA."
+    },
+    {
+      "name": "export-inspection",
+      "status": "blocked",
+      "evidence": "Browser admission BOUNDED. Chrome disconnected during the loop; the available in-app browser needs its own Vercel login. Temporary access was queued in the app without committing a signed URL. No new local server was started."
+    },
+    {
+      "name": "offline-brief-export",
+      "status": "pass",
+      "evidence": "Six Markdown briefs, six JSON configurations, an index and SHA-256 receipts exported by pnpm run template:briefs. Two added tests verify contents, repeatability, preservation of prior edits and packaging inclusion; 24 template/export/contract tests pass."
+    },
+    {
+      "name": "immutable-source-package",
+      "status": "pass",
+      "evidence": "63 files packaged from aa73e34c300fe9de896a5c8e7d537bd34d6a3978 with file hashes and archive checksum. Status PACKAGED_NOT_RELEASED; packaging does not assert application or launch verification."
+    },
+    {
+      "name": "visual-qa",
+      "status": "blocked",
+      "evidence": "Desktop/mobile/keyboard/reduced-motion browser verification remains pending."
+    },
+    {
+      "name": "independent-buyer-critic",
+      "status": "blocked",
+      "evidence": "Machine preflight pauses new swarms; no second-provider critique was claimed or fabricated."
+    },
+    {
+      "name": "audio-origin-boundary",
+      "status": "pass",
+      "evidence": "32 affected tests pass on Node 22, including same-origin blob acceptance and rejection of malformed, remote, data, JavaScript and foreign-origin blob URLs. TypeScript and scoped ESLint pass. Fresh CodeQL still pending; no alert suppressed."
+    }
   ],
   "refinement": {
     "strongest": "Distinct information structures plus real, honestly labeled local actions.",
     "weakest": "No visual inspection yet, so typography, narrow-screen composition and playback behavior cannot be approved.",
-    "changed": ["Added explicit copy limits and blank-field defaults", "Excluded local media and progress from exported configuration", "Used TypeScript transpilation in unit tests to avoid Node-version-specific TS loaders", "Included all new code in the release packaging allowlist", "Fixed one JSX lint error", "Formatted source with pinned Prettier without adding a dependency", "Added an offline CLI for the same six v0 prompt packets used by the UI", "Completed local configuration import with review, backup, explicit apply/cancel and focus restoration", "Added six static full-page study routes and six correctly initialized editor routes", "Raised canvas utility controls to 44px at all viewport widths"]
+    "changed": [
+      "Added explicit copy limits and blank-field defaults",
+      "Excluded local media and progress from exported configuration",
+      "Used TypeScript transpilation in unit tests to avoid Node-version-specific TS loaders",
+      "Included all new code in the release packaging allowlist",
+      "Fixed one JSX lint error",
+      "Formatted source with pinned Prettier without adding a dependency",
+      "Added an offline CLI for the same six v0 prompt packets used by the UI",
+      "Completed local configuration import with review, backup, explicit apply/cancel and focus restoration",
+      "Added six static full-page study routes and six correctly initialized editor routes",
+      "Raised canvas utility controls to 44px at all viewport widths",
+      "Restricted native audio sources to this page's non-opaque blob origin, with focused negative tests and release-package inclusion."
+    ]
   },
-  "score": { "total": 0, "max": 30, "notes": "Not scored: no inspected browser export. A heuristic scan and code tests cannot establish a premium visual gate PASS." },
+  "score": {
+    "total": 0,
+    "max": 30,
+    "notes": "Not scored: no inspected browser export. A heuristic scan and code tests cannot establish a premium visual gate PASS."
+  },
   "decision": "blocked",
-  "known_risks": ["One earlier protected preview deployed; the subsequent import and full-page-route increment is local only and is not on that preview", "Saved v0 OAuth still needs refreshed tools and a verified billing balance before generation", "Six study names are illustrative, not approved product identities", "Release version and marketplace claims intentionally unchanged", "Auth, payments, demand capture, member access and model calls remain explicit future integrations", "Browser visual/motion/accessibility inspection and independent buyer critique are incomplete"]
+  "known_risks": [
+    "Current full preview includes configuration import and all study/editor routes at 00b2b50. The subsequent audio-source guard is locally verified and awaits fresh security CI and preview.",
+    "Saved v0 OAuth still needs refreshed tools and a verified billing balance before generation",
+    "Six study names are illustrative, not approved product identities",
+    "Release version and marketplace claims intentionally unchanged",
+    "Auth, payments, demand capture, member access and model calls remain explicit future integrations",
+    "Browser visual/motion/accessibility inspection and independent buyer critique are incomplete"
+  ]
 }

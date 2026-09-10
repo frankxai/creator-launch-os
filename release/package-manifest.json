@@ -67,6 +67,8 @@
     "tests/template-contract.test.mjs",
     "tests/template-atelier.test.mjs",
     "tests/template-brief-export.test.mjs",
-    "tsconfig.json"
+    "tsconfig.json",
+    "lib/local-audio.ts",
+    "tests/local-audio.test.mjs"
   ]
 }

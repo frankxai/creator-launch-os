@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react"
 import { ArrowDown, ArrowRight, Check, Headphones, Plus, X } from "lucide-react"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
+import { localAudioSource } from "@/lib/local-audio"
 
 import {
   briefChecklist,
@@ -140,7 +141,7 @@ function MusicPreview({ copy }: { copy: TemplateCopy }) {
                 key={track.url}
                 controls
                 preload="metadata"
-                src={track.url}
+                src={localAudioSource(track.url, window.location.origin)}
                 aria-label={`Listen to ${track.name}`}
                 onError={() =>
                   setError(
