@@ -69,6 +69,8 @@
     "tests/template-brief-export.test.mjs",
     "tsconfig.json",
     "lib/local-audio.ts",
-    "tests/local-audio.test.mjs"
+    "tests/local-audio.test.mjs",
+    "playwright.config.mjs",
+    "tests/browser/atelier.spec.mjs"
   ]
 }
