@@ -6,7 +6,10 @@ import ts from "typescript"
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8")
 // Exercise the real pure module without depending on Node's version-specific TS loader.
 const compiled = ts.transpileModule(read("lib/template-catalog.ts"), {
-  compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+  compilerOptions: {
+    module: ts.ModuleKind.ESNext,
+    target: ts.ScriptTarget.ES2022,
+  },
 }).outputText
 const {
   briefChecklist,
@@ -15,7 +18,10 @@ const {
   createTemplatePacket,
   createV0Brief,
   getTemplate,
+  findTemplate,
   normalizeCopy,
+  parseTemplateImport,
+  templateImportByteLimit,
   templates,
 } = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString("base64")}`)
 
@@ -107,6 +113,8 @@ test("workbench preserves contract and packaging boundaries", () => {
     "components/template-atelier.module.css",
     "lib/template-catalog.ts",
     "tests/template-atelier.test.mjs",
+    "app/studio/templates/[templateId]/page.tsx",
+    "app/studio/templates/[templateId]/edit/page.tsx",
   ]
   const source = files.slice(0, 4).map(read).join("\n")
   assert.doesNotMatch(source, /text-transform:\s*uppercase|href=["']#["']|dangerouslySetInnerHTML/)
@@ -114,4 +122,151 @@ test("workbench preserves contract and packaging boundaries", () => {
   assert.match(read("app/studio/page.tsx"), /href="\/studio\/templates"/)
   const manifest = JSON.parse(read("release/package-manifest.json"))
   for (const file of files) assert.ok(manifest.files.includes(file), `${file} must be packaged`)
+})
+
+test("all six exported configurations reopen with their exact personalized copy", () => {
+  for (const template of templates) {
+    const copy = {
+      brand: "A studio / 音",
+      headline: "A considered beginning.",
+      description: "A small, specific idea for a real person.",
+    }
+    const packet = createTemplatePacket(template, copy)
+    assert.deepEqual(parseTemplateImport(JSON.stringify(packet)), {
+      templateId: template.id,
+      copy,
+    })
+    assert.deepEqual(
+      parseTemplateImport(JSON.stringify(createTemplatePacket(template, {}))).copy,
+      template.copy,
+    )
+  }
+})
+
+test("configuration import rejects malformed, unknown or incomplete packets", () => {
+  assert.throws(() => parseTemplateImport("{"), /not valid JSON/)
+  for (const value of [null, [], true, "music", 0, {}, { schemaVersion: "2.0.0" }]) {
+    assert.throws(() => parseTemplateImport(JSON.stringify(value)), /version is not supported/)
+  }
+  const packet = createTemplatePacket(getTemplate("lab"), {})
+  for (const id of [null, [], "", "unknown", "Music", "../music", "__proto__"]) {
+    assert.throws(
+      () => parseTemplateImport(JSON.stringify({ ...packet, templateId: id })),
+      /six atelier directions/,
+    )
+  }
+  for (const copy of [null, [], "copy"]) {
+    assert.throws(
+      () => parseTemplateImport(JSON.stringify({ ...packet, copy })),
+      /missing its copy fields/,
+    )
+  }
+  for (const field of Object.keys(copyLimits)) {
+    for (const value of [undefined, null, 42, {}, [], "x".repeat(copyLimits[field] + 1)]) {
+      assert.throws(
+        () =>
+          parseTemplateImport(
+            JSON.stringify({
+              ...packet,
+              copy: { ...packet.copy, [field]: value },
+            }),
+          ),
+        new RegExp(`The ${field} must be text`),
+      )
+    }
+    assert.equal(
+      parseTemplateImport(
+        JSON.stringify({
+          ...packet,
+          copy: { ...packet.copy, [field]: "x".repeat(copyLimits[field]) },
+        }),
+      ).copy[field].length,
+      copyLimits[field],
+    )
+  }
+})
+
+test("import size uses UTF-8 bytes, rejects excessive input and accepts the exact limit", () => {
+  const packet = JSON.stringify(createTemplatePacket(getTemplate("music"), {}))
+  const padding = templateImportByteLimit - Buffer.byteLength(packet)
+  assert.equal(parseTemplateImport(packet + " ".repeat(padding)).templateId, "music")
+  assert.throws(() => parseTemplateImport(packet + " ".repeat(padding + 1)), /64 KiB/)
+  const multiByte = JSON.stringify({
+    ...JSON.parse(packet),
+    ignored: "音".repeat(22000),
+  })
+  assert.ok(multiByte.length < templateImportByteLimit)
+  assert.throws(() => parseTemplateImport(multiByte), /64 KiB/)
+})
+
+test("import projects only copy and direction, never foreign behavior or prototype keys", () => {
+  const packet = createTemplatePacket(getTemplate("tool"), {})
+  const unsafeExtras = JSON.parse(
+    '{"__proto__":{"polluted":true},"constructor":{"prototype":{"polluted":true}}}',
+  )
+  const literal = '<script>alert("not code")</script>'
+  const result = parseTemplateImport(
+    JSON.stringify({
+      ...packet,
+      ...unsafeExtras,
+      generatedByV0: true,
+      maturity: "released",
+      motion: { owner: "remote-script" },
+      integrationsRequired: ["https://invalid.example/upload"],
+      copy: { ...packet.copy, ...unsafeExtras, headline: literal },
+    }),
+  )
+  assert.deepEqual(Object.keys(result), ["templateId", "copy"])
+  assert.deepEqual(Object.keys(result.copy), ["brand", "headline", "description"])
+  assert.equal(result.copy.headline, literal)
+  assert.equal({}.polluted, undefined)
+  assert.equal(Object.getPrototypeOf(result.copy), Object.prototype)
+  assert.equal(
+    createTemplatePacket(getTemplate(result.templateId), result.copy).generatedByV0,
+    false,
+  )
+})
+
+test("blank imported strings use the disclosed sample defaults", () => {
+  const template = getTemplate("creator")
+  const packet = createTemplatePacket(template, {})
+  assert.deepEqual(
+    parseTemplateImport(
+      JSON.stringify({
+        ...packet,
+        copy: { brand: "  ", headline: "\n", description: "" },
+      }),
+    ).copy,
+    template.copy,
+  )
+})
+
+test("strict lookup does not silently turn invalid routes into a music page", () => {
+  for (const template of templates) assert.equal(findTemplate(template.id), template)
+  for (const id of ["missing", "__proto__", "Music", "../lab"])
+    assert.equal(findTemplate(id), undefined)
+})
+
+test("study and editor routes stay static, noindex, linked, strict and packaged", () => {
+  for (const path of [
+    "app/studio/templates/[templateId]/page.tsx",
+    "app/studio/templates/[templateId]/edit/page.tsx",
+  ]) {
+    const source = read(path)
+    assert.match(source, /dynamicParams = false/)
+    assert.match(source, /generateStaticParams/)
+    assert.match(source, /templates\.map/)
+    assert.match(source, /if \(!template\) notFound\(\)/)
+    assert.match(source, /index: false, follow: false/)
+    assert.doesNotMatch(source, /searchParams|fetch\(|getTemplate\(/)
+  }
+  assert.match(
+    read("app/studio/templates/[templateId]/edit/page.tsx"),
+    /key=\{template.id\} initialTemplate=\{template.id\}/,
+  )
+  assert.match(
+    read("components/template-atelier.tsx"),
+    /target="_blank"\s+rel="noopener noreferrer"/,
+  )
+  assert.doesNotMatch(read("app/sitemap.ts"), /studio\/templates|template-catalog/)
 })

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Link from "next/link"
 import {
   ArrowLeft,
@@ -19,9 +19,12 @@ import {
   createV0Brief,
   getTemplate,
   normalizeCopy,
+  parseTemplateImport,
+  templateImportByteLimit,
   templates,
   type TemplateCopy,
   type TemplateId,
+  type TemplateImport,
 } from "@/lib/template-catalog"
 import { TemplatePreview } from "./template-preview"
 import styles from "./template-atelier.module.css"
@@ -37,11 +40,16 @@ function downloadText(filename: string, text: string, type: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export function TemplateAtelier() {
-  const [active, setActive] = useState<TemplateId>("music")
+export function TemplateAtelier({ initialTemplate = "music" }: { initialTemplate?: TemplateId }) {
+  const [active, setActive] = useState<TemplateId>(initialTemplate)
   const [edits, setEdits] = useState<Partial<Record<TemplateId, TemplateCopy>>>({})
   const [narrow, setNarrow] = useState(false)
   const [status, setStatus] = useState("")
+  const [incoming, setIncoming] = useState<TemplateImport | null>(null)
+  const [importing, setImporting] = useState(false)
+  const [importStatus, setImportStatus] = useState("")
+  const nameInput = useRef<HTMLInputElement>(null)
+  const importInput = useRef<HTMLInputElement>(null)
   const template = getTemplate(active)
   const draft = edits[active] ?? template.copy
   const copy = normalizeCopy(template, draft)
@@ -161,6 +169,12 @@ export function TemplateAtelier() {
             This is a working composition, not a connected business. Preview interactions reset when
             you switch worlds. Narrow canvas tests layout, not a complete device emulation.
           </p>
+          <div className={styles.studyLink}>
+            <Link href={`/studio/templates/${active}`} target="_blank" rel="noopener noreferrer">
+              Open full-page study <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+            <span>Opens a new tab with default sample copy. Your edits stay here.</span>
+          </div>
         </section>
 
         <section className={styles.customize} aria-labelledby="customize-title">
@@ -171,7 +185,10 @@ export function TemplateAtelier() {
                 type="button"
                 className={styles.reset}
                 onClick={() => {
-                  setEdits((current) => ({ ...current, [active]: { ...template.copy } }))
+                  setEdits((current) => ({
+                    ...current,
+                    [active]: { ...template.copy },
+                  }))
                   setStatus("Copy reset for this direction.")
                 }}
               >
@@ -181,7 +198,7 @@ export function TemplateAtelier() {
             </div>
             <p>
               Your edits stay here while you explore. Download a brief or configuration to keep
-              them; refreshing resets this workspace.
+              them; refreshing resets this workspace. Reopen a configuration below to resume.
             </p>
             <label htmlFor="template-brand">
               Name{" "}
@@ -191,6 +208,7 @@ export function TemplateAtelier() {
             </label>
             <input
               id="template-brand"
+              ref={nameInput}
               value={draft.brand}
               maxLength={copyLimits.brand}
               onChange={(event) => update("brand", event.target.value)}
@@ -279,6 +297,133 @@ export function TemplateAtelier() {
               {status}
             </p>
           </div>
+        </section>
+
+        <section className={styles.importSection} aria-labelledby="import-title">
+          <div>
+            <p className={styles.kicker}>Keep a version. Come back to it.</p>
+            <h2 id="import-title">Resume a saved direction</h2>
+            <p>
+              Open an exported configuration to review its copy before replacing anything. Files
+              stay on your device; nothing is uploaded or saved automatically.
+            </p>
+            <label htmlFor="template-import">Choose an atelier configuration</label>
+            <input
+              id="template-import"
+              ref={importInput}
+              type="file"
+              accept=".json,application/json"
+              disabled={importing}
+              aria-describedby="import-help import-status"
+              onChange={async (event) => {
+                const file = event.target.files?.[0]
+                if (!file) return
+                event.target.value = ""
+                setIncoming(null)
+                setImporting(true)
+                setImportStatus("Reading the configuration on this device…")
+                try {
+                  if (file.size > templateImportByteLimit) {
+                    throw new Error("Choose a configuration no larger than 64 KiB.")
+                  }
+                  const candidate = parseTemplateImport(await file.text())
+                  setIncoming(candidate)
+                  setImportStatus(
+                    `Ready to review ${getTemplate(candidate.templateId).name}. No edits have changed.`,
+                  )
+                } catch (error) {
+                  setImportStatus(
+                    error instanceof Error
+                      ? error.message
+                      : "The file could not be read. Your edits are unchanged.",
+                  )
+                } finally {
+                  setImporting(false)
+                }
+              }}
+            />
+            <p id="import-help" className={styles.small}>
+              Version 1.0.0 JSON, up to 64 KiB. Only name, headline and introduction are imported.
+              Empty fields use the direction’s sample copy.
+            </p>
+            <p id="import-status" className={styles.status} role="status">
+              {importStatus}
+            </p>
+          </div>
+          {incoming ? (
+            <div className={styles.importReview}>
+              <h3>Review {getTemplate(incoming.templateId).name}</h3>
+              <dl>
+                <dt>Name</dt>
+                <dd>{incoming.copy.brand}</dd>
+                <dt>Headline</dt>
+                <dd>{incoming.copy.headline}</dd>
+                <dt>Introduction</dt>
+                <dd>{incoming.copy.description}</dd>
+              </dl>
+              <p className={styles.small}>
+                Applying replaces this direction’s current copy. Download that copy first if you
+                want to keep it. Other directions and their edits stay untouched.
+              </p>
+              <div className={styles.importActions}>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  onClick={() => {
+                    const previous = getTemplate(incoming.templateId)
+                    downloadText(
+                      `${previous.id}-before-import.json`,
+                      JSON.stringify(
+                        createTemplatePacket(previous, edits[previous.id] ?? previous.copy),
+                        null,
+                        2,
+                      ),
+                      "application/json",
+                    )
+                    setImportStatus(
+                      "Current copy download requested. Nothing has been replaced yet.",
+                    )
+                  }}
+                >
+                  Download current copy
+                </button>
+                <button
+                  type="button"
+                  className={styles.primary}
+                  onClick={() => {
+                    setEdits((current) => ({
+                      ...current,
+                      [incoming.templateId]: incoming.copy,
+                    }))
+                    setActive(incoming.templateId)
+                    setStatus("")
+                    setImportStatus(
+                      `${getTemplate(incoming.templateId).name} copy restored. Other directions are unchanged.`,
+                    )
+                    setIncoming(null)
+                    nameInput.current?.focus()
+                  }}
+                >
+                  Apply this copy <Check size={16} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className={styles.secondary}
+                  onClick={() => {
+                    setIncoming(null)
+                    setImportStatus("Import canceled. Your edits are unchanged.")
+                    importInput.current?.focus()
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <p className={styles.importEmpty}>
+              Your incoming copy will appear here before you apply it.
+            </p>
+          )}
         </section>
 
         <details className={styles.briefDisclosure}>

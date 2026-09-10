@@ -1,5 +1,9 @@
 export type TemplateId = "music" | "lab" | "tool" | "portfolio" | "creator" | "challenge"
-export type TemplateCopy = { brand: string; headline: string; description: string }
+export type TemplateCopy = {
+  brand: string
+  headline: string
+  description: string
+}
 export type TemplateDefinition = {
   id: TemplateId
   name: string
@@ -158,10 +162,60 @@ export const templates: readonly TemplateDefinition[] = [
   },
 ]
 
-export const copyLimits = { brand: 48, headline: 110, description: 280 } as const
+export const copyLimits = {
+  brand: 48,
+  headline: 110,
+  description: 280,
+} as const
+export const templateImportByteLimit = 64 * 1024
+
+export function findTemplate(id: string): TemplateDefinition | undefined {
+  return templates.find((template) => template.id === id)
+}
 
 export function getTemplate(id: string): TemplateDefinition {
-  return templates.find((template) => template.id === id) ?? templates[0]
+  return findTemplate(id) ?? templates[0]
+}
+
+export type TemplateImport = { templateId: TemplateId; copy: TemplateCopy }
+
+/** Only display copy crosses this boundary; packet metadata never configures runtime behavior. */
+export function parseTemplateImport(text: string): TemplateImport {
+  if (new TextEncoder().encode(text).byteLength > templateImportByteLimit) {
+    throw new Error("Choose a configuration no larger than 64 KiB.")
+  }
+  let packet: unknown
+  try {
+    packet = JSON.parse(text)
+  } catch {
+    throw new Error(
+      "This file is not valid JSON. Export a configuration from the atelier and try again.",
+    )
+  }
+  const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === "object" && value !== null && !Array.isArray(value)
+  if (!isRecord(packet) || packet.schemaVersion !== "1.0.0") {
+    throw new Error("This configuration version is not supported. Expected version 1.0.0.")
+  }
+  const template =
+    typeof packet.templateId === "string" ? findTemplate(packet.templateId) : undefined
+  if (!template)
+    throw new Error("This configuration does not name one of the six atelier directions.")
+  if (!isRecord(packet.copy)) throw new Error("This configuration is missing its copy fields.")
+  const copy = packet.copy
+  for (const key of ["brand", "headline", "description"] as const) {
+    if (typeof copy[key] !== "string" || copy[key].length > copyLimits[key]) {
+      throw new Error(`The ${key} must be text of at most ${copyLimits[key]} characters.`)
+    }
+  }
+  return {
+    templateId: template.id,
+    copy: normalizeCopy(template, {
+      brand: copy.brand as string,
+      headline: copy.headline as string,
+      description: copy.description as string,
+    }),
+  }
 }
 
 export function normalizeCopy(
@@ -175,7 +229,11 @@ export function normalizeCopy(
       template.copy[key]
     )
   }
-  return { brand: clean("brand"), headline: clean("headline"), description: clean("description") }
+  return {
+    brand: clean("brand"),
+    headline: clean("headline"),
+    description: clean("description"),
+  }
 }
 
 export function createTemplatePacket(template: TemplateDefinition, copy: Partial<TemplateCopy>) {

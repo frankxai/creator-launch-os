@@ -198,7 +198,7 @@
   justify-content: center;
   gap: 6px;
   min-width: 62px;
-  min-height: 38px;
+  min-height: 44px;
   padding: 5px 10px;
   border-radius: 4px;
   font-size: 11px;
@@ -219,6 +219,123 @@
 }
 .previewCanvas.narrow {
   max-width: 390px;
+}
+.studyPage {
+  padding-top: 0;
+}
+.studyToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 18px clamp(20px, 4vw, 64px);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.studyToolbar h1 {
+  font-size: 15px;
+  font-weight: 600;
+}
+.studyToolbar p {
+  color: #606258;
+}
+.studyToolbar a,
+.studyLink a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.studyLink {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.studyLink span {
+  color: #606258;
+  font-size: 11px;
+}
+.importSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 32px;
+  padding: clamp(20px, 3vw, 36px);
+  margin-block: 32px;
+  border: 1px solid #cecec1;
+  background: #f7f6ef;
+  overflow-wrap: anywhere;
+}
+.importSection h2 {
+  font-family: var(--font-newsreader), serif;
+  font-size: 32px;
+  margin-block: 10px 16px;
+}
+.importSection p {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #606258;
+}
+.importSection label {
+  display: block;
+  margin-top: 24px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.importSection input {
+  width: 100%;
+  min-height: 44px;
+  margin-block: 12px;
+  font-size: 12px;
+}
+.importSection input::file-selector-button {
+  background: #e6e8da;
+  color: #25261f;
+  border: 1px solid #cecec1;
+  border-radius: 4px;
+  min-height: 44px;
+  margin-right: 12px;
+  padding-inline: 14px;
+  cursor: pointer;
+}
+.importReview {
+  min-width: 0;
+}
+.importReview h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.importReview dl {
+  margin-block: 20px;
+}
+.importReview dt {
+  margin-top: 14px;
+  color: #606258;
+  font-size: 11px;
+}
+.importReview dd {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.importActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.importSection .importEmpty {
+  align-self: center;
+  padding-block: 40px;
+  font-family: var(--font-newsreader), serif;
+  font-size: 28px;
+  line-height: 1.3;
+  max-width: 300px;
 }
 .specimenLabel {
   display: flex;

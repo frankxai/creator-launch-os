@@ -24,6 +24,8 @@
     "app/sitemap.ts",
     "app/studio/page.tsx",
     "app/studio/templates/page.tsx",
+    "app/studio/templates/[templateId]/page.tsx",
+    "app/studio/templates/[templateId]/edit/page.tsx",
     "components.json",
     "components/home-motion.tsx",
     "components/launch-console.tsx",

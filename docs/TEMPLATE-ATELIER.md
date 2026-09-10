@@ -59,6 +59,14 @@ Production build passed after machine admission improved to BOUNDED. The workben
 
 Browser admission permits one 30-minute loop. Port 4321 is another app, so it is left untouched. The existing Vercel project has `all_except_custom_domains` authentication protection and no current native Git link; use one CLI preview deployment, never a production promotion or duplicate Git build. Visual evidence must describe the exact resulting candidate, not the unchanged production alias.
 
+## Resume and inspect
+
+The same catalog powers dedicated noindex full-page study routes at `/studio/templates/{id}` and audience-specific editor routes at `/studio/templates/{id}/edit`. These remain examples within Creator Launch OS, not new launched products. Full-page links show default sample copy; personalized copy travels only in a downloaded configuration, never in a public URL. Retain the site's navigation and honest study label, then give the composition the full available page width. Reuse the existing six material systems and GSAP entrance without adding effects.
+
+Configuration import completes the edit → export → resume flow. Read a local JSON file of at most 64 KiB, validate its version, known direction and bounded string fields, and show the incoming copy before applying it. Application requires an explicit replace action; cancellation and invalid files leave every edit untouched. Ignore imported metadata, scripts, integrations and purported release status. Never upload the file or persist it silently. Other directions retain their edits. Test all six round trips, invalid shapes/versions/directions, Unicode size limits and malicious extra keys. Full-page routes must return not-found for unknown directions; all twelve study/editor pages remain outside the sitemap.
+
+Refinement targets: 44px utility controls at every viewport, visible local-file errors and a clear download-before-replace warning. Browser and independent-review gates remain required; new routes alone do not establish premium visual quality.
+
 ## Use the six briefs without opening the workbench
 
 Run `pnpm run template:briefs`. It creates six Markdown briefs, six JSON configurations, an index and SHA-256 receipts in a new directory under `dist/template-briefs/`. Each run preserves previous exports. It uses the exact catalog and prompt builder behind the UI, not a second manually maintained prompt collection. No API call, generation, deployment or credit spend occurs.
@@ -68,3 +76,9 @@ Choose one packet, personalize its truthful copy and use it in the selected v0 a
 Latest full verification after the offline exporter: lint passed and all 41 tests passed. The deployed UI's `app`, `components` and `lib` files are unchanged from preview revision `aa73e34c300fe9de896a5c8e7d537bd34d6a3978`.
 
 Protected preview: `https://creator-launch-gb4llgxkk-starlight-intelligence.vercel.app/studio/templates`, deployment `dpl_BBdXRp52wMgPnkZJr1YakKqLTGPB`, source `aa73e34c300fe9de896a5c8e7d537bd34d6a3978`. Vercel confirms READY and the exact source SHA. Browser inspection is still blocked by the separate in-app Vercel login; a 302 redirect from the authenticated fetch is not application proof. No production alias changed. Later offline-export code changes do not change the deployed UI files.
+
+## Resume-flow verification checkpoint
+
+The subsequent configuration-import and full-page-route increment is local only; it is **not** on the preview above. All 48 tests passed. After the focus-restoration refinement, the 31 affected template/export/contract tests, type checking and lint passed again. The final production build generated all 26 pages, including six study pages and six editor pages. All twelve generated HTML files contain the intended `data-template`, one h1 and `noindex, nofollow`. These are server-prerender checks, not a browser or accessibility pass. Unknown directions use strict lookup plus `notFound()` with `dynamicParams = false`; an actual HTTP 404 check remains pending browser/server admission.
+
+The configuration reader validates UTF-8 bytes, version, direction and every copy field. Tests cover round trips, exact limits, invalid input and foreign metadata/prototype keys. Apply moves keyboard focus to the restored name input; cancel returns focus to the import file input. Browser verification still needs to exercise file selection, cancel/apply/download and cross-direction preservation. The anti-slop heuristic passed 100/100, without establishing a visual score. Independent buyer review remains outstanding. No new preview, production deployment, v0 generation or public release was made for this increment.
