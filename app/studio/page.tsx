@@ -41,6 +41,14 @@ export default function StudioPage() {
           </Link>
         </div>
 
+        <Link href="/studio/templates" className="mt-8 flex min-h-24 flex-wrap items-center justify-between gap-4 rounded-2xl border border-acid/30 bg-acid/5 p-6">
+          <div>
+            <p className="text-lg font-semibold text-acid">Explore the template atelier</p>
+            <p className="mt-2 text-sm text-white/65">Six composition studies. Working previews. Your next v0 brief.</p>
+          </div>
+          <ArrowRight className="size-5 text-acid" aria-hidden="true" />
+        </Link>
+
         <div className="grid gap-5 py-8 sm:grid-cols-3">
           {[
             { value: "3", label: "Sample releases" },
