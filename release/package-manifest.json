@@ -59,10 +59,12 @@
     "product.manifest.yaml",
     "release/package-manifest.json",
     "scripts/package-release.mjs",
+    "scripts/export-template-briefs.mjs",
     "template.manifest.json",
     "tests/release-package.test.mjs",
     "tests/template-contract.test.mjs",
     "tests/template-atelier.test.mjs",
+    "tests/template-brief-export.test.mjs",
     "tsconfig.json"
   ]
 }

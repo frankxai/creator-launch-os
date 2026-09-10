@@ -58,3 +58,13 @@ Next product lanes, preserved rather than silently dropped: coach knowledge grap
 Production build passed after machine admission improved to BOUNDED. The workbench is statically prerendered. Lint and all 39 unit/contract/archive tests passed; the 22 template/contract checks were rerun after formatting. The source was formatted with pinned Prettier 3.6.2 without adding a project dependency.
 
 Browser admission permits one 30-minute loop. Port 4321 is another app, so it is left untouched. The existing Vercel project has `all_except_custom_domains` authentication protection and no current native Git link; use one CLI preview deployment, never a production promotion or duplicate Git build. Visual evidence must describe the exact resulting candidate, not the unchanged production alias.
+
+## Use the six briefs without opening the workbench
+
+Run `pnpm run template:briefs`. It creates six Markdown briefs, six JSON configurations, an index and SHA-256 receipts in a new directory under `dist/template-briefs/`. Each run preserves previous exports. It uses the exact catalog and prompt builder behind the UI, not a second manually maintained prompt collection. No API call, generation, deployment or credit spend occurs.
+
+Choose one packet, personalize its truthful copy and use it in the selected v0 account only after verifying billing and a spend cap. The export is a composition brief, not a claim of generated code or production readiness.
+
+Latest full verification after the offline exporter: lint passed and all 41 tests passed. The deployed UI's `app`, `components` and `lib` files are unchanged from preview revision `aa73e34c300fe9de896a5c8e7d537bd34d6a3978`.
+
+Protected preview: `https://creator-launch-gb4llgxkk-starlight-intelligence.vercel.app/studio/templates`, deployment `dpl_BBdXRp52wMgPnkZJr1YakKqLTGPB`, source `aa73e34c300fe9de896a5c8e7d537bd34d6a3978`. Vercel confirms READY and the exact source SHA. Browser inspection is still blocked by the separate in-app Vercel login; a 302 redirect from the authenticated fetch is not application proof. No production alias changed. Later offline-export code changes do not change the deployed UI files.

@@ -23,26 +23,29 @@
   },
   "artifacts": [
     { "path_or_url": "components/template-atelier.tsx", "kind": "ui", "inspected": false, "notes": "Source checked; no desktop/mobile browser export captured yet." },
-    { "path_or_url": "components/template-preview.tsx", "kind": "ui", "inspected": false, "notes": "Six interactive studies; actual playback and keyboard flows still need browser verification." }
+    { "path_or_url": "components/template-preview.tsx", "kind": "ui", "inspected": false, "notes": "Six interactive studies; actual playback and keyboard flows still need browser verification." },
+    { "path_or_url": "https://creator-launch-gb4llgxkk-starlight-intelligence.vercel.app/studio/templates", "kind": "web", "inspected": false, "notes": "Protected preview dpl_BBdXRp52wMgPnkZJr1YakKqLTGPB is READY. Both sourceCommit and githubCommitSha equal aa73e34c300fe9de896a5c8e7d537bd34d6a3978. In-app browser reaches Vercel/GitHub sign-in, not the application; authenticated fetch returned 302, not verified HTML." }
   ],
   "checks": [
     { "name": "asset-tier", "status": "pass", "evidence": "Tier C: exact interactive UI is the correct medium; no third-party or generated commercial assets." },
     { "name": "type-check", "status": "pass", "evidence": "pnpm run type-check: Next route type generation and TypeScript completed on 2026-09-10." },
     { "name": "lint", "status": "pass", "evidence": "pnpm run lint passed after fixing one unescaped JSX apostrophe." },
-    { "name": "unit-and-contract-tests", "status": "pass", "evidence": "pnpm run test: 39/39 passed, including eight new template tests and existing deterministic archive tests." },
+    { "name": "unit-and-contract-tests", "status": "pass", "evidence": "Latest full pnpm run test: 41/41 passed, including eight template tests, two offline-export tests and existing deterministic archive tests." },
     { "name": "anti-slop-heuristic", "status": "pass", "evidence": "Canonical scanner: 100/100 for the repo. This keyword heuristic is not a visual quality score." },
     { "name": "secret-intake", "status": "pass", "evidence": "Repo scan found ten generic-key matches, all inside ignored .next cache/server manifests. No findings outside generated .next. Values were redacted; no global hook or scanner rule was disabled." },
     { "name": "production-build", "status": "pass", "evidence": "Fresh pp admission BOUNDED, 12334 MB available; pnpm run build passed compilation, TypeScript and all 14 generated pages. /studio/templates is static." },
-    { "name": "export-inspection", "status": "blocked", "evidence": "Browser admission now BOUNDED, one 30-minute loop. Existing port 4321 belongs to Starlight Command Center; use the existing protected Vercel project without disturbing that server." },
+    { "name": "export-inspection", "status": "blocked", "evidence": "Browser admission BOUNDED. Chrome disconnected during the loop; the available in-app browser needs its own Vercel login. Temporary access was queued in the app without committing a signed URL. No new local server was started." },
+    { "name": "offline-brief-export", "status": "pass", "evidence": "Six Markdown briefs, six JSON configurations, an index and SHA-256 receipts exported by pnpm run template:briefs. Two added tests verify contents, repeatability, preservation of prior edits and packaging inclusion; 24 template/export/contract tests pass." },
+    { "name": "immutable-source-package", "status": "pass", "evidence": "63 files packaged from aa73e34c300fe9de896a5c8e7d537bd34d6a3978 with file hashes and archive checksum. Status PACKAGED_NOT_RELEASED; packaging does not assert application or launch verification." },
     { "name": "visual-qa", "status": "blocked", "evidence": "Desktop/mobile/keyboard/reduced-motion browser verification remains pending." },
     { "name": "independent-buyer-critic", "status": "blocked", "evidence": "Machine preflight pauses new swarms; no second-provider critique was claimed or fabricated." }
   ],
   "refinement": {
     "strongest": "Distinct information structures plus real, honestly labeled local actions.",
     "weakest": "No visual inspection yet, so typography, narrow-screen composition and playback behavior cannot be approved.",
-    "changed": ["Added explicit copy limits and blank-field defaults", "Excluded local media and progress from exported configuration", "Used TypeScript transpilation in unit tests to avoid Node-version-specific TS loaders", "Included all new code in the release packaging allowlist", "Fixed one JSX lint error"]
+    "changed": ["Added explicit copy limits and blank-field defaults", "Excluded local media and progress from exported configuration", "Used TypeScript transpilation in unit tests to avoid Node-version-specific TS loaders", "Included all new code in the release packaging allowlist", "Fixed one JSX lint error", "Formatted source with pinned Prettier without adding a dependency", "Added an offline CLI for the same six v0 prompt packets used by the UI"]
   },
   "score": { "total": 0, "max": 30, "notes": "Not scored: no inspected browser export. A heuristic scan and code tests cannot establish a premium visual gate PASS." },
   "decision": "blocked",
-  "known_risks": ["No new deployment or production promotion", "No billing balance or paid v0 generation verified", "Six study names are illustrative, not approved product identities", "Release version and marketplace claims intentionally unchanged", "Auth, payments, demand capture, member access and model calls remain explicit future integrations"]
+  "known_risks": ["One protected preview deployed; no production promotion or public launch", "Saved v0 OAuth still needs refreshed tools and a verified billing balance before generation", "Six study names are illustrative, not approved product identities", "Release version and marketplace claims intentionally unchanged", "Auth, payments, demand capture, member access and model calls remain explicit future integrations", "Browser visual/motion/accessibility inspection and independent buyer critique are incomplete"]
 }
