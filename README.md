@@ -43,6 +43,12 @@ The repository includes `components.json`, explicit design tokens, real sample d
 
 Read [`docs/PREMIUM-HOME-PAGE-SPEC.md`](docs/PREMIUM-HOME-PAGE-SPEC.md) before changing the composition and [`docs/GSAP-SCENE-BRIEF.md`](docs/GSAP-SCENE-BRIEF.md) before changing motion. Both mobile and `prefers-reduced-motion` routes are product requirements.
 
+## Export a standalone composition
+
+Run `pnpm template:projects` to create six independent Next.js source projects from the atelier. Each includes the real local interactions, editable content, styles, pinned dependency lockfile, setup guide and a checksum receipt. Use `pnpm template:projects --input saved-template.json` to carry saved atelier copy into one project.
+
+Exports go into a fresh folder under `dist/template-projects`; existing exports are preserved. Exporting does not install, build, deploy or submit to a marketplace. See [project export](docs/TEMPLATE-PROJECT-EXPORT.md) for verification and integration boundaries, and [product families](docs/TEMPLATE-PRODUCT-FAMILIES.md) for the commercial research backlog.
+
 ## Routes
 
 | Route | Purpose |
