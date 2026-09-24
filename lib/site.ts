@@ -1,4 +1,4 @@
-const sourceUrl = "https://github.com/frankxai/creator-launch-os"
+import { starterSourceUrl as sourceUrl } from "./install"
 const fallbackSiteUrl = "https://creator-launch-os-starlight-intelligence.vercel.app"
 
 function resolveSiteUrl() {
@@ -35,6 +35,6 @@ export const siteConfig = {
   navigation: [
     { label: "Releases", href: "/products" },
     { label: "Studio", href: "/studio" },
-    { label: "Source", href: sourceUrl },
+    { label: "Get started", href: "/start" },
   ],
 } as const

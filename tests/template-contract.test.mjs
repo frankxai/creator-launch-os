@@ -1,8 +1,26 @@
 import assert from "node:assert/strict"
 import { readFileSync, existsSync } from "node:fs"
+import { createRequire } from "node:module"
 import { test } from "node:test"
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8")
+
+test("Next.js image processing uses the patched sharp/libheif release", async () => {
+  const require = createRequire(import.meta.url)
+  const requireFromNext = createRequire(require.resolve("next/package.json"))
+  const sharp = requireFromNext("sharp")
+  assert.equal(sharp.versions.sharp, "0.35.4")
+  const heif = sharp.versions.heif?.split(".").map(Number)
+  assert.ok(heif, "the prebuilt processor must expose its libheif version")
+  assert.ok(heif[0] > 1 || (heif[0] === 1 && (heif[1] > 23 || (heif[1] === 23 && heif[2] >= 2))), "libheif must be at least 1.23.2")
+  const input = await sharp({ create: { width: 2, height: 2, channels: 3, background: "#f05a3c" } }).png().toBuffer()
+  const { info } = await sharp(input).resize(1, 1).webp().toBuffer({ resolveWithObject: true })
+  assert.equal(info.width, 1)
+  assert.equal(info.height, 1)
+  assert.equal(info.format, "webp")
+  assert.match(read("pnpm-workspace.yaml"), /sharp: 0\.35\.4/)
+  assert.doesNotMatch(read("pnpm-lock.yaml"), /sharp(?:-[a-z0-9-]+)?@0\.35\.[0-3](?:\b|\()/)
+})
 
 test("manifest exposes a public, zero-secret deploy path", () => {
   const manifest = JSON.parse(read("template.manifest.json"))

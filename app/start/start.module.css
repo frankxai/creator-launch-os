@@ -1,0 +1,75 @@
+.page { background: var(--paper); }
+.page h1, .page h2, .page h3, .page p { margin: 0; }
+.page a { text-decoration: none; }
+.intro { display: grid; gap: 3rem; padding-block: 4rem; align-items: center; }
+.kicker { color: var(--muted); font-size: .8125rem; font-weight: 500; }
+.intro h1 { max-width: 9ch; margin-block: 1.5rem; font-size: 3.75rem; line-height: .98; letter-spacing: -.045em; font-weight: 600; }
+.intro h1 span, .sectionHeading h2 span, .nextSteps h2 span { font-family: var(--font-newsreader), serif; font-style: italic; font-weight: 400; }
+.lede { max-width: 34rem; font-size: 1.125rem; line-height: 1.7; color: var(--ink-soft); }
+.textLink { display: inline-flex; min-height: 44px; align-items: center; gap: .625rem; margin-top: 1.5rem; font-size: .875rem; font-weight: 600; color: var(--ink); }
+.deployPanel { position: relative; isolation: isolate; background: var(--ink); color: var(--paper); padding: 1.75rem; border-radius: 1.25rem; }
+.panelLabel { color: var(--acid); font-size: .8125rem; }
+.deployPanel h2 { margin-block: 1.25rem .875rem; font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; }
+.deployPanel > p { line-height: 1.65; }
+.deployPanel > p:not(.panelLabel) { color: var(--paper); }
+.deployButton { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 56px; margin-block: 1.75rem 1rem; padding: .875rem 1.25rem; background: var(--acid); color: var(--ink); border-radius: .625rem; font-size: .9375rem; font-weight: 600; transition: opacity 140ms ease-out, transform 140ms ease-out; }
+.deployButton:focus-visible { outline: 3px solid var(--paper); outline-offset: 5px; }
+.finePrint { font-size: .8125rem; }
+.panelLinks { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; border-top: 1px solid #f2efe633; margin-top: 1.5rem; padding-top: 1rem; }
+.panelLinks a { display: inline-flex; align-items: center; min-height: 44px; gap: .35rem; color: var(--paper); font-size: .8125rem; text-decoration: underline; text-underline-offset: 4px; }
+.panelLinks a:focus-visible { outline-color: var(--acid); }
+.directory { scroll-margin-top: 2rem; border-block: 1px solid var(--line); background: var(--paper-bright); padding-block: 3.5rem; }
+.sectionHeading { display: grid; gap: 1.5rem; }
+.sectionHeading h2 { max-width: 26ch; font-size: 2rem; line-height: 1.15; margin-top: 1rem; letter-spacing: -.025em; }
+.sectionHeading > p { max-width: 27rem; font-size: .9375rem; line-height: 1.7; color: var(--muted); }
+.directionGrid { display: grid; margin-top: 2rem; }
+.direction { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) 20px; gap: 1rem; align-items: center; color: var(--ink); border-top: 1px solid var(--line); padding: 1.75rem .5rem; }
+.directionNumber { align-self: start; font-family: var(--font-geist-mono), monospace; color: var(--muted); font-size: .75rem; padding-top: .125rem; }
+.directionAudience { display: block; font-size: .75rem; color: var(--muted); margin-bottom: .5rem; }
+.direction h3 { font-size: 1.625rem; font-weight: 500; letter-spacing: -.025em; }
+.direction p { font-size: .875rem; color: var(--muted); line-height: 1.6; margin-top: .5rem; }
+.direction > svg { transition: transform 140ms ease-out; }
+.directoryNote { border-top: 1px solid var(--line); padding-top: 1.5rem; font-size: .8125rem; color: var(--muted); line-height: 1.7; }
+.local { display: grid; gap: 2rem; padding-block: 4rem; scroll-margin-top: 2rem; }
+.local h2 { font-size: 2.5rem; letter-spacing: -.035em; line-height: 1.1; margin-top: 1rem; }
+.local > div > p:not(.kicker) { color: var(--muted); max-width: 30rem; font-size: .9375rem; line-height: 1.75; margin-top: 1.25rem; }
+.local code, .checklist code { overflow-wrap: anywhere; font-family: var(--font-geist-mono), monospace; font-size: .8125rem; }
+.commandPanel { min-width: 0; border: 1px solid var(--line); border-radius: .75rem; background: var(--paper-bright); align-self: start; overflow: hidden; }
+.commandBar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: .75rem 1rem; border-bottom: 1px solid var(--line); }
+.commandBar label { font-size: .75rem; color: var(--muted); }
+.copyButton { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; gap: .5rem; background: var(--ink); color: var(--paper); border: 0; border-radius: .375rem; padding: .625rem .875rem; font-family: inherit; font-size: .8125rem; font-weight: 500; cursor: pointer; }
+.copyButton[aria-disabled="true"] { cursor: progress; }
+.commands { display: block; width: 100%; min-height: 10rem; padding: 1.25rem; resize: vertical; border: 0; border-radius: 0; background: transparent; color: var(--ink); font-family: var(--font-geist-mono), monospace; font-size: 1rem; line-height: 1.9; overflow-wrap: anywhere; }
+.commands:focus-visible { outline: 2px solid var(--blue); outline-offset: -3px; }
+.copyStatus { min-height: 4rem; padding: .75rem 1.25rem; color: var(--muted); font-size: .8125rem; line-height: 1.65; border-top: 1px solid var(--line); }
+.nextSteps { border-top: 1px solid var(--line); background: var(--paper-bright); padding-block: 3.5rem; }
+.nextGrid { display: grid; gap: 2rem; }
+.nextSteps h2 { font-size: 2.5rem; line-height: 1.1; letter-spacing: -.035em; margin-top: 1.25rem; }
+.nextSteps h2 + p { max-width: 30rem; margin-top: 1.5rem; font-size: .9375rem; line-height: 1.75; color: var(--muted); }
+.checklist { margin: 0; padding: 0; list-style: none; }
+.checklist li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 1rem; padding-block: 1.5rem; border-bottom: 1px solid var(--line); }
+.checklist li:first-child { border-top: 1px solid var(--line); }
+.checklist svg { margin-top: .25rem; }
+.checklist h3 { font-size: 1rem; font-weight: 600; }
+.checklist p { color: var(--muted); line-height: 1.7; font-size: .875rem; margin-top: .5rem; }
+@media (min-width: 640px) {
+  .intro h1 { font-size: 5.5rem; }
+  .deployPanel { padding: 2.5rem; }
+  .sectionHeading h2 { font-size: 2.5rem; }
+  .directionGrid { grid-template-columns: 1fr 1fr; column-gap: 2.5rem; }
+  .commands { font-size: .8125rem; }
+}
+@media (min-width: 960px) {
+  .intro { grid-template-columns: 1.1fr 1fr; gap: 5rem; padding-block: 5rem; }
+  .sectionHeading { grid-template-columns: 1.3fr 1fr; gap: 5rem; align-items: end; }
+  .local, .nextGrid { grid-template-columns: 1fr 1.2fr; gap: 5rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .deployButton:hover { opacity: .9; transform: translateY(-1px); }
+  .direction:hover > svg { transform: translateX(3px); }
+  .textLink:hover { text-decoration: underline; text-underline-offset: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .deployButton, .direction > svg { transition: none; }
+  .deployButton:hover, .direction:hover > svg { transform: none; }
+}
