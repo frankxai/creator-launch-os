@@ -16,10 +16,16 @@ The repository also includes a sample `/studio` route so the public storefront a
 
 No environment variables are required. Vercel supplies the project production domain automatically. Without checkout URLs, the template uses an explicit demo checkout and never pretends to take payment.
 
+The button opens Vercel's setup flow: sign in, choose an account and an unused repository name, then confirm deployment. Change the suggested name if you already have a `creator-launch-os` repository. Hosting terms and costs are separate from the free MIT source. It clones the public default branch; it does not carry customized atelier copy. The `/start` route presents this same handoff, six interactive study links, and a local-install alternative.
+
 ## Run locally
 
+Prerequisites: Git, Node.js 22 or newer, and pnpm 10.28.0. Start in a folder without an existing `creator-launch-os` directory, or choose a different clone location.
+
 ```bash
-pnpm install
+git clone https://github.com/frankxai/creator-launch-os.git
+cd creator-launch-os
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
@@ -54,6 +60,7 @@ Exports go into a fresh folder under `dist/template-projects`; existing exports 
 | Route | Purpose |
 | --- | --- |
 | `/` | Editorial storefront and template explanation |
+| `/start` | Deployment handoff, template directory, and local installation |
 | `/products` | Searchable product catalog |
 | `/products/[slug]` | Product decision page |
 | `/checkout/[slug]` | Safe no-payment fallback when checkout is not configured |

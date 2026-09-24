@@ -75,6 +75,14 @@
     "lib/local-audio.ts",
     "tests/local-audio.test.mjs",
     "playwright.config.mjs",
-    "tests/browser/atelier.spec.mjs"
+    "tests/browser/atelier.spec.mjs",
+    "app/start/page.tsx",
+    "app/start/start.module.css",
+    "components/copy-install-command.tsx",
+    "lib/install.ts",
+    "tests/install.test.mjs",
+    "tests/browser/install.spec.mjs",
+    "docs/INSTALL-EXPERIENCE.md",
+    "docs/install-design-loop-evidence.json"
   ]
 }

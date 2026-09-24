@@ -30,9 +30,14 @@ export function SiteFooter() {
           <p className="mt-3 text-xs leading-5 text-muted">
             Free and open source. Replace the sample products, connect your checkout, and publish.
           </p>
-          <Link href="/studio" className="mt-3 inline-block text-xs font-semibold text-ink/70 hover:text-ink">
-            Open the sample studio →
-          </Link>
+          <div className="mt-3 flex flex-wrap gap-x-5 sm:justify-end">
+            <Link href="/start" className="inline-flex min-h-11 items-center text-sm font-semibold text-ink/70 hover:text-ink">
+              Get the free starter →
+            </Link>
+            <Link href="/studio" className="inline-flex min-h-11 items-center text-sm font-semibold text-ink/70 hover:text-ink">
+              Open the sample studio →
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
