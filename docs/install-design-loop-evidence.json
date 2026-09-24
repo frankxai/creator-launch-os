@@ -25,8 +25,9 @@
     {"name": "asset-tier", "status": "pass", "evidence": "Tier C exact product UI; no new media"},
     {"name": "export-inspection", "status": "blocked", "evidence": "No screenshots of /start captured yet. Browser execution first found missing declared Playwright dependency; restored four packages with unchanged frozen lockfile, scripts disabled. Subsequent combined rebuild/server/test invocation was rejected by execution policy and was not bypassed."},
     {"name": "visual-qa", "status": "blocked", "evidence": "Three browser tests added for responsive widths, reduced motion, keyboard, clipboard concurrency/failure, and no-JS. Not executed successfully yet."},
-    {"name": "contract-tests", "status": "pass", "evidence": "59 Node tests passed with concurrency=1, including six standalone project exports and four install contracts."},
-    {"name": "lint-types-build", "status": "pass", "evidence": "Targeted ESLint, next typegen/tsc, and production build passed. Build generated /start and all 27 static pages. Only later application change is the repository-name collision guidance; final-revision browser/build proof remains pending."},
+    {"name": "contract-tests", "status": "pass", "evidence": "60 Node tests passed with concurrency=1 after security integration, including six standalone project exports, four install contracts and the native Next.js image processor."},
+    {"name": "final-build", "status": "blocked", "evidence": "Earlier candidate ESLint, next typegen/tsc and production build passed with /start and all 27 static pages. Repository-name collision copy and sharp dependency patch came later; final-revision browser/build proof remains pending."},
+    {"name": "dependency-security", "status": "pass", "evidence": "Incorporates security PR #9: sharp 0.35.4, actual libheif >=1.23.2 verified, trusted PNG decode/resize/WebP encode passes, production audit reports no known vulnerabilities. Default branch alert remains open until merge."},
     {"name": "anti-slop-scanner", "status": "pass", "evidence": "Heuristic repository scanner reported 100/100. This is a static ingredient check, not a substitute for visual inspection."},
     {"name": "independent-review", "status": "blocked", "evidence": "No independent provider review of this candidate. Claude CLI auth status reports loggedIn=false; no login/config changes attempted."}
   ],

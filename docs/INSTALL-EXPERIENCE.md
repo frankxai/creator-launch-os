@@ -66,7 +66,8 @@ Independent review, cloud checks and visual QA must be understood before merge.
 
 ## Verification receipt
 
-- 59 contract tests passed, including six-project export/import closure checks.
+- 60 contract tests passed after integrating the security patch, including
+  six-project export/import closure checks and the actual Next.js native codec.
 - Targeted ESLint, Next route type generation, TypeScript and production build
   passed. The built app includes `/start`; final copy subsequently gained the
   repository-name collision instruction from a separate read-only live check.
@@ -83,6 +84,17 @@ Independent review, cloud checks and visual QA must be understood before merge.
 - PR #7 remains a separate reconciliation lane: its public projection omits
   visibility filtering and the historical branch conflicts with current main.
   Do not merge that old tree or replace the immutable packaging allowlist.
+- Security PR #9 pins sharp 0.35.4 and its patched native prebuilt dependencies
+  for GHSA-rgj7-g3m4-5g8c. It is based independently on main and should be reviewed
+  first. The installation candidate also incorporates the patch so future source
+  exports carry the fixed workspace override and lockfile. Native codec tests
+  and a production dependency audit pass locally; the default-branch alert is
+  still open until the patch is integrated. The earlier UI build does not prove
+  this final dependency revision. No alert was dismissed.
+  PR #9's full Linux build/browser/packaging workflow passed in
+  [run 35946751952](https://github.com/frankxai/creator-launch-os/actions/runs/35946751952).
+  That run tests the security branch without the new installation UI; it is not
+  evidence for `/start`. Independent review remains outstanding.
 
 Emil guidance was selected, read and applied to stable labels, interruptible
 pointer-only emphasis, focus styles, 44px controls and reduced-motion CSS. Source
