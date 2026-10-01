@@ -15,6 +15,8 @@ test("exported buyer content renders as text, fits each viewport and supports ke
         await expect(page.getByRole("link", { name: "About this example" })).toHaveCount(0)
         await expect(page.locator("#source-notes")).toHaveCount(0)
         await expect(page.getByRole("heading", { level: 1 })).toHaveText("H".repeat(110))
+        await expect(page.getByRole("heading", { level: 2 })).toHaveCount(3)
+        await expect(page.getByRole("heading", { level: 3 })).toHaveCount(0)
       } else {
         await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
         await expect(page.getByRole("link", { name: "About this example" })).toBeVisible()

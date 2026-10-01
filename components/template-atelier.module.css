@@ -826,7 +826,7 @@
   justify-content: space-between;
   gap: 24px;
 }
-.portfolioContact h3 {
+.portfolioContact :is(h2, h3) {
   font-family: var(--font-newsreader), serif;
   font-size: 31px;
   margin-bottom: 12px;
@@ -878,7 +878,7 @@
   overflow-wrap: anywhere;
   padding-block: 10px;
 }
-.caseCopy h3 {
+.caseCopy :is(h2, h3) {
   font-family: var(--font-newsreader), serif;
   font-size: 31px;
   line-height: 1.14;

@@ -296,6 +296,7 @@ function ToolPreview({ copy }: { copy: TemplateCopy }) {
 }
 
 function PortfolioPreview({ copy, content, standalone }: { copy: TemplateCopy; content: PortfolioContent; standalone: boolean }) {
+  const SectionTitle = standalone ? "h2" : "h3"
   return (
     <>
       <PreviewNav brand={copy.brand}>{content.navigation}</PreviewNav>
@@ -316,7 +317,7 @@ function PortfolioPreview({ copy, content, standalone }: { copy: TemplateCopy; c
         </div>
         <div className={styles.caseCopy}>
           <p className={styles.kicker}>Case study / {study.category}</p>
-          <h3 id={`case-title-${index}`}>{study.title}</h3>
+          <SectionTitle id={`case-title-${index}`}>{study.title}</SectionTitle>
           <p>{study.summary}</p>
           <details>
             <summary>
@@ -342,7 +343,7 @@ function PortfolioPreview({ copy, content, standalone }: { copy: TemplateCopy; c
       ))}
       <section className={styles.portfolioContact} aria-labelledby="portfolio-contact-title">
         <div>
-          <h3 id="portfolio-contact-title">{content.contact.title}</h3>
+          <SectionTitle id="portfolio-contact-title">{content.contact.title}</SectionTitle>
           <p>{content.contact.description}</p>
         </div>
         {content.contact.href ? (
