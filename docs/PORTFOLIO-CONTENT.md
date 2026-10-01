@@ -40,3 +40,9 @@ Every case requires `illustrative: true` or `false`. Keep `true` for sample work
 Unknown properties are discarded. Content stays JSON and React text; it cannot add executable scripts, raw HTML, dependencies, secrets or verification status. Imported data is not proof of a working external contact endpoint. Test the destination on the real preview.
 
 Before publication, inspect every case on mobile and desktop, open each disclosure with the keyboard, check evidence links and the contact destination, and test reduced motion. Replace the export's sample toolbar, footer and metadata only after clearing the corresponding release checks. This increment does not establish marketplace acceptance, paid delivery, buyer demand or release readiness.
+
+## Implementation evidence, 1 October 2026
+
+[Cloud run 36860469045](https://github.com/frankxai/creator-launch-os/actions/runs/36860469045) passed on source revision `6219a91de01375591e8e7b07748d8ce58c8b650d`: parent type checking, lint and all 64 Node tests; a fresh standalone export outside the parent dependency tree; its own frozen-lockfile install on Node 24; standalone type checking, lint and production build; and Chromium checks at 375, 768 and 1,440px with both motion preferences.
+
+The browser fixture checks two cases, a title containing literal HTML-shaped text, maximum-length unbroken content, disclosure keyboard use, contact focus indication, minimum target height and document overflow. An earlier run caught header overflow, repaired in that revision. External email delivery and evidence destinations were not exercised. This is automated engineering evidence; visual craft inspection, a cold buyer trial, independent review reconciliation and the paid release gate remain separate requirements.
