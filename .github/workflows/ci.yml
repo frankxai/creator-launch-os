@@ -88,6 +88,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Export adversarial buyer content
         id: portfolio
+        env:
+          PORTFOLIO_EXPORT_ROOT: ${{ runner.temp }}/portfolio-export
         run: node scripts/prepare-portfolio-check.mjs >> "$GITHUB_OUTPUT"
       - name: Install standalone dependencies from its own lockfile
         working-directory: ${{ steps.portfolio.outputs.directory }}

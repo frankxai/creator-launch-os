@@ -13,5 +13,5 @@ portfolio.cases.push({ ...portfolio.cases[0], title: "T".repeat(160), poster: "W
 const inputText = JSON.stringify({ schemaVersion: "1.0.0", templateId: "portfolio", copy: {
   brand: "B".repeat(48), headline: "H".repeat(110), description: "D".repeat(280),
 } })
-const result = await exportTemplateProjects({ inputText, portfolioText: JSON.stringify(portfolio) })
+const result = await exportTemplateProjects({ outputRoot: process.env.PORTFOLIO_EXPORT_ROOT, inputText, portfolioText: JSON.stringify(portfolio) })
 process.stdout.write(`directory=${result.directory}/portfolio\n`)
