@@ -1,6 +1,13 @@
 import { exportTemplateProjects } from "./export-template-project.mjs"
 import { examplePortfolio } from "../lib/portfolio-content.ts"
 
+if (process.argv.slice(2).some((argument) => argument !== "--buyer") || process.argv.slice(2).length > 1) {
+  throw new Error("Use no arguments for adversarial content or --buyer for the default delivery")
+}
+if (process.argv[2] === "--buyer") {
+  const result = await exportTemplateProjects({ outputRoot: process.env.PORTFOLIO_EXPORT_ROOT, templateId: "portfolio" })
+  process.stdout.write(`directory=${result.directory}/portfolio\n`)
+} else {
 const portfolio = structuredClone(examplePortfolio)
 portfolio.navigation = "N".repeat(100)
 portfolio.practice = "P".repeat(100)
@@ -15,3 +22,4 @@ const inputText = JSON.stringify({ schemaVersion: "1.0.0", templateId: "portfoli
 } })
 const result = await exportTemplateProjects({ outputRoot: process.env.PORTFOLIO_EXPORT_ROOT, inputText, portfolioText: JSON.stringify(portfolio) })
 process.stdout.write(`directory=${result.directory}/portfolio\n`)
+}

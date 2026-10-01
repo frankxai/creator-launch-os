@@ -86,6 +86,27 @@ jobs:
           cache: pnpm
       - name: Install exporter dependencies
         run: pnpm install --frozen-lockfile
+      - name: Export default buyer delivery
+        id: buyer
+        env:
+          PORTFOLIO_EXPORT_ROOT: ${{ runner.temp }}/monograph-buyer
+        run: node scripts/prepare-portfolio-check.mjs --buyer >> "$GITHUB_OUTPUT"
+      - name: Archive source before installing dependencies
+        env:
+          BUYER_PROJECT: ${{ steps.buyer.outputs.directory }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/monograph-delivery"
+          tar -czf "$RUNNER_TEMP/monograph-delivery/monograph-source.tar.gz" -C "$BUYER_PROJECT" .
+          cd "$RUNNER_TEMP/monograph-delivery"
+          sha256sum monograph-source.tar.gz > SHA256SUMS
+      - name: Upload buyer delivery candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: monograph-source-${{ github.sha }}
+          path: ${{ runner.temp }}/monograph-delivery/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
       - name: Export adversarial buyer content
         id: portfolio
         env:
