@@ -7,6 +7,7 @@ import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import test from "node:test"
 import ts from "typescript"
+import { examplePortfolio } from "../lib/portfolio-content.ts"
 import { exportTemplateProjects, parseArguments, projectSourceFiles, verifyTemplateProject } from "../scripts/export-template-project.mjs"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
@@ -89,8 +90,27 @@ test("invalid or oversized inputs leave no output", async (t) => {
     { templateId: "../../escape" }, { inputText: "{" },
     { inputText: JSON.stringify({ schemaVersion: "1.0.0", templateId: "music", copy: { brand: "x".repeat(49), headline: "h", description: "d" } }) },
     { inputText: " ".repeat(65537) }, { templateId: "music", inputText: "{}" },
+    { templateId: "portfolio", portfolioText: "{" },
+    { templateId: "music", portfolioText: JSON.stringify(examplePortfolio) },
+    { portfolioText: JSON.stringify(examplePortfolio) },
   ]) await assert.rejects(exportTemplateProjects({ outputRoot, ...options }))
   assert.ok(!existsSync(outputRoot))
+})
+
+test("portfolio exports carry complete buyer content and discard unrelated properties", async (t) => {
+  const value = structuredClone(examplePortfolio)
+  value.contact.href = "mailto:designer@example.com"
+  value.cases[0].title = "My project <literal>"
+  value.scripts = { postinstall: "do not execute" }
+  const { directory } = await exportTemplateProjects({ outputRoot: temporary(t), templateId: "portfolio", portfolioText: JSON.stringify(value) })
+  const location = join(directory, "portfolio")
+  const content = readJson(join(location, "content/portfolio.json"))
+  assert.equal(content.contact.href, value.contact.href)
+  assert.equal(content.cases[0].title, value.cases[0].title)
+  assert.ok(!("scripts" in content))
+  assert.ok(!readFileSync(join(location, "app/page.tsx"), "utf8").includes(value.cases[0].title))
+  assert.match(readFileSync(join(location, "lib/site-content.ts"), "utf8"), /parsePortfolioContent/)
+  assert.equal(verifyTemplateProject(location).status, "LISTED_BYTES_VERIFIED")
 })
 
 test("receipt traversal, duplicates and omitted required files fail closed", async (t) => {

@@ -14,6 +14,7 @@ const status = "SOURCE_EXPORTED_VERIFICATION_PENDING"
 export const projectSourceFiles = Object.freeze([
   ".gitignore", "LICENSE", "app/globals.css", "components/template-preview.tsx",
   "components/template-atelier.module.css", "lib/template-catalog.ts", "lib/local-audio.ts",
+  "lib/portfolio-content.ts",
   "eslint.config.mjs", "next.config.ts", "pnpm-lock.yaml", "pnpm-workspace.yaml",
   "postcss.config.mjs", "tsconfig.json",
 ])
@@ -54,10 +55,11 @@ const selected = findTemplate(parsed.templateId)
 if (!selected) throw new Error("Choose a supported template in content/site.json")
 export const template = selected
 export const copy = parsed.copy
+export const portfolio = undefined
 `
 
 const page = `import { TemplatePreview } from "@/components/template-preview"
-import { copy, template } from "@/lib/site-content"
+import { copy, template, portfolio } from "@/lib/site-content"
 import styles from "@/components/template-atelier.module.css"
 
 export default function Page() {
@@ -71,7 +73,7 @@ export default function Page() {
         <a href="#source-notes">About this example</a>
       </header>
       <div className={styles.previewCanvas}>
-        <TemplatePreview template={template} copy={copy} />
+        <TemplatePreview template={template} copy={copy} portfolio={portfolio} />
       </div>
       <footer id="source-notes" className={styles.studyToolbar}>
         <p>An interactive example. Signup, payment and hosted delivery are not connected.</p>
@@ -119,7 +121,11 @@ function projectReadme(template) {
     "Open http://localhost:3000. Stop the server with Ctrl+C when finished. Installation needs package-registry access; builds fetch the configured Google fonts. No API keys or paid services are needed for the included local interactions.", "",
     "## Personalize", "",
     "Edit content/site.json: brand (48 characters), headline (110), description (280). It is the same schema as the atelier's saved JSON; only display copy and templateId configure this project. Other packet fields cannot add scripts, credentials or integrations. Invalid configurations fail explicitly.", "",
-    "The rest of the illustrative content is in components/template-preview.tsx and lib/template-catalog.ts. Replace it with your own material before publishing. Editing three copy fields does not personalize every case study, essay or track note. The parent atelier editor is not included.", "",
+    ...(template.id === "portfolio" ? [
+      "Edit content/portfolio.json for the practice description, one to six case studies and contact link. Each case includes your role, summary, context, decision and evidence. Keep illustrative: true for examples. Set it to false only for your own permission-cleared work with supported claims. This declaration is not verification of rights or results.", "",
+      "Contact href accepts an HTTPS contact page or a plain mailto: address without query headers. Set it to null to show the unconfigured state. Email links open the visitor's mail application; HTTPS links navigate to your contact page. No form or delivery service is included. Evidence links accept HTTPS URLs without credentials, or null.", "",
+    ] : ["The rest of the illustrative content is in components/template-preview.tsx and lib/template-catalog.ts. Replace it with your own material before publishing. Editing three copy fields does not personalize every essay or track note.", ""]),
+    "The parent atelier editor is not included.", "",
     `Art direction: ${template.composition}`, "",
     "## What works and what remains", "",
     "The original components, styles, scoped GSAP and reduced-motion behavior are included. All six renderers share the source; content/site.json selects one. Interactive audio uses a visitor-selected local file; no music file is bundled or hosted. Challenge progress lasts for the current page session. The brief builder is deterministic, not a model call. Essays and research entries are illustrative, not verified publications.", "",
@@ -138,7 +144,7 @@ function projectReadme(template) {
 
 /** Pack standalone source projects without installs, API calls, writes to existing exports or deployment. */
 export async function exportTemplateProjects({
-  outputRoot = join(root, "dist", "template-projects"), templateId, inputText,
+  outputRoot = join(root, "dist", "template-projects"), templateId, inputText, portfolioText,
 } = {}) {
   if (templateId !== undefined && inputText !== undefined) throw new Error("Choose a template or an input file, not both")
   const sources = new Map(projectSourceFiles.map((name) => [name, safeRead(root, name)]))
@@ -147,6 +153,11 @@ export async function exportTemplateProjects({
   const chosenId = imported?.templateId ?? templateId
   const selected = chosenId === undefined ? catalog.templates : [catalog.findTemplate(chosenId)]
   if (selected.some((item) => !item)) throw new Error("Unknown template ID")
+  if (portfolioText !== undefined && chosenId !== "portfolio") {
+    throw new Error("Custom portfolio content requires a single portfolio export")
+  }
+  const portfolioModule = await loadCatalog(sources.get("lib/portfolio-content.ts").toString("utf8"))
+  const portfolio = portfolioModule.parsePortfolioContent(portfolioText ?? json(portfolioModule.examplePortfolio))
   const packageBytes = safeRead(root, "package.json")
   const originalPackage = JSON.parse(packageBytes)
   if (originalPackage.license !== "MIT") throw new Error("Review source licensing before export")
@@ -156,6 +167,14 @@ export async function exportTemplateProjects({
     const files = new Map(sources)
     files.set("content/site.json", json({ schemaVersion: "1.0.0", templateId: template.id, copy }))
     files.set("lib/site-content.ts", siteModule)
+    if (template.id === "portfolio") {
+      files.set("content/portfolio.json", json(portfolio))
+      files.set("lib/site-content.ts", siteModule.replace("export const portfolio = undefined", [
+        'import portfolioContent from "@/content/portfolio.json"',
+        'import { parsePortfolioContent } from "@/lib/portfolio-content"',
+        "export const portfolio = parsePortfolioContent(JSON.stringify(portfolioContent))",
+      ].join("\n")))
+    }
     files.set("app/page.tsx", page)
     files.set("app/layout.tsx", layout)
     files.set("next-env.d.ts", '/// <reference types="next" />\n/// <reference types="next/image-types/global" />\n')
@@ -230,12 +249,12 @@ export function parseArguments(args) {
     if (seen.has(flag)) throw new Error(`Repeated option: ${flag}`)
     seen.add(flag)
     if (flag === "--all" || flag === "--help") { options[flag.slice(2)] = true; continue }
-    const key = { "--template": "templateId", "--input": "input", "--output": "outputRoot", "--verify": "verify" }[flag]
+    const key = { "--template": "templateId", "--input": "input", "--portfolio": "portfolioInput", "--output": "outputRoot", "--verify": "verify" }[flag]
     if (!key || !args[index + 1] || args[index + 1].startsWith("--")) throw new Error(`Invalid option: ${flag}`)
     options[key] = args[++index]
   }
   if ([options.all, options.templateId, options.input, options.verify].filter(Boolean).length > 1 ||
-    (options.verify && options.outputRoot)) throw new Error("Choose one export mode or verification")
+    (options.verify && (options.outputRoot || options.portfolioInput))) throw new Error("Choose one export mode or verification")
   return options
 }
 
@@ -243,13 +262,17 @@ if (process.argv[1] && resolve(process.argv[1]) === scriptPath) {
   try {
     const options = parseArguments(process.argv.slice(2))
     if (options.help) {
-      process.stdout.write("Export: pnpm template:projects [--all | --template music | --input saved.json] [--output directory]\nVerify: pnpm template:projects --verify exported-project-directory\n")
+      process.stdout.write("Export: pnpm template:projects [--all | --template music | --input saved.json] [--output directory]\nPortfolio: pnpm template:projects --template portfolio --portfolio portfolio.json\nVerify: pnpm template:projects --verify exported-project-directory\n")
     } else if (options.verify) {
       process.stdout.write(json(verifyTemplateProject(options.verify)))
     } else {
       if (options.input) {
         const input = resolve(options.input)
         options.inputText = safeRead(dirname(input), basename(input), 64 * 1024).toString("utf8")
+      }
+      if (options.portfolioInput) {
+        const input = resolve(options.portfolioInput)
+        options.portfolioText = safeRead(dirname(input), basename(input), 64 * 1024).toString("utf8")
       }
       const result = await exportTemplateProjects(options)
       process.stdout.write(`Exported ${result.index.projects.length} standalone source projects.\n${result.directory}\n${status}\n`)

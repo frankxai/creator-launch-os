@@ -20,6 +20,7 @@ Each run creates a new directory. Earlier exports and buyer edits are preserved.
 
 - A root page and layout without dependencies on the parent's storefront or atelier routes.
 - `content/site.json`, using the atelier import schema for three editable copy fields and template ID.
+- Portfolio exports also include `content/portfolio.json` for validated case studies and a contact destination. See [Portfolio content](PORTFOLIO-CONTENT.md) for the schema and `--portfolio` option.
 - Original preview component, CSS, catalog and local audio guard, copied byte for byte.
 - Next.js configuration, TypeScript configuration, lint configuration, dependencies and unchanged pnpm lockfile.
 - A tailored README, MIT license and `project-receipt.json`.
@@ -47,7 +48,7 @@ The three copy fields are not a complete CMS. Additional essay, project and rese
 | Music | Visitor-selected local audio playback | Rights-cleared hosted tracks, release capture, license delivery |
 | Lab | Expandable sample methods and limitations | Verified publications, author metadata, accessible archive |
 | Tool | Deterministic brief checklist | Actual server-side model integration, rate and spend limits, evaluations |
-| Portfolio | Inspectable illustrative case studies | Approved identity, real projects and inquiry integration |
+| Portfolio | Editable case studies and HTTPS/mail contact links | Approved identity, real projects, evidence and a verified contact destination |
 | Creator | Complete sample essay | Versioned real publication and opt-in subscription integration |
 | Challenge | Operable seven-day plan with session progress | Durable private progress and opt-in reminders |
 
