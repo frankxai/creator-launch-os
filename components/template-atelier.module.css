@@ -237,6 +237,11 @@
   font-size: 15px;
   font-weight: 600;
 }
+.studyToolbar > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 .studyToolbar p {
   color: #606258;
 }

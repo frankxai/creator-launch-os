@@ -24,7 +24,15 @@ test("exported buyer content renders as text, fits each viewport and supports ke
       await expect(contact).toBeFocused()
       expect(await contact.evaluate((node) => getComputedStyle(node).outlineStyle)).toBe("solid")
       expect((await contact.boundingBox()).height).toBeGreaterThanOrEqual(44)
-      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true)
+      const overflow = await page.evaluate(() => ({
+        width: document.documentElement.clientWidth,
+        scroll: document.documentElement.scrollWidth,
+        elements: [...document.querySelectorAll("body *")].filter((node) => {
+          const rect = node.getBoundingClientRect()
+          return rect.right > document.documentElement.clientWidth + 1 || rect.left < -1
+        }).slice(0, 10).map((node) => ({ tag: node.tagName, className: node.className })),
+      }))
+      expect(overflow.scroll, JSON.stringify({ reducedMotion, width, overflow })).toBeLessThanOrEqual(overflow.width + 1)
     }
   }
   expect(errors).toEqual([])
