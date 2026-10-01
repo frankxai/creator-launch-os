@@ -8,6 +8,18 @@ test("exported buyer content renders as text, fits each viewport and supports ke
     for (const width of [375, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 })
       expect((await page.goto("/")).status()).toBe(200)
+      const published = process.env.PORTFOLIO_PUBLICATION === "published"
+      await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", published ? "index, follow" : "noindex, nofollow")
+      if (published) {
+        await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://example.com/portfolio")
+        await expect(page.getByRole("link", { name: "About this example" })).toHaveCount(0)
+        await expect(page.locator("#source-notes")).toHaveCount(0)
+        await expect(page.getByRole("heading", { level: 1 })).toHaveText("H".repeat(110))
+      } else {
+        await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
+        await expect(page.getByRole("link", { name: "About this example" })).toBeVisible()
+        await expect(page.locator("#source-notes")).toBeVisible()
+      }
       await page.evaluate(() => document.fonts.ready)
       for (const item of await page.locator("[data-motion-item]").all()) await expect(item).toHaveCSS("opacity", "1")
       await expect(page.locator("#case-title-0")).toHaveText('<img src=x onerror="window.portfolioInjected=true">')

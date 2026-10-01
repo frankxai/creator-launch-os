@@ -14,7 +14,7 @@ const status = "SOURCE_EXPORTED_VERIFICATION_PENDING"
 export const projectSourceFiles = Object.freeze([
   ".gitignore", "LICENSE", "app/globals.css", "components/template-preview.tsx",
   "components/template-atelier.module.css", "lib/template-catalog.ts", "lib/local-audio.ts",
-  "lib/portfolio-content.ts",
+  "lib/portfolio-content.ts", "lib/site-publication.ts",
   "eslint.config.mjs", "next.config.ts", "pnpm-lock.yaml", "pnpm-workspace.yaml",
   "postcss.config.mjs", "tsconfig.json",
 ])
@@ -49,6 +49,8 @@ async function loadCatalog(source) {
 
 const siteModule = `import content from "@/content/site.json"
 import { findTemplate, parseTemplateImport } from "@/lib/template-catalog"
+import publicationContent from "@/content/publication.json"
+import { parseSitePublication } from "@/lib/site-publication"
 
 const parsed = parseTemplateImport(JSON.stringify(content))
 const selected = findTemplate(parsed.templateId)
@@ -56,29 +58,30 @@ if (!selected) throw new Error("Choose a supported template in content/site.json
 export const template = selected
 export const copy = parsed.copy
 export const portfolio = undefined
+export const publication = parseSitePublication(JSON.stringify(publicationContent), template.id, portfolio)
 `
 
 const page = `import { TemplatePreview } from "@/components/template-preview"
-import { copy, template, portfolio } from "@/lib/site-content"
+import { copy, template, portfolio, publication } from "@/lib/site-content"
 import styles from "@/components/template-atelier.module.css"
 
 export default function Page() {
   return (
     <main id="main-content" className={\`\${styles.atelier} \${styles.studyPage}\`}>
-      <header className={styles.studyToolbar}>
+      {publication.mode === "preview" && <header className={styles.studyToolbar}>
         <div>
           <h1>{copy.brand} / {template.audience}</h1>
           <p>Composition study · Illustrative content · Local interactions</p>
         </div>
         <a href="#source-notes">About this example</a>
-      </header>
+      </header>}
       <div className={styles.previewCanvas}>
-        <TemplatePreview template={template} copy={copy} portfolio={portfolio} />
+        <TemplatePreview template={template} copy={copy} portfolio={portfolio} standalone={publication.mode === "published"} />
       </div>
-      <footer id="source-notes" className={styles.studyToolbar}>
+      {publication.mode === "preview" && <footer id="source-notes" className={styles.studyToolbar}>
         <p>An interactive example. Signup, payment and hosted delivery are not connected.</p>
         <a href="https://github.com/frankxai/creator-launch-os">Creator Launch OS source</a>
-      </footer>
+      </footer>}
     </main>
   )
 }
@@ -86,7 +89,7 @@ export default function Page() {
 
 const layout = `import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, Newsreader } from "next/font/google"
-import { copy } from "@/lib/site-content"
+import { copy, publication } from "@/lib/site-content"
 import "./globals.css"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" })
@@ -96,7 +99,8 @@ const serif = Newsreader({ subsets: ["latin"], variable: "--font-newsreader", di
 export const metadata: Metadata = {
   title: copy.brand,
   description: copy.description,
-  robots: { index: false, follow: false },
+  robots: { index: publication.indexable, follow: publication.indexable },
+  ...(publication.canonicalUrl ? { alternates: { canonical: publication.canonicalUrl } } : {}),
 }
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#f2efe6" }
 
@@ -124,6 +128,8 @@ function projectReadme(template) {
     ...(template.id === "portfolio" ? [
       "Edit content/portfolio.json for the practice description, one to six case studies and contact link. Each case includes your role, summary, context, decision and evidence. Keep illustrative: true for examples. Set it to false only for your own permission-cleared work with supported claims. This declaration is not verification of rights or results.", "",
       "Contact href accepts an HTTPS contact page or a plain mailto: address without query headers. Set it to null to show the unconfigured state. Email links open the visitor's mail application; HTTPS links navigate to your contact page. No form or delivery service is included. Evidence links accept HTTPS URLs without credentials, or null.", "",
+      "Portfolio limits (JavaScript string lengths): navigation, practice, introduction and case poster 100; disciplines, case title/role and contact title 160; category and contact label 80; case summary and contact description 600; case context/decision/evidence 2,000 each; link URLs 2,048. All text is required and nonempty; one to six cases; entire portfolio file at most 64 KiB UTF-8.", "",
+      "Edit content/publication.json when your real content is ready: keep schemaVersion 1.0.0, set mode to published and canonicalUrl to your actual HTTPS page URL (no credentials, query or fragment). Published presentation removes the example toolbar/footer. It requires a configured contact and all cases declared illustrative: false. Confirm their rights and claims yourself before changing those declarations. These settings do not verify rights, destinations or release readiness. Keep indexable: false until your actual preview is checked; true requests search indexing. Preview mode always requires false. No source editing is needed for these settings.", "",
     ] : ["The rest of the illustrative content is in components/template-preview.tsx and lib/template-catalog.ts. Replace it with your own material before publishing. Editing three copy fields does not personalize every essay or track note.", ""]),
     "The parent atelier editor is not included.", "",
     `Art direction: ${template.composition}`, "",
@@ -134,7 +140,8 @@ function projectReadme(template) {
     ...template.integrations.map((item) => `- ${item}`), "",
     "## Verify before deployment", "",
     "Run pnpm verify for type generation, TypeScript, lint and production build. Then inspect a preview at narrow and wide widths, keyboard-only navigation, reduced motion, each local interaction and invalid content. A successful export receipt does not mean these checks ran. Use an independent reviewer and real buyer trial before describing it as production-ready.", "",
-    "Keep the sample labels while illustrative content remains. The layout defaults to noindex; this is an indexing preference, not access control. Set your real metadata, canonical URL, crawl settings and honest structured data only after replacing samples and completing the required integrations. Never promise search ranking or AI citation.", "",
+    "The layout defaults to noindex; this is an indexing preference, not access control. Metadata title and description use content/site.json. Monograph's canonical URL, indexing and example presentation use content/publication.json; other directions remain preview-only until their source content and integrations are completed. Never promise search ranking or AI citation.", "",
+    "No icon is bundled. Add your own permission-cleared app/favicon.ico or app/icon.png to configure the browser tab icon using Next.js file conventions. Until then a browser may request /favicon.ico and receive 404; the page itself still works.", "",
     "For Vercel, import this folder into your own repository and preview project after local checks. This export contains no Vercel project ID, domain, token or deployment hook. Verify the actual preview revision and complete platform-native review before any marketplace submission.", "",
     "## Provenance and license", "",
     "project-receipt.json lists SHA-256 checksums, source hashes, and verification that remains pending. It is an integrity inventory, not a signature or security audit. Editing a file deliberately makes the original receipt stale. Keep it as provenance and generate fresh release evidence for your edited project.", "",
@@ -166,6 +173,7 @@ export async function exportTemplateProjects({
     const copy = imported?.copy ?? template.copy
     const files = new Map(sources)
     files.set("content/site.json", json({ schemaVersion: "1.0.0", templateId: template.id, copy }))
+    files.set("content/publication.json", json({ schemaVersion: "1.0.0", mode: "preview", canonicalUrl: null, indexable: false }))
     files.set("lib/site-content.ts", siteModule)
     if (template.id === "portfolio") {
       files.set("content/portfolio.json", json(portfolio))

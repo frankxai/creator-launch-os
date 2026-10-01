@@ -17,13 +17,14 @@ import styles from "./template-atelier.module.css"
 
 gsap.registerPlugin(useGSAP)
 
-type PreviewProps = { template: TemplateDefinition; copy: TemplateCopy; portfolio?: PortfolioContent }
+type PreviewProps = { template: TemplateDefinition; copy: TemplateCopy; portfolio?: PortfolioContent; standalone?: boolean }
 
-function Heading({ copy, eyebrow }: { copy: TemplateCopy; eyebrow: string }) {
+function Heading({ copy, eyebrow, level = 2 }: { copy: TemplateCopy; eyebrow: string; level?: 1 | 2 }) {
+  const Title = level === 1 ? "h1" : "h2"
   return (
     <div data-motion-item>
       <p className={styles.kicker}>{eyebrow}</p>
-      <h2 className={styles.headline}>{copy.headline}</h2>
+      <Title className={styles.headline}>{copy.headline}</Title>
       <p className={styles.description}>{copy.description}</p>
     </div>
   )
@@ -294,7 +295,7 @@ function ToolPreview({ copy }: { copy: TemplateCopy }) {
   )
 }
 
-function PortfolioPreview({ copy, content }: { copy: TemplateCopy; content: PortfolioContent }) {
+function PortfolioPreview({ copy, content, standalone }: { copy: TemplateCopy; content: PortfolioContent; standalone: boolean }) {
   return (
     <>
       <PreviewNav brand={copy.brand}>{content.navigation}</PreviewNav>
@@ -304,7 +305,7 @@ function PortfolioPreview({ copy, content }: { copy: TemplateCopy; content: Port
           <br />
           <span>{content.disciplines}</span>
         </p>
-        <Heading copy={copy} eyebrow={content.introduction} />
+        <Heading copy={copy} eyebrow={content.introduction} level={standalone ? 1 : 2} />
       </div>
       {content.cases.map((study, index) => (
       <section key={index} className={styles.caseStudy} aria-labelledby={`case-title-${index}`}>
@@ -486,7 +487,7 @@ function ChallengePreview({ copy }: { copy: TemplateCopy }) {
   )
 }
 
-export function TemplatePreview({ template, copy, portfolio = examplePortfolio }: PreviewProps) {
+export function TemplatePreview({ template, copy, portfolio = examplePortfolio, standalone = false }: PreviewProps) {
   const root = useRef<HTMLDivElement>(null)
   useGSAP(
     () => {
@@ -523,7 +524,7 @@ export function TemplatePreview({ template, copy, portfolio = examplePortfolio }
       {template.id === "music" && <MusicPreview copy={copy} />}
       {template.id === "lab" && <LabPreview copy={copy} />}
       {template.id === "tool" && <ToolPreview copy={copy} />}
-      {template.id === "portfolio" && <PortfolioPreview copy={copy} content={portfolio} />}
+      {template.id === "portfolio" && <PortfolioPreview copy={copy} content={portfolio} standalone={standalone} />}
       {template.id === "creator" && <CreatorPreview copy={copy} />}
       {template.id === "challenge" && <ChallengePreview copy={copy} />}
     </div>

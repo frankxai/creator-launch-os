@@ -39,7 +39,21 @@ Every case requires `illustrative: true` or `false`. Keep `true` for sample work
 
 Unknown properties are discarded. Content stays JSON and React text; it cannot add executable scripts, raw HTML, dependencies, secrets or verification status. Imported data is not proof of a working external contact endpoint. Test the destination on the real preview.
 
-Before publication, inspect every case on mobile and desktop, open each disclosure with the keyboard, check evidence links and the contact destination, and test reduced motion. Replace the export's sample toolbar, footer and metadata only after clearing the corresponding release checks. This increment does not establish marketplace acceptance, paid delivery, buyer demand or release readiness.
+Before publication, inspect every case on mobile and desktop, open each disclosure with the keyboard, check evidence links and the contact destination, and test reduced motion. This increment does not establish marketplace acceptance, paid delivery, buyer demand or release readiness.
+
+## Publication settings
+
+The exported project includes `content/publication.json`, initially:
+
+```json
+{ "schemaVersion": "1.0.0", "mode": "preview", "canonicalUrl": null, "indexable": false }
+```
+
+After replacing the examples with your own permission-cleared cases and configuring contact, set `mode` to `published` and `canonicalUrl` to your real HTTPS page URL. This removes the example toolbar and footer without changing source code. The URL must have no credentials, query or fragment. Title and description still come from `content/site.json`.
+
+Published presentation requires every case to declare `illustrative: false` and a configured contact destination. The declarations do not verify rights, outcomes or external endpoints. Inspect the actual preview before setting `indexable: true`; this requests indexing and does not guarantee search visibility. Preview mode always requires `indexable: false`. Neither mode is access control or paid release approval. Other directions remain preview-only.
+
+The publication file is limited to 4 KiB UTF-8 and its URL to 2,048 JavaScript string characters. Unknown settings are discarded; invalid settings fail the build. No browser icon is bundled: add your own permission-cleared `app/favicon.ico` or `app/icon.png` using Next.js file conventions. Until then a browser may request `/favicon.ico` and receive 404.
 
 ## Implementation evidence, 1 October 2026
 

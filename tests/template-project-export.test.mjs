@@ -38,6 +38,7 @@ test("all six exports include independent source, compatible manifests and verif
     assert.deepEqual(manifest.devDependencies, original.devDependencies)
     assert.equal(manifest.license, "MIT")
     assert.equal(readJson(join(project, "content/site.json")).templateId, entry.templateId)
+    assert.deepEqual(readJson(join(project, "content/publication.json")), { schemaVersion: "1.0.0", mode: "preview", canonicalUrl: null, indexable: false })
     assert.match(readFileSync(join(project, "README.md"), "utf8"), /pnpm install --frozen-lockfile/)
     assert.ok(!existsSync(join(project, ".env.local")))
     assert.ok(!existsSync(join(project, ".vercel")))

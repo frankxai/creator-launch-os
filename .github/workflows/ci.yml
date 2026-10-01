@@ -72,6 +72,9 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        publication: [preview, published]
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -87,11 +90,13 @@ jobs:
       - name: Install exporter dependencies
         run: pnpm install --frozen-lockfile
       - name: Export default buyer delivery
+        if: matrix.publication == 'preview'
         id: buyer
         env:
           PORTFOLIO_EXPORT_ROOT: ${{ runner.temp }}/monograph-buyer
         run: node scripts/prepare-portfolio-check.mjs --buyer >> "$GITHUB_OUTPUT"
       - name: Archive source before installing dependencies
+        if: matrix.publication == 'preview'
         env:
           BUYER_PROJECT: ${{ steps.buyer.outputs.directory }}
         run: |
@@ -100,6 +105,7 @@ jobs:
           cd "$RUNNER_TEMP/monograph-delivery"
           sha256sum monograph-source.tar.gz > SHA256SUMS
       - name: Upload buyer delivery candidate
+        if: matrix.publication == 'preview'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: monograph-source-${{ github.sha }}
@@ -111,7 +117,7 @@ jobs:
         id: portfolio
         env:
           PORTFOLIO_EXPORT_ROOT: ${{ runner.temp }}/portfolio-export
-        run: node scripts/prepare-portfolio-check.mjs >> "$GITHUB_OUTPUT"
+        run: node scripts/prepare-portfolio-check.mjs ${{ matrix.publication == 'published' && '--published' || '' }} >> "$GITHUB_OUTPUT"
       - name: Install standalone dependencies from its own lockfile
         working-directory: ${{ steps.portfolio.outputs.directory }}
         run: pnpm install --frozen-lockfile
@@ -123,4 +129,5 @@ jobs:
       - name: Exercise standalone content, narrow layouts, keyboard and reduced motion
         env:
           PORTFOLIO_PROJECT: ${{ steps.portfolio.outputs.directory }}
+          PORTFOLIO_PUBLICATION: ${{ matrix.publication }}
         run: pnpm exec playwright test --config playwright.portfolio.config.mjs

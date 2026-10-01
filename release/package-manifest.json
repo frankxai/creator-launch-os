@@ -89,6 +89,8 @@
     "tests/install.test.mjs",
     "tests/browser/install.spec.mjs",
     "docs/INSTALL-EXPERIENCE.md",
-    "docs/install-design-loop-evidence.json"
+    "docs/install-design-loop-evidence.json",
+    "lib/site-publication.ts",
+    "tests/site-publication.test.mjs"
   ]
 }
