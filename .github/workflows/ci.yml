@@ -131,3 +131,13 @@ jobs:
           PORTFOLIO_PROJECT: ${{ steps.portfolio.outputs.directory }}
           PORTFOLIO_PUBLICATION: ${{ matrix.publication }}
         run: pnpm exec playwright test --config playwright.portfolio.config.mjs
+      - name: Confirm unfinished cases prevent published builds
+        if: matrix.publication == 'preview'
+        working-directory: ${{ steps.portfolio.outputs.directory }}
+        run: |
+          node --input-type=module -e 'import { writeFileSync } from "node:fs"; writeFileSync("content/publication.json", JSON.stringify({ schemaVersion: "1.0.0", mode: "published", canonicalUrl: "https://example.com/portfolio", indexable: false }))'
+          if pnpm build > "$RUNNER_TEMP/publication-rejection.log" 2>&1; then
+            cat "$RUNNER_TEMP/publication-rejection.log"
+            exit 1
+          fi
+          node --input-type=module -e 'import { readFileSync } from "node:fs"; if (!readFileSync(process.env.RUNNER_TEMP + "/publication-rejection.log", "utf8").includes("Replace illustrative cases and configure the contact destination")) throw new Error("Build failed for an unrelated reason")'
