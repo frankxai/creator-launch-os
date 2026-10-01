@@ -1,0 +1,31 @@
+import { test, expect } from "@playwright/test"
+
+test("exported buyer content renders as text, fits each viewport and supports keyboard interaction", async ({ page }) => {
+  const errors = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  for (const reducedMotion of ["no-preference", "reduce"]) {
+    await page.emulateMedia({ reducedMotion })
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 })
+      expect((await page.goto("/")).status()).toBe(200)
+      await page.evaluate(() => document.fonts.ready)
+      for (const item of await page.locator("[data-motion-item]").all()) await expect(item).toHaveCSS("opacity", "1")
+      await expect(page.locator("#case-title-0")).toHaveText('<img src=x onerror="window.portfolioInjected=true">')
+      await expect(page.locator("#case-title-0 img")).toHaveCount(0)
+      expect(await page.evaluate(() => window.portfolioInjected)).toBeUndefined()
+      await expect(page.locator("#case-title-1")).toHaveText("T".repeat(160))
+      const summary = page.locator('section[aria-labelledby="case-title-0"] summary').first()
+      await summary.focus()
+      await summary.press("Enter")
+      await expect(summary.locator("..")).toHaveAttribute("open", "")
+      const contact = page.getByRole("link", { name: "Discuss a project" })
+      await expect(contact).toHaveAttribute("href", "mailto:designer+projects@example.com")
+      await contact.focus()
+      await expect(contact).toBeFocused()
+      expect(await contact.evaluate((node) => getComputedStyle(node).outlineStyle)).toBe("solid")
+      expect((await contact.boundingBox()).height).toBeGreaterThanOrEqual(44)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true)
+    }
+  }
+  expect(errors).toEqual([])
+})

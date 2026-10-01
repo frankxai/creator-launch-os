@@ -773,6 +773,15 @@
   --muted: #6d6055;
   --accent: #ab402f;
 }
+.portfolio :where(h2, h3, p, span, a) {
+  overflow-wrap: anywhere;
+}
+.portfolio .previewNav > *,
+.portfolio .portfolioHero > *,
+.portfolioContact > * {
+  min-width: 0;
+  max-width: 100%;
+}
 .portfolioHero {
   display: grid;
   grid-template-columns: 0.6fr 1.5fr;

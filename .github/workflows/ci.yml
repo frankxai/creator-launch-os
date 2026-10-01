@@ -67,3 +67,37 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
+
+  portfolio-export:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.28.0
+      - name: Set up buyer runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install exporter dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Export adversarial buyer content
+        id: portfolio
+        run: node scripts/prepare-portfolio-check.mjs >> "$GITHUB_OUTPUT"
+      - name: Install standalone dependencies from its own lockfile
+        working-directory: ${{ steps.portfolio.outputs.directory }}
+        run: pnpm install --frozen-lockfile
+      - name: Verify standalone types, lint and production build
+        working-directory: ${{ steps.portfolio.outputs.directory }}
+        run: pnpm verify
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Exercise standalone content, narrow layouts, keyboard and reduced motion
+        env:
+          PORTFOLIO_PROJECT: ${{ steps.portfolio.outputs.directory }}
+        run: pnpm exec playwright test --config playwright.portfolio.config.mjs
