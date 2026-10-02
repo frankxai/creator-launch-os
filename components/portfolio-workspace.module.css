@@ -1,0 +1,35 @@
+.workspace { padding-bottom: 64px; }
+.workspace :where(input, textarea, select, button, a, summary):focus-visible { outline: 3px solid #536c29; outline-offset: 4px; }
+.header { padding: 20px 0 36px; max-width: 750px; }
+.header a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; text-decoration: underline; }
+.header > p { margin-top: 16px; line-height: 1.7; }
+.header h1 { font-size: clamp(36px, 5vw, 64px); letter-spacing: -.04em; margin-top: 16px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; gap: 32px; }
+.editor, .preview { min-width: 0; }
+.editor section, .save { border: 1px solid #c6c8bb; border-radius: 6px; background: #f9f8f1; padding: 24px; margin-bottom: 24px; }
+.workspace h2 { font-size: 22px; margin-bottom: 16px; }
+.workspace h3 { font-size: 18px; margin-bottom: 12px; }
+.workspace p { font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.editor h2 span { font-size: 13px; color: #565d4a; }
+.editor label, .field label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; margin: 16px 0 8px; }
+.field label span { font-size: 11px; color: #565d4a; }
+.editor :where(input:not([type="checkbox"]), textarea, select) { width: 100%; min-height: 44px; border: 1px solid #abb09e; border-radius: 4px; padding: 10px 12px; font-size: 16px; background: #fffef7; }
+.editor textarea { resize: vertical; }
+.workspace button { border: 1px solid #abb09e; border-radius: 4px; padding: 10px 14px; min-height: 44px; font-size: 13px; background: #e6e9db; white-space: normal; overflow-wrap: anywhere; }
+.workspace button:disabled { opacity: .55; cursor: not-allowed; }
+.workspace button:hover:not(:disabled) { background: #d9dfc8; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.actions button[aria-pressed="true"] { background: #313c27; color: #fffef7; }
+.case { border-top: 1px solid #c6c8bb; margin: 16px 0; padding-top: 12px; }
+.workspace summary { padding: 12px 0; min-height: 44px; cursor: pointer; font-size: 14px; overflow-wrap: anywhere; }
+.case > button { margin-top: 16px; }
+.editor .check { justify-content: flex-start; align-items: center; min-height: 44px; }
+.check input { width: 20px; height: 20px; flex-shrink: 0; accent-color: #536c29; }
+.preview .save { margin-top: 24px; }
+.save > button, .save details button, .review button { display: block; margin: 12px 0; }
+.save input[type="file"] { width: 100%; min-height: 44px; padding-block: 10px; }
+.save input::file-selector-button { min-height: 44px; }
+.review { border-top: 1px solid #c6c8bb; margin-top: 20px; padding-top: 16px; }
+.empty { padding: 32px 24px; background: #e6e9db; border: 1px dashed #abb09e; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 500px) { .editor section, .save { padding: 18px; } }

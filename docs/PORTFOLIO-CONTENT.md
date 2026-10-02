@@ -1,6 +1,22 @@
 # Portfolio content
 
-The Monograph source project supports one to six case studies and a contact destination through `content/portfolio.json`. Brand, headline and description stay in `content/site.json`. The parent atelier editor still edits only those three fields.
+The Monograph source project supports one to six case studies and a contact destination through `content/portfolio.json`. Brand, headline and description stay in `content/site.json`. Its dedicated workspace edits identity, every case, contact and publication settings together.
+
+## Edit, save and resume
+
+Open `/studio/templates/portfolio/edit` in Creator Launch OS or `/edit` in a standalone Monograph export. The workspace previews validated content, offers full or 390px canvas widths, and downloads the entire draft as `monograph-project.json`. Incomplete drafts are allowed. Refreshing discards unsaved changes; save a file to keep your work. Files are read on the device and never uploaded by this editor.
+
+Resume shows an incoming project for review before replacing current edits. You can download the current project first or cancel. Removing a case offers undo until the next case edit or addition. One to six cases are supported. Saved projects are bounded to 256 KiB UTF-8 and accept only the documented display fields; unknown properties are discarded.
+
+Export a complete saved project from the Creator Launch OS checkout:
+
+```sh
+pnpm template:projects --project "monograph-project.json" --output "my exports"
+```
+
+This preserves identity, cases, contact and publication choices in a fresh standalone source directory. The project option cannot be combined with another content mode. Incomplete drafts and unsafe destinations fail validation before export creates output. Alternatively, download the three validated site files in the workspace and copy each into your exported project's `content/` directory. Keep backups. Downloads do not change files on a running site or deploy anything.
+
+The standalone editor loads saved source content, keeps changes in memory, and always requests noindex without a canonical URL. It does not provide authentication: deployed `/edit` remains a public route with no ability to alter the server's saved content. Remove that route from your own deployment if you do not want a public local editor.
 
 Export the default illustrative version first:
 

@@ -38,7 +38,6 @@ jobs:
       - name: Test contracts
         run: pnpm run test
       - name: Build production application
-        if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
         run: pnpm run build
       - name: Install Chromium for the built-app checks
         if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
@@ -71,7 +70,7 @@ jobs:
   portfolio-export:
     needs: verify
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     strategy:
       matrix:
         publication: [preview, published]
@@ -130,7 +129,28 @@ jobs:
         env:
           PORTFOLIO_PROJECT: ${{ steps.portfolio.outputs.directory }}
           PORTFOLIO_PUBLICATION: ${{ matrix.publication }}
+          PORTFOLIO_ROUNDTRIP_FILE: ${{ runner.temp }}/monograph-workspace-${{ matrix.publication }}.json
         run: pnpm exec playwright test --config playwright.portfolio.config.mjs
+      - name: Export the completed project downloaded by the browser
+        if: matrix.publication == 'preview'
+        id: roundtrip
+        env:
+          WORKSPACE_FILE: ${{ runner.temp }}/monograph-workspace-preview.json
+          ROUNDTRIP_ROOT: ${{ runner.temp }}/monograph-roundtrip
+        run: |
+          node --input-type=module -e 'import { readFileSync } from "node:fs"; import { exportTemplateProjects } from "./scripts/export-template-project.mjs"; const result = await exportTemplateProjects({ outputRoot: process.env.ROUNDTRIP_ROOT, projectText: readFileSync(process.env.WORKSPACE_FILE, "utf8") }); console.log("directory=" + result.directory + "/portfolio")' >> "$GITHUB_OUTPUT"
+      - name: Install and build the browser-edited source using its own dependencies
+        if: matrix.publication == 'preview'
+        working-directory: ${{ steps.roundtrip.outputs.directory }}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm verify
+      - name: Confirm the rebuilt site preserves every browser edit and safe editor metadata
+        if: matrix.publication == 'preview'
+        env:
+          PORTFOLIO_PROJECT: ${{ steps.roundtrip.outputs.directory }}
+          PORTFOLIO_ROUNDTRIP_CHECK: "1"
+        run: pnpm exec playwright test --config playwright.portfolio.config.mjs --grep "site rebuilt from"
       - name: Confirm unfinished cases prevent published builds
         if: matrix.publication == 'preview'
         working-directory: ${{ steps.portfolio.outputs.directory }}

@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test"
+import { readFileSync, writeFileSync } from "node:fs"
 
 test("exported buyer content renders as text, fits each viewport and supports keyboard interaction", async ({ page }) => {
+  test.skip(process.env.PORTFOLIO_ROUNDTRIP_CHECK === "1", "This check uses the original adversarial fixture")
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
   for (const reducedMotion of ["no-preference", "reduce"]) {
@@ -50,4 +52,114 @@ test("exported buyer content renders as text, fits each viewport and supports ke
     }
   }
   expect(errors).toEqual([])
+})
+
+async function saveProject(page) {
+  const pending = page.waitForEvent("download")
+  await page.getByRole("button", { name: "Save project", exact: true }).click()
+  const download = await pending
+  expect(await download.failure()).toBeNull()
+  return { bytes: readFileSync(await download.path()), download }
+}
+
+test("workspace saves incomplete drafts, reviews imports, preserves removals and exports the completed project", async ({ page }) => {
+  test.skip(process.env.PORTFOLIO_ROUNDTRIP_CHECK === "1", "Already exercised before the exported site rebuild")
+  const errors = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  expect((await page.goto("/edit")).status()).toBe(200)
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Build your portfolio.")
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow")
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
+  await page.getByLabel("Name", { exact: true }).fill("Workspace buyer <literal>")
+  await page.getByLabel("Headline", { exact: true }).fill("Thoughtful work, clearly explained.")
+  await page.getByLabel("Description", { exact: true }).fill("A buyer-edited portfolio with supported case evidence.")
+  await page.getByLabel("Navigation", { exact: true }).fill("My selected work")
+  await page.getByLabel("Practice heading").fill("Design practice")
+  await page.getByLabel("Disciplines", { exact: true }).fill("Research / Design / Delivery")
+  await page.getByLabel("Introduction heading").fill("The work and the reasoning")
+  const cases = page.locator('section[aria-labelledby="cases-title"]')
+  await cases.locator("details").first().getByLabel("Title", { exact: true }).fill("")
+  const incomplete = await saveProject(page)
+  const incompleteJson = JSON.parse(incomplete.bytes)
+  expect(incompleteJson.portfolio.cases[0].title).toBe("")
+  await expect(page.getByText("Download validated site files", { exact: true })).toHaveCount(0)
+  await page.getByLabel("Name", { exact: true }).fill("Current edits to preserve")
+  await page.getByLabel("Choose a Monograph project").setInputFiles({ name: "broken.json", mimeType: "application/json", buffer: Buffer.from("{") })
+  await expect(page.getByText("Monograph project must be valid JSON.", { exact: true })).toBeVisible()
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Current edits to preserve")
+  await page.getByLabel("Choose a Monograph project").setInputFiles({ name: "saved.json", mimeType: "application/json", buffer: incomplete.bytes })
+  await expect(page.getByRole("heading", { name: "Review incoming project" })).toBeVisible()
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Current edits to preserve")
+  await page.getByRole("button", { name: "Cancel import" }).click()
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Current edits to preserve")
+  await page.getByLabel("Choose a Monograph project").setInputFiles({ name: "saved.json", mimeType: "application/json", buffer: incomplete.bytes })
+  await page.getByRole("button", { name: "Apply project" }).click()
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Workspace buyer <literal>")
+  await expect(page.getByLabel("Name", { exact: true })).toBeFocused()
+
+  const first = cases.locator("details").first()
+  for (const [label, value] of Object.entries({ Title: "A complete buyer case <literal>", Category: "Product design", "Your role": "Research and interface design",
+    "Poster text": "Selected work", Summary: "A clear summary of the buyer's actual project.", Context: "Line one\nLine two", Decision: "A decision with a specific reason.", Evidence: "A permission-cleared reference and a measured result." })) {
+    await first.getByLabel(label, { exact: true }).fill(value)
+  }
+  await first.getByLabel("Evidence URL (optional HTTPS)").fill("https://example.com/evidence")
+  await page.getByRole("button", { name: "Add a case", exact: true }).click()
+  await expect(cases.locator("details")).toHaveCount(3)
+  await cases.locator("details").last().locator("summary").click()
+  await cases.getByRole("button", { name: "Remove case 3", exact: true }).click()
+  await expect(cases.locator("details")).toHaveCount(2)
+  await page.getByRole("button", { name: "Undo removal" }).click()
+  await expect(cases.locator("details")).toHaveCount(3)
+  const third = cases.locator("details").last()
+  if (await third.getAttribute("open") === null) await third.locator("summary").click()
+  await cases.getByRole("button", { name: "Remove case 3", exact: true }).click()
+  await expect(first.getByLabel("Title", { exact: true })).toHaveValue("A complete buyer case <literal>")
+  await page.getByLabel("Contact heading").fill("Discuss your project")
+  await page.getByLabel("Contact description").fill("Send a short brief to begin.")
+  await page.getByLabel("Contact link label").fill("Email the practice")
+  await page.getByLabel("Contact destination (HTTPS or plain mailto:)").fill("javascript:alert(1)")
+  await expect(page.getByText("Download validated site files", { exact: true })).toHaveCount(0)
+  await expect(page.locator('a[href^="javascript:"]')).toHaveCount(0)
+  await page.getByLabel("Contact destination (HTTPS or plain mailto:)").fill("mailto:roundtrip@example.com")
+  await page.getByLabel("Presentation", { exact: true }).selectOption("published")
+  await page.getByLabel("Your canonical HTTPS URL").fill("https://example.com/edited")
+  for (const entry of await cases.locator("details").all()) {
+    if (await entry.getAttribute("open") === null) await entry.locator("summary").click()
+    await entry.getByLabel("This is an illustrative example").uncheck()
+  }
+  await page.getByLabel("Request search indexing").check()
+  await expect(page.getByText("Download validated site files", { exact: true })).toBeVisible()
+  const complete = await saveProject(page)
+  const value = JSON.parse(complete.bytes)
+  expect(value.copy.brand).toBe("Workspace buyer <literal>")
+  expect(value.portfolio.cases).toHaveLength(2)
+  expect(value.portfolio.cases[0].context).toBe("Line one\nLine two")
+  expect(value.portfolio.contact.href).toBe("mailto:roundtrip@example.com")
+  expect(value.publication).toEqual({ schemaVersion: "1.0.0", mode: "published", canonicalUrl: "https://example.com/edited", indexable: true })
+  if (process.env.PORTFOLIO_ROUNDTRIP_FILE) writeFileSync(process.env.PORTFOLIO_ROUNDTRIP_FILE, complete.bytes, { flag: "wx" })
+  await page.getByText("Download validated site files", { exact: true }).click()
+  const siteDownload = page.waitForEvent("download")
+  await page.getByRole("button", { name: "Download content/site.json", exact: true }).click()
+  expect(JSON.parse(readFileSync(await (await siteDownload).path(), "utf8")).copy).toEqual(value.copy)
+  for (const width of [320, 390, 1440]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true)
+  }
+  expect(errors).toEqual([])
+})
+
+test("the site rebuilt from the browser's saved project renders the exact buyer edits", async ({ page }) => {
+  test.skip(process.env.PORTFOLIO_ROUNDTRIP_CHECK !== "1", "Requires the browser download to be exported and built first")
+  expect((await page.goto("/")).status()).toBe(200)
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Thoughtful work, clearly explained.")
+  await expect(page.locator("#case-title-0")).toHaveText("A complete buyer case <literal>")
+  await expect(page.getByRole("link", { name: "Email the practice" })).toHaveAttribute("href", "mailto:roundtrip@example.com")
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "index, follow")
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", "https://example.com/edited")
+  expect((await page.goto("/edit")).status()).toBe(200)
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue("Workspace buyer <literal>")
+  await expect(page.getByLabel("Presentation", { exact: true })).toHaveValue("published")
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow")
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
 })

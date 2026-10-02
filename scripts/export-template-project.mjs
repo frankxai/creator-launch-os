@@ -15,6 +15,7 @@ export const projectSourceFiles = Object.freeze([
   ".gitignore", "LICENSE", "app/globals.css", "components/template-preview.tsx",
   "components/template-atelier.module.css", "lib/template-catalog.ts", "lib/local-audio.ts",
   "lib/portfolio-content.ts", "lib/site-publication.ts",
+  "lib/portfolio-project.ts", "components/portfolio-workspace.tsx", "components/portfolio-workspace.module.css",
   "eslint.config.mjs", "next.config.ts", "pnpm-lock.yaml", "pnpm-workspace.yaml",
   "postcss.config.mjs", "tsconfig.json",
 ])
@@ -39,12 +40,19 @@ function safeRead(directory, name, limit = 4 * 1024 * 1024) {
   return readFileSync(target)
 }
 
-async function loadCatalog(source) {
-  const compiled = ts.transpileModule(source, {
+async function trustedModuleUrl(source, dependencies = {}) {
+  let compiled = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
   }).outputText
-  // Only this repository's fixed, trusted catalog is executable. Buyer JSON is parsed separately.
-  return import(`data:text/javascript;base64,${Buffer.from(compiled).toString("base64")}`)
+  for (const [specifier, url] of Object.entries(dependencies)) {
+    compiled = compiled.replaceAll(JSON.stringify(specifier), JSON.stringify(url))
+  }
+  // Sources and dependency specifiers come only from the fixed repository allowlist, never buyer JSON.
+  return `data:text/javascript;base64,${Buffer.from(compiled).toString("base64")}`
+}
+
+async function loadCatalog(source, dependencies) {
+  return import(await trustedModuleUrl(source, dependencies))
 }
 
 const siteModule = `import content from "@/content/site.json"
@@ -116,6 +124,22 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 }
 `
 
+const editorPage = `import type { Metadata } from "next"
+import { PortfolioWorkspace } from "@/components/portfolio-workspace"
+import { copy, portfolio, publication } from "@/lib/site-content"
+
+export const metadata: Metadata = {
+  title: "Edit your portfolio", robots: { index: false, follow: false },
+  alternates: { canonical: null },
+}
+
+export default function EditPage() {
+  return <PortfolioWorkspace standalone initialProject={{
+    schemaVersion: "1.0.0", format: "monograph-project", copy, portfolio, publication,
+  }} />
+}
+`
+
 function projectReadme(template) {
   return [
     `# ${template.name} starter`, "",
@@ -126,12 +150,14 @@ function projectReadme(template) {
     "## Personalize", "",
     "Edit content/site.json: brand (48 characters), headline (110), description (280). It is the same schema as the atelier's saved JSON; only display copy and templateId configure this project. Other packet fields cannot add scripts, credentials or integrations. Invalid configurations fail explicitly.", "",
     ...(template.id === "portfolio" ? [
+      "Open /edit to work on identity, cases, contact and publication settings together. Save project downloads monograph-project.json, including incomplete drafts. Resume asks you to review the file before replacing your current edits. Refreshing loses unsaved changes; there is no account or automatic backup. The editor stays noindex even when the saved homepage requests indexing. Noindex is not access control: the editor is public if this source project is deployed.", "",
+      "For a complete validated project, export new standalone source from the Creator Launch OS checkout with pnpm template:projects --project /path/to/monograph-project.json --output /path/to/exports. It creates a fresh folder and preserves existing exports. The standalone editor can instead download the three validated site files for you to copy into content/. Neither download updates a running deployment. Keep backups and verify your edited source before deploying it.", "",
       "Edit content/portfolio.json for the practice description, one to six case studies and contact link. Each case includes your role, summary, context, decision and evidence. Keep illustrative: true for examples. Set it to false only for your own permission-cleared work with supported claims. This declaration is not verification of rights or results.", "",
       "Contact href accepts an HTTPS contact page or a plain mailto: address without query headers. Set it to null to show the unconfigured state. Email links open the visitor's mail application; HTTPS links navigate to your contact page. No form or delivery service is included. Evidence links accept HTTPS URLs without credentials, or null.", "",
       "Portfolio limits (JavaScript string lengths): navigation, practice, introduction and case poster 100; disciplines, case title/role and contact title 160; category and contact label 80; case summary and contact description 600; case context/decision/evidence 2,000 each; link URLs 2,048. All text is required and nonempty; one to six cases; entire portfolio file at most 64 KiB UTF-8.", "",
       "Edit content/publication.json when your real content is ready: keep schemaVersion 1.0.0, set mode to published and canonicalUrl to your actual HTTPS page URL (no credentials, query or fragment). Published presentation removes the example toolbar/footer. It requires a configured contact and all cases declared illustrative: false. Confirm their rights and claims yourself before changing those declarations. These settings do not verify rights, destinations or release readiness. Keep indexable: false until your actual preview is checked; true requests search indexing. Preview mode always requires false. No source editing is needed for these settings.", "",
     ] : ["The rest of the illustrative content is in components/template-preview.tsx and lib/template-catalog.ts. Replace it with your own material before publishing. Editing three copy fields does not personalize every essay or track note.", ""]),
-    "The parent atelier editor is not included.", "",
+    template.id === "portfolio" ? "Monograph includes its dedicated local editor. Other parent studio routes are not included." : "The parent atelier editor is not included.", "",
     `Art direction: ${template.composition}`, "",
     "## What works and what remains", "",
     "The original components, styles, scoped GSAP and reduced-motion behavior are included. All six renderers share the source; content/site.json selects one. Interactive audio uses a visitor-selected local file; no music file is bundled or hosted. Challenge progress lasts for the current page session. The brief builder is deterministic, not a model call. Essays and research entries are illustrative, not verified publications.", "",
@@ -151,31 +177,42 @@ function projectReadme(template) {
 
 /** Pack standalone source projects without installs, API calls, writes to existing exports or deployment. */
 export async function exportTemplateProjects({
-  outputRoot = join(root, "dist", "template-projects"), templateId, inputText, portfolioText,
+  outputRoot = join(root, "dist", "template-projects"), templateId, inputText, portfolioText, projectText,
 } = {}) {
   if (templateId !== undefined && inputText !== undefined) throw new Error("Choose a template or an input file, not both")
+  if (projectText !== undefined && [templateId, inputText, portfolioText].some((value) => value !== undefined)) {
+    throw new Error("A saved Monograph project is a complete export mode; do not combine it with other content options")
+  }
   const sources = new Map(projectSourceFiles.map((name) => [name, safeRead(root, name)]))
   const catalog = await loadCatalog(sources.get("lib/template-catalog.ts").toString("utf8"))
   const imported = inputText === undefined ? undefined : catalog.parseTemplateImport(inputText)
-  const chosenId = imported?.templateId ?? templateId
+  const publicationSource = sources.get("lib/site-publication.ts").toString("utf8")
+  const projectModule = projectText === undefined ? undefined : await loadCatalog(sources.get("lib/portfolio-project.ts").toString("utf8"), {
+    "./template-catalog.ts": await trustedModuleUrl(sources.get("lib/template-catalog.ts").toString("utf8")),
+    "./portfolio-content.ts": await trustedModuleUrl(sources.get("lib/portfolio-content.ts").toString("utf8")),
+    "./site-publication.ts": await trustedModuleUrl(publicationSource),
+  })
+  const saved = projectModule?.portfolioProjectFiles(projectModule.parsePortfolioProject(projectText))
+  const chosenId = saved ? "portfolio" : imported?.templateId ?? templateId
   const selected = chosenId === undefined ? catalog.templates : [catalog.findTemplate(chosenId)]
   if (selected.some((item) => !item)) throw new Error("Unknown template ID")
   if (portfolioText !== undefined && chosenId !== "portfolio") {
     throw new Error("Custom portfolio content requires a single portfolio export")
   }
   const portfolioModule = await loadCatalog(sources.get("lib/portfolio-content.ts").toString("utf8"))
-  const portfolio = portfolioModule.parsePortfolioContent(portfolioText ?? json(portfolioModule.examplePortfolio))
+  const portfolio = saved?.["content/portfolio.json"] ?? portfolioModule.parsePortfolioContent(portfolioText ?? json(portfolioModule.examplePortfolio))
   const packageBytes = safeRead(root, "package.json")
   const originalPackage = JSON.parse(packageBytes)
   if (originalPackage.license !== "MIT") throw new Error("Review source licensing before export")
   const packages = selected.map((template) => {
     if (!/^[a-z]+$/.test(template.id)) throw new Error("Unsafe template ID")
-    const copy = imported?.copy ?? template.copy
+    const copy = saved?.["content/site.json"].copy ?? imported?.copy ?? template.copy
     const files = new Map(sources)
     files.set("content/site.json", json({ schemaVersion: "1.0.0", templateId: template.id, copy }))
-    files.set("content/publication.json", json({ schemaVersion: "1.0.0", mode: "preview", canonicalUrl: null, indexable: false }))
+    files.set("content/publication.json", json(saved?.["content/publication.json"] ?? { schemaVersion: "1.0.0", mode: "preview", canonicalUrl: null, indexable: false }))
     files.set("lib/site-content.ts", siteModule)
     if (template.id === "portfolio") {
+      files.set("app/edit/page.tsx", editorPage)
       files.set("content/portfolio.json", json(portfolio))
       files.set("lib/site-content.ts", siteModule.replace("export const portfolio = undefined", [
         'import portfolioContent from "@/content/portfolio.json"',
@@ -257,12 +294,13 @@ export function parseArguments(args) {
     if (seen.has(flag)) throw new Error(`Repeated option: ${flag}`)
     seen.add(flag)
     if (flag === "--all" || flag === "--help") { options[flag.slice(2)] = true; continue }
-    const key = { "--template": "templateId", "--input": "input", "--portfolio": "portfolioInput", "--output": "outputRoot", "--verify": "verify" }[flag]
+    const key = { "--template": "templateId", "--input": "input", "--project": "projectInput", "--portfolio": "portfolioInput", "--output": "outputRoot", "--verify": "verify" }[flag]
     if (!key || !args[index + 1] || args[index + 1].startsWith("--")) throw new Error(`Invalid option: ${flag}`)
     options[key] = args[++index]
   }
-  if ([options.all, options.templateId, options.input, options.verify].filter(Boolean).length > 1 ||
-    (options.verify && (options.outputRoot || options.portfolioInput))) throw new Error("Choose one export mode or verification")
+  if ([options.all, options.templateId, options.input, options.projectInput, options.verify].filter(Boolean).length > 1 ||
+    ((options.verify || options.projectInput) && options.portfolioInput) ||
+    (options.verify && options.outputRoot)) throw new Error("Choose one export mode or verification")
   return options
 }
 
@@ -270,7 +308,7 @@ if (process.argv[1] && resolve(process.argv[1]) === scriptPath) {
   try {
     const options = parseArguments(process.argv.slice(2))
     if (options.help) {
-      process.stdout.write("Export: pnpm template:projects [--all | --template music | --input saved.json] [--output directory]\nPortfolio: pnpm template:projects --template portfolio --portfolio portfolio.json\nVerify: pnpm template:projects --verify exported-project-directory\n")
+      process.stdout.write("Export: pnpm template:projects [--all | --template music | --input saved.json | --project monograph-project.json] [--output directory]\nPortfolio: pnpm template:projects --template portfolio --portfolio portfolio.json\nVerify: pnpm template:projects --verify exported-project-directory\n")
     } else if (options.verify) {
       process.stdout.write(json(verifyTemplateProject(options.verify)))
     } else {
@@ -281,6 +319,10 @@ if (process.argv[1] && resolve(process.argv[1]) === scriptPath) {
       if (options.portfolioInput) {
         const input = resolve(options.portfolioInput)
         options.portfolioText = safeRead(dirname(input), basename(input), 64 * 1024).toString("utf8")
+      }
+      if (options.projectInput) {
+        const input = resolve(options.projectInput)
+        options.projectText = safeRead(dirname(input), basename(input), 256 * 1024).toString("utf8")
       }
       const result = await exportTemplateProjects(options)
       process.stdout.write(`Exported ${result.index.projects.length} standalone source projects.\n${result.directory}\n${status}\n`)
