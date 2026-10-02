@@ -12,7 +12,9 @@
 .workspace p { font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
 .editor h2 span { font-size: 13px; color: #565d4a; }
 .editor label, .field label { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; margin: 16px 0 8px; }
-.field label span { font-size: 11px; color: #565d4a; }
+.fieldLabel { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 16px 0 8px; }
+.fieldLabel label { margin: 0; }
+.fieldLabel span { font-size: 11px; color: #565d4a; }
 .editor :where(input:not([type="checkbox"]), textarea, select) { width: 100%; min-height: 44px; border: 1px solid #abb09e; border-radius: 4px; padding: 10px 12px; font-size: 16px; background: #fffef7; }
 .editor textarea { resize: vertical; }
 .workspace button { border: 1px solid #abb09e; border-radius: 4px; padding: 10px 14px; min-height: 44px; font-size: 13px; background: #e6e9db; white-space: normal; overflow-wrap: anywhere; }

@@ -25,7 +25,7 @@ function Field({ id, label, value, maximum, onChange, multiline = false }: {
 }) {
   const shared = { id, value, maxLength: maximum, onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChange(event.target.value) }
   return <div className={styles.field}>
-    <label htmlFor={id}>{label}<span aria-hidden="true">{value.length}/{maximum}</span></label>
+    <div className={styles.fieldLabel}><label htmlFor={id}>{label}</label><span aria-hidden="true">{value.length}/{maximum}</span></div>
     {multiline ? <textarea {...shared} rows={3} /> : <input {...shared} />}
   </div>
 }
