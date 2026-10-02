@@ -130,7 +130,19 @@ jobs:
           PORTFOLIO_PROJECT: ${{ steps.portfolio.outputs.directory }}
           PORTFOLIO_PUBLICATION: ${{ matrix.publication }}
           PORTFOLIO_ROUNDTRIP_FILE: ${{ runner.temp }}/monograph-workspace-${{ matrix.publication }}.json
+          PORTFOLIO_CAPTURE_DIR: ${{ matrix.publication == 'preview' && format('{0}/monograph-visual-review', runner.temp) || '' }}
         run: pnpm exec playwright test --config playwright.portfolio.config.mjs
+      - name: Preserve private workspace captures and their provenance
+        if: always() && matrix.publication == 'preview'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: monograph-workspace-review-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/monograph-visual-review/
+            ${{ runner.temp }}/monograph-workspace-preview.json
+            test-results/**/error-context.md
+          if-no-files-found: error
+          retention-days: 14
       - name: Export the completed project downloaded by the browser
         if: matrix.publication == 'preview'
         id: roundtrip

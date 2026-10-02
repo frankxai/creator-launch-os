@@ -127,8 +127,8 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
             </div>
           </section>
 
-          <section aria-labelledby="contact-title">
-            <h2 id="contact-title">Contact</h2>
+          <section aria-labelledby="workspace-contact-heading">
+            <h2 id="workspace-contact-heading">Contact</h2>
             {([ ["title", "Contact heading", 160], ["description", "Contact description", 600], ["label", "Contact link label", 80] ] as const).map(([key, label, maximum]) =>
               <Field key={key} id={`contact-${key}`} label={label} value={draft.portfolio.contact[key]} maximum={maximum} multiline={key === "description"}
                 onChange={(value) => update({ ...draft, portfolio: { ...draft.portfolio, contact: { ...draft.portfolio.contact, [key]: value } } })} />)}

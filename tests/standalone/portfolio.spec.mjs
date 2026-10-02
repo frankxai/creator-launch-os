@@ -1,5 +1,7 @@
 import { test, expect } from "@playwright/test"
-import { readFileSync, writeFileSync } from "node:fs"
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { createHash } from "node:crypto"
+import { join } from "node:path"
 
 test("exported buyer content renders as text, fits each viewport and supports keyboard interaction", async ({ page }) => {
   test.skip(process.env.PORTFOLIO_ROUNDTRIP_CHECK === "1", "This check uses the original adversarial fixture")
@@ -64,12 +66,43 @@ async function saveProject(page) {
 
 test("workspace saves incomplete drafts, reviews imports, preserves removals and exports the completed project", async ({ page }) => {
   test.skip(process.env.PORTFOLIO_ROUNDTRIP_CHECK === "1", "Already exercised before the exported site rebuild")
+  page.setDefaultTimeout(10000)
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
   expect((await page.goto("/edit")).status()).toBe(200)
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Build your portfolio.")
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow")
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
+  expect(await page.locator("[id]").evaluateAll((nodes) => {
+    const ids = nodes.map((node) => node.id)
+    return ids.filter((id, index) => ids.indexOf(id) !== index)
+  })).toEqual([])
+  if (process.env.PORTFOLIO_CAPTURE_DIR) {
+    const directory = process.env.PORTFOLIO_CAPTURE_DIR
+    mkdirSync(directory, { recursive: true })
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.emulateMedia({ reducedMotion: "reduce" })
+      await page.evaluate(() => document.fonts.ready)
+      const name = `monograph-workspace-${width}.png`
+      const bytes = await page.screenshot({ path: join(directory, name), animations: "disabled" })
+      const provenance = {
+        $schema: "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+        timestamp: new Date().toISOString(), asset_id: `monograph-workspace-${width}`, version_id: process.env.GITHUB_SHA,
+        agent: "Codex", agent_session: "01a0f725-83df-7ef1-8bc0-2979b9f33cd6",
+        provider: "Playwright", model: `Chromium ${page.context().browser().version()}`, seed: null,
+        prompt: `Capture the actual standalone Monograph /edit route at ${width}x1000 with reduced motion. Use the versioned adversarial QA fixture; no generated imagery or marketing claims. Capture the initial editor before edits.`,
+        source_method: "product-capture", source_path: "/edit", viewport: { width, height: 1000 },
+        sha256: createHash("sha256").update(bytes).digest("hex"), image_path: name, sidecar_path: `${name}.vis.provenance.json`,
+        rights: "Owned MIT product UI and synthetic test content", alt: `Monograph editor with identity fields and a portfolio preview at ${width}px`,
+        review: "Unreviewed private QA capture; synthetic data, not customer evidence", placement: "private-release-review", public_release: false,
+        schema_validation: "Unavailable: referenced public schema returned 404 on 2026-10-02",
+      }
+      writeFileSync(join(directory, provenance.sidecar_path), JSON.stringify(provenance, null, 2) + "\n", { flag: "wx" })
+      appendFileSync(join(directory, "image-generation-ledger.jsonl"), JSON.stringify(provenance) + "\n")
+    }
+    await page.setViewportSize({ width: 1280, height: 900 })
+  }
   await page.getByLabel("Name", { exact: true }).fill("Workspace buyer <literal>")
   await page.getByLabel("Headline", { exact: true }).fill("Thoughtful work, clearly explained.")
   await page.getByLabel("Description", { exact: true }).fill("A buyer-edited portfolio with supported case evidence.")
