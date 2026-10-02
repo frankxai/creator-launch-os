@@ -7,6 +7,8 @@ import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import test from "node:test"
 import ts from "typescript"
+import { examplePortfolio } from "../lib/portfolio-content.ts"
+import { getTemplate } from "../lib/template-catalog.ts"
 import { exportTemplateProjects, parseArguments, projectSourceFiles, verifyTemplateProject } from "../scripts/export-template-project.mjs"
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..")
@@ -37,6 +39,7 @@ test("all six exports include independent source, compatible manifests and verif
     assert.deepEqual(manifest.devDependencies, original.devDependencies)
     assert.equal(manifest.license, "MIT")
     assert.equal(readJson(join(project, "content/site.json")).templateId, entry.templateId)
+    assert.deepEqual(readJson(join(project, "content/publication.json")), { schemaVersion: "1.0.0", mode: "preview", canonicalUrl: null, indexable: false })
     assert.match(readFileSync(join(project, "README.md"), "utf8"), /pnpm install --frozen-lockfile/)
     assert.ok(!existsSync(join(project, ".env.local")))
     assert.ok(!existsSync(join(project, ".vercel")))
@@ -89,8 +92,56 @@ test("invalid or oversized inputs leave no output", async (t) => {
     { templateId: "../../escape" }, { inputText: "{" },
     { inputText: JSON.stringify({ schemaVersion: "1.0.0", templateId: "music", copy: { brand: "x".repeat(49), headline: "h", description: "d" } }) },
     { inputText: " ".repeat(65537) }, { templateId: "music", inputText: "{}" },
+    { templateId: "portfolio", portfolioText: "{" },
+    { templateId: "music", portfolioText: JSON.stringify(examplePortfolio) },
+    { portfolioText: JSON.stringify(examplePortfolio) },
   ]) await assert.rejects(exportTemplateProjects({ outputRoot, ...options }))
   assert.ok(!existsSync(outputRoot))
+})
+
+test("portfolio exports carry complete buyer content and discard unrelated properties", async (t) => {
+  const value = structuredClone(examplePortfolio)
+  value.contact.href = "mailto:designer@example.com"
+  value.cases[0].title = "My project <literal>"
+  value.scripts = { postinstall: "do not execute" }
+  const { directory } = await exportTemplateProjects({ outputRoot: temporary(t), templateId: "portfolio", portfolioText: JSON.stringify(value) })
+  const location = join(directory, "portfolio")
+  const content = readJson(join(location, "content/portfolio.json"))
+  assert.equal(content.contact.href, value.contact.href)
+  assert.equal(content.cases[0].title, value.cases[0].title)
+  assert.ok(!("scripts" in content))
+  assert.ok(!readFileSync(join(location, "app/page.tsx"), "utf8").includes(value.cases[0].title))
+  assert.match(readFileSync(join(location, "lib/site-content.ts"), "utf8"), /parsePortfolioContent/)
+  assert.equal(verifyTemplateProject(location).status, "LISTED_BYTES_VERIFIED")
+})
+
+test("a complete workspace project exports its exact copy, cases and publication into independent source", async (t) => {
+  const draft = { schemaVersion: "1.0.0", format: "monograph-project", copy: { ...getTemplate("portfolio").copy, brand: "Workspace buyer" },
+    portfolio: structuredClone(examplePortfolio), publication: { schemaVersion: "1.0.0", mode: "published", canonicalUrl: "https://example.com/my-work", indexable: true },
+    scripts: { postinstall: "never execute this" } }
+  draft.portfolio.cases[0].illustrative = false
+  draft.portfolio.contact.href = "mailto:buyer@example.com"
+  const outputRoot = temporary(t)
+  const { directory, index } = await exportTemplateProjects({ outputRoot, projectText: JSON.stringify(draft) })
+  assert.deepEqual(index.projects.map((entry) => entry.templateId), ["portfolio"])
+  const project = join(directory, "portfolio")
+  assert.deepEqual(readJson(join(project, "content/site.json")).copy, draft.copy)
+  assert.deepEqual(readJson(join(project, "content/portfolio.json")), draft.portfolio)
+  assert.deepEqual(readJson(join(project, "content/publication.json")), draft.publication)
+  assert.ok(existsSync(join(project, "app/edit/page.tsx")))
+  assert.match(readFileSync(join(project, "app/edit/page.tsx"), "utf8"), /index: false, follow: false/)
+  assert.ok(!readFileSync(join(project, "package.json"), "utf8").includes("never execute this"))
+  assert.equal(verifyTemplateProject(project).status, "LISTED_BYTES_VERIFIED")
+  const saved = join(outputRoot, "saved project.json")
+  writeFileSync(saved, JSON.stringify(draft))
+  assert.match(execFileSync(process.execPath, [join(root, "scripts/export-template-project.mjs"), "--project", saved, "--output", outputRoot], { encoding: "utf8" }), /Exported 1/)
+  draft.portfolio.cases[0].evidence = ""
+  await assert.rejects(exportTemplateProjects({ outputRoot: join(outputRoot, "invalid"), projectText: JSON.stringify(draft) }))
+  assert.ok(!existsSync(join(outputRoot, "invalid")))
+  for (const options of [{ templateId: "portfolio" }, { inputText: "{}" }, { portfolioText: "{}" }]) {
+    await assert.rejects(exportTemplateProjects({ outputRoot, projectText: JSON.stringify(draft), ...options }), /complete export mode/)
+  }
+  for (const args of [["--project", saved, "--template", "portfolio"], ["--project", saved, "--portfolio", saved], ["--all", "--project", saved]]) assert.throws(() => parseArguments(args))
 })
 
 test("receipt traversal, duplicates and omitted required files fail closed", async (t) => {
