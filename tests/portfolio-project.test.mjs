@@ -34,7 +34,7 @@ test("complete site export preserves every section and publication choices as fi
 })
 
 test("unsafe destinations stay editable draft data and never enter a rendered site", () => {
-  for (const value of ["javascript:alert(1)", "https://user:password@example.com", "mailto:a@example.com?bcc=b@example.com"]) {
+  for (const value of ["javascript:alert(1)", "http://example.com", "https://user:password@example.com", "mailto:a@example.com?bcc=b@example.com"]) {
     const draft = project()
     draft.portfolio.contact.href = value
     assert.equal(parsePortfolioProject(JSON.stringify(draft)).portfolio.contact.href, value)
