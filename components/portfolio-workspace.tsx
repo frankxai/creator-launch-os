@@ -78,6 +78,13 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
           Refreshing resets unsaved edits; files stay on your device.</p>
       </header>
 
+      <div className={styles.projectBar} role="group" aria-label="Project actions">
+        <button type="button" onClick={() => saveProject("monograph-project.json")}>Save project</button>
+        <a href="#preview-heading">Preview and site files</a>
+        <a href="#resume-title">Resume a project</a>
+        <p role="status" aria-live="polite">{status || "Save a project to keep these edits."}</p>
+      </div>
+
       <div className={styles.layout}>
         <div className={styles.editor}>
           <section aria-labelledby="identity-title">
@@ -163,12 +170,10 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
           </div> : <div className={styles.empty}><p>Complete the fields below to preview this version. Your draft can still be saved.</p><p role="status">{error}</p></div>}
           <div className={styles.save}>
             <h3>Keep your work</h3>
-            <button type="button" onClick={() => saveProject("monograph-project.json")}>Save project</button>
-            <p>Includes identity, every case, contact and publication settings. Use this file to resume or export a standalone source project.</p>
+            <p>Save project in the action bar includes identity, every case, contact and publication settings. Use this file to resume or export a standalone source project.</p>
             {files && <details><summary>Download validated site files</summary><p>Replace only the matching files in your own exported project&apos;s content folder. Keep a backup first. This does not update the running site.</p>
               {Object.entries(files).map(([name, value]) => <button key={name} type="button" onClick={() => { download(name.split("/").at(-1)!, value); setStatus(`${name} download requested.`) }}>Download {name}</button>)}
             </details>}
-            <p role="status" aria-live="polite">{status}</p>
           </div>
           <section className={styles.save} aria-labelledby="resume-title">
             <h3 id="resume-title">Resume a saved project</h3>

@@ -4,7 +4,7 @@ The Monograph source project supports one to six case studies and a contact dest
 
 ## Edit, save and resume
 
-Open `/studio/templates/portfolio/edit` in Creator Launch OS or `/edit` in a standalone Monograph export. The workspace previews validated content, offers full or 390px canvas widths, and downloads the entire draft as `monograph-project.json`. Incomplete drafts are allowed. Refreshing discards unsaved changes; save a file to keep your work. Files are read on the device and never uploaded by this editor.
+Open `/studio/templates/portfolio/edit` in Creator Launch OS or `/edit` in a standalone Monograph export. A persistent action bar keeps Save project, preview and resume within reach while editing long cases. The workspace previews validated content, offers full or 390px canvas widths, and downloads the entire draft as `monograph-project.json`. Incomplete drafts are allowed. Refreshing discards unsaved changes; save a file to keep your work. Files are read on the device and never uploaded by this editor.
 
 Resume shows an incoming project for review before replacing current edits. You can download the current project first or cancel. Removing a case offers undo until the next case edit or addition. One to six cases are supported. Saved projects are bounded to 256 KiB UTF-8 and accept only the documented display fields; unknown properties are discarded.
 
