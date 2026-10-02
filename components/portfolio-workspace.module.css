@@ -1,5 +1,6 @@
 .workspace { padding-bottom: 64px; }
 .workspace :where(input, textarea, select, button, a, summary):focus-visible { outline: 3px solid #536c29; outline-offset: 4px; }
+.workspace :where(h2, h3, input, textarea, select, button, a, summary) { scroll-margin-top: 200px; scroll-margin-bottom: 24px; }
 .header { padding: 20px 0 36px; max-width: 750px; }
 .header a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; text-decoration: underline; }
 .header > p { margin-top: 16px; line-height: 1.7; }
