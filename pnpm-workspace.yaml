@@ -1,8 +1,11 @@
+packages:
+  - "."
+  - "packages/*"
+
 allowBuilds:
   unrs-resolver: false
 
-# Security floors. Dependabot security updates could not lift these transitive
-# dependencies (latest-resolvable < first-patched), so the floor is pinned here.
-# Bounded to the current major/minor line; drop once upstream ranges catch up.
+# GHSA-rgj7-g3m4-5g8c: patched prebuilt libheif is included from sharp 0.35.4.
+# Keep Next.js's transitive image processor on the reviewed patch release.
 overrides:
-  sharp: '^0.35.4' # GHSA via next>sharp, fixed in 0.35.4
+  sharp: 0.35.4
