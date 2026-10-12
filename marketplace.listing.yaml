@@ -2,8 +2,8 @@ schema_version: "1.0.0"
 listing_id: listing_creator_launch_os_canonical
 product_id: product_creator_launch_os
 sku_id: sku_creator_launch_os_v1
-state: qa_ready
-canonical_offer_url: pending_verified_production_url
+state: published
+canonical_offer_url: https://creator-launch-os-starlight-intelligence.vercel.app
 title: Creator Launch OS
 short_description: Deploy a clear multi-product storefront with an honest checkout handoff and a built-in release studio.
 buyer_job: launch_and_maintain_a_small_digital_product_catalog
