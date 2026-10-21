@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "product_id": "product_creator_launch_os",
+  "sku_id": "sku_creator_launch_os_v1",
+  "brand_id": "brand_gencreator",
+  "title": "Creator Launch OS",
+  "version": "1.1.0",
+  "promise": "Deploy a clear multi-product storefront with an honest checkout handoff and a built-in release studio.",
+  "core": {
+    "name": "Free core",
+    "license": "MIT",
+    "price_state": "free",
+    "includes": [
+      "Deployable Next.js storefront, catalog and product pages",
+      "Honest checkout handoff with a no-payment preview",
+      "Merchant-agnostic commerce adapter with a fixture test mode",
+      "Sample release studio and six editable template studies",
+      "Contract tests, CI and a reproducible release package"
+    ]
+  },
+  "kit": {
+    "name": "Commercial Kit",
+    "license": "commercial_terms_draft",
+    "contents_manifest": "commercial/kit/kit.manifest.json",
+    "includes": [
+      "Launch playbook from fresh clone to first paid order",
+      "Product, listing and offer manifest pack",
+      "Merchant integration guide for the commerce adapter",
+      "Fulfillment and reconciliation runbook",
+      "Refund and support policy templates",
+      "Funnel telemetry schema"
+    ],
+    "excludes": [
+      "A live merchant adapter until one merchant is chosen and reviewed",
+      "Hosting, merchant fees or a merchant account",
+      "Done-for-you setup or custom engineering"
+    ]
+  },
+  "price": {
+    "state": "decision_required",
+    "amount": null,
+    "currency": "USD"
+  },
+  "merchant": {
+    "state": "decision_required",
+    "adapter": null
+  },
+  "refund": {
+    "state": "draft",
+    "window_days": 14,
+    "policy": "commercial/policies/REFUND-POLICY.md"
+  },
+  "support": {
+    "state": "draft",
+    "policy": "commercial/policies/SUPPORT-POLICY.md",
+    "free_core_channel": "https://github.com/frankxai/creator-launch-os/issues",
+    "kit_channel": "decision_required"
+  },
+  "activation_event": {
+    "core": "deployed_storefront_with_first_real_product_configured",
+    "kit": "delivery_opened"
+  },
+  "canonical_offer_url": "https://creator-launch-os-starlight-intelligence.vercel.app/kit"
+}

@@ -33,6 +33,9 @@ export function SiteFooter() {
           <Link href="/studio" className="mt-3 inline-block text-xs font-semibold text-ink/70 hover:text-ink">
             Open the sample studio →
           </Link>
+          <Link href="/kit" className="mt-3 block text-xs font-semibold text-ink/70 hover:text-ink sm:ml-auto">
+            Free core and Commercial Kit →
+          </Link>
         </div>
       </div>
     </footer>
