@@ -26,7 +26,10 @@
     "/products/[slug]",
     "/checkout/[slug]",
     "/studio",
-    "/api/health"
+    "/kit",
+    "/api/health",
+    "/api/commerce/webhook",
+    "/api/commerce/delivery"
   ],
   "requiredEnvironmentVariables": [],
   "optionalEnvironmentVariables": [
@@ -34,7 +37,12 @@
     "NEXT_PUBLIC_CONTACT_EMAIL",
     "NEXT_PUBLIC_CHECKOUT_GUIDE_URL",
     "NEXT_PUBLIC_CHECKOUT_CONSOLE_URL",
-    "NEXT_PUBLIC_CHECKOUT_AUDIO_URL"
+    "NEXT_PUBLIC_CHECKOUT_AUDIO_URL",
+    "COMMERCE_MODE",
+    "COMMERCE_MERCHANT",
+    "COMMERCE_WEBHOOK_SECRET",
+    "COMMERCE_DELIVERY_SECRET",
+    "NEXT_PUBLIC_KIT_CHECKOUT_URL"
   ],
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",

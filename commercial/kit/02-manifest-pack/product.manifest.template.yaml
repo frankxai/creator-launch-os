@@ -1,0 +1,17 @@
+# Restates offer.facts.json for your operating registry. check-offer-facts fails on drift.
+schema_version: "1.0.0"
+product_id: product_your_product
+sku_id: sku_your_product_v1
+name: Your Product
+brand_id: brand_your_brand
+version: "1.0.0"
+offer_facts: offer.facts.json
+status: concept
+activation_event: your_core_activation_event
+kit_activation_event: delivery_opened
+commercial:
+  price_state: decision_required
+  merchant: decision_required
+refund:
+  state: draft
+stop_rule: pause_paid_edition_if_checkout_delivery_or_support_cannot_be_proven_end_to_end

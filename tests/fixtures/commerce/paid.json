@@ -1,0 +1,12 @@
+{
+  "id": "evt_fixture_paid_0001",
+  "type": "order.paid",
+  "merchant": "fixture",
+  "orderId": "ord_fixture_0001",
+  "sku": "sku_creator_launch_os_v1",
+  "amount": 100,
+  "currency": "USD",
+  "email": "Rehearsal.Buyer@example.invalid",
+  "occurredAt": "2026-10-21T09:00:00.000Z",
+  "test": true
+}

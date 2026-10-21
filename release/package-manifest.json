@@ -71,6 +71,26 @@
     "lib/local-audio.ts",
     "tests/local-audio.test.mjs",
     "playwright.config.mjs",
-    "tests/browser/atelier.spec.mjs"
+    "tests/browser/atelier.spec.mjs",
+    "app/kit/page.tsx",
+    "app/api/commerce/webhook/route.ts",
+    "app/api/commerce/delivery/route.ts",
+    "lib/commerce/engine.ts",
+    "lib/commerce/config.ts",
+    "lib/commerce/server.ts",
+    "offer.facts.json",
+    "scripts/check-offer-facts.mjs",
+    "scripts/commerce-rehearsal.mjs",
+    "scripts/package-kit.mjs",
+    "tests/commerce-loop.test.mjs",
+    "tests/offer-facts.test.mjs",
+    "tests/kit-package.test.mjs",
+    "tests/support/load-commerce.mjs",
+    "tests/fixtures/commerce/paid.json",
+    "tests/fixtures/commerce/refunded.json",
+    "tests/fixtures/commerce/README.md",
+    "docs/release/READINESS.md",
+    "docs/release/RIGHTS-AND-PROVENANCE.md",
+    "tests/browser/kit.spec.mjs"
   ]
 }
