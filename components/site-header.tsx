@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site"
 export function SiteHeader() {
   return (
     <header className="border-b border-line bg-paper">
-      <div className="shell flex min-h-18 items-center justify-between gap-6 py-4">
+      <div className="shell flex min-h-18 flex-wrap items-center justify-between gap-x-6 gap-y-3 py-4">
         <Link href="/" className="group inline-flex items-center gap-3" aria-label="Edition Zero home">
           <span className="grid size-8 place-items-center rounded-full bg-ink text-xs font-bold text-paper transition-transform group-hover:-rotate-6">
             0

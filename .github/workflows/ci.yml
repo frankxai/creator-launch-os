@@ -38,7 +38,6 @@ jobs:
       - name: Test contracts
         run: pnpm run test
       - name: Build production application
-        if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
         run: pnpm run build
       - name: Install Chromium for the built-app checks
         if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
@@ -67,3 +66,110 @@ jobs:
           if-no-files-found: error
           retention-days: 14
           compression-level: 0
+
+  portfolio-export:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        publication: [preview, published]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10.28.0
+      - name: Set up buyer runtime
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Install exporter dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Export default buyer delivery
+        if: matrix.publication == 'preview'
+        id: buyer
+        env:
+          PORTFOLIO_EXPORT_ROOT: ${{ runner.temp }}/monograph-buyer
+        run: node scripts/prepare-portfolio-check.mjs --buyer >> "$GITHUB_OUTPUT"
+      - name: Archive source before installing dependencies
+        if: matrix.publication == 'preview'
+        env:
+          BUYER_PROJECT: ${{ steps.buyer.outputs.directory }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/monograph-delivery"
+          tar -czf "$RUNNER_TEMP/monograph-delivery/monograph-source.tar.gz" -C "$BUYER_PROJECT" .
+          cd "$RUNNER_TEMP/monograph-delivery"
+          sha256sum monograph-source.tar.gz > SHA256SUMS
+      - name: Upload buyer delivery candidate
+        if: matrix.publication == 'preview'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: monograph-source-${{ github.sha }}
+          path: ${{ runner.temp }}/monograph-delivery/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      - name: Export adversarial buyer content
+        id: portfolio
+        env:
+          PORTFOLIO_EXPORT_ROOT: ${{ runner.temp }}/portfolio-export
+        run: node scripts/prepare-portfolio-check.mjs ${{ matrix.publication == 'published' && '--published' || '' }} >> "$GITHUB_OUTPUT"
+      - name: Install standalone dependencies from its own lockfile
+        working-directory: ${{ steps.portfolio.outputs.directory }}
+        run: pnpm install --frozen-lockfile
+      - name: Verify standalone types, lint and production build
+        working-directory: ${{ steps.portfolio.outputs.directory }}
+        run: pnpm verify
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Exercise standalone content, narrow layouts, keyboard and reduced motion
+        env:
+          PORTFOLIO_PROJECT: ${{ steps.portfolio.outputs.directory }}
+          PORTFOLIO_PUBLICATION: ${{ matrix.publication }}
+          PORTFOLIO_ROUNDTRIP_FILE: ${{ runner.temp }}/monograph-workspace-${{ matrix.publication }}.json
+          PORTFOLIO_CAPTURE_DIR: ${{ matrix.publication == 'preview' && format('{0}/monograph-visual-review', runner.temp) || '' }}
+        run: pnpm exec playwright test --config playwright.portfolio.config.mjs
+      - name: Preserve private workspace captures and their provenance
+        if: always() && matrix.publication == 'preview'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: monograph-workspace-review-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/monograph-visual-review/
+            ${{ runner.temp }}/monograph-workspace-preview.json
+            test-results/**/error-context.md
+          if-no-files-found: error
+          retention-days: 14
+      - name: Export the completed project downloaded by the browser
+        if: matrix.publication == 'preview'
+        id: roundtrip
+        env:
+          WORKSPACE_FILE: ${{ runner.temp }}/monograph-workspace-preview.json
+          ROUNDTRIP_ROOT: ${{ runner.temp }}/monograph-roundtrip
+        run: |
+          node --input-type=module -e 'import { readFileSync } from "node:fs"; import { exportTemplateProjects } from "./scripts/export-template-project.mjs"; const result = await exportTemplateProjects({ outputRoot: process.env.ROUNDTRIP_ROOT, projectText: readFileSync(process.env.WORKSPACE_FILE, "utf8") }); console.log("directory=" + result.directory + "/portfolio")' >> "$GITHUB_OUTPUT"
+      - name: Install and build the browser-edited source using its own dependencies
+        if: matrix.publication == 'preview'
+        working-directory: ${{ steps.roundtrip.outputs.directory }}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm verify
+      - name: Confirm the rebuilt site preserves every browser edit and safe editor metadata
+        if: matrix.publication == 'preview'
+        env:
+          PORTFOLIO_PROJECT: ${{ steps.roundtrip.outputs.directory }}
+          PORTFOLIO_ROUNDTRIP_CHECK: "1"
+        run: pnpm exec playwright test --config playwright.portfolio.config.mjs --grep "site rebuilt from"
+      - name: Confirm unfinished cases prevent published builds
+        if: matrix.publication == 'preview'
+        working-directory: ${{ steps.portfolio.outputs.directory }}
+        run: |
+          node --input-type=module -e 'import { writeFileSync } from "node:fs"; writeFileSync("content/publication.json", JSON.stringify({ schemaVersion: "1.0.0", mode: "published", canonicalUrl: "https://example.com/portfolio", indexable: false }))'
+          if pnpm build > "$RUNNER_TEMP/publication-rejection.log" 2>&1; then
+            cat "$RUNNER_TEMP/publication-rejection.log"
+            exit 1
+          fi
+          node --input-type=module -e 'import { readFileSync } from "node:fs"; if (!readFileSync(process.env.RUNNER_TEMP + "/publication-rejection.log", "utf8").includes("Replace illustrative cases and configure the contact destination")) throw new Error("Build failed for an unrelated reason")'

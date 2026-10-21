@@ -5,6 +5,7 @@ import { ArrowDown, ArrowRight, Check, Headphones, Plus, X } from "lucide-react"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
 import { localAudioSource } from "@/lib/local-audio"
+import { examplePortfolio, type PortfolioContent } from "@/lib/portfolio-content"
 
 import {
   briefChecklist,
@@ -16,13 +17,14 @@ import styles from "./template-atelier.module.css"
 
 gsap.registerPlugin(useGSAP)
 
-type PreviewProps = { template: TemplateDefinition; copy: TemplateCopy }
+type PreviewProps = { template: TemplateDefinition; copy: TemplateCopy; portfolio?: PortfolioContent; standalone?: boolean }
 
-function Heading({ copy, eyebrow }: { copy: TemplateCopy; eyebrow: string }) {
+function Heading({ copy, eyebrow, level = 2 }: { copy: TemplateCopy; eyebrow: string; level?: 1 | 2 }) {
+  const Title = level === 1 ? "h1" : "h2"
   return (
     <div data-motion-item>
       <p className={styles.kicker}>{eyebrow}</p>
-      <h2 className={styles.headline}>{copy.headline}</h2>
+      <Title className={styles.headline}>{copy.headline}</Title>
       <p className={styles.description}>{copy.description}</p>
     </div>
   )
@@ -293,67 +295,60 @@ function ToolPreview({ copy }: { copy: TemplateCopy }) {
   )
 }
 
-function PortfolioPreview({ copy }: { copy: TemplateCopy }) {
+function PortfolioPreview({ copy, content, standalone }: { copy: TemplateCopy; content: PortfolioContent; standalone: boolean }) {
+  const SectionTitle = standalone ? "h2" : "h3"
   return (
     <>
-      <PreviewNav brand={copy.brand}>Independent designer / Selected work</PreviewNav>
+      <PreviewNav brand={copy.brand}>{content.navigation}</PreviewNav>
       <div className={styles.portfolioHero}>
         <p className={styles.portfolioIndex}>
-          A considered practice
+          {content.practice}
           <br />
-          <span>Design / Systems / Stories</span>
+          <span>{content.disciplines}</span>
         </p>
-        <Heading copy={copy} eyebrow="A short introduction" />
+        <Heading copy={copy} eyebrow={content.introduction} level={standalone ? 1 : 2} />
       </div>
-      <section className={styles.caseStudy} aria-labelledby="case-title">
+      {content.cases.map((study, index) => (
+      <section key={index} className={styles.caseStudy} aria-labelledby={`case-title-${index}`}>
         <div className={styles.casePoster} data-motion-item>
-          <span>Selected study / 01</span>
-          <p>
-            Less,
-            <br />
-            <em>
-              but with
-              <br />
-              intention.
-            </em>
-          </p>
-          <span>An illustrative editorial system</span>
+          <span>{study.illustrative ? "Illustrative study" : "Selected work"} / {String(index + 1).padStart(2, "0")}</span>
+          <p>{study.poster}</p>
+          <span>{study.role}</span>
         </div>
         <div className={styles.caseCopy}>
-          <p className={styles.kicker}>Case study / Editorial design</p>
-          <h3 id="case-title">A publication that makes space for reading.</h3>
-          <p>
-            A sample case-study structure. Replace it with your own work, responsibilities and
-            permission-cleared evidence.
-          </p>
+          <p className={styles.kicker}>Case study / {study.category}</p>
+          <SectionTitle id={`case-title-${index}`}>{study.title}</SectionTitle>
+          <p>{study.summary}</p>
           <details>
             <summary>
               The context <Plus size={16} aria-hidden="true" />
             </summary>
-            <p>
-              The brief: help readers distinguish a short note from a deep essay without making the
-              archive feel like a software dashboard.
-            </p>
+            <p>{study.context}</p>
           </details>
           <details>
             <summary>
               The decision <Plus size={16} aria-hidden="true" />
             </summary>
-            <p>
-              Use one strong reading column, an index that shows the shape of the archive, and
-              typography that separates navigation from the author’s voice.
-            </p>
+            <p>{study.decision}</p>
           </details>
           <details>
             <summary>
-              The proof to bring <Plus size={16} aria-hidden="true" />
+              {study.illustrative ? "The proof to bring" : "The evidence"} <Plus size={16} aria-hidden="true" />
             </summary>
-            <p>
-              Add real before-and-after captures, your role and constraints, and permission to show
-              the work. Claim an outcome only when it has evidence.
-            </p>
+            <p>{study.evidence}</p>
+            {study.evidenceUrl && <a className={styles.portfolioLink} href={study.evidenceUrl}>View evidence for {study.title}</a>}
           </details>
         </div>
+      </section>
+      ))}
+      <section className={styles.portfolioContact} aria-labelledby="portfolio-contact-title">
+        <div>
+          <SectionTitle id="portfolio-contact-title">{content.contact.title}</SectionTitle>
+          <p>{content.contact.description}</p>
+        </div>
+        {content.contact.href ? (
+          <a className={styles.portfolioLink} href={content.contact.href}>{content.contact.label} <ArrowRight size={16} aria-hidden="true" /></a>
+        ) : <p>Contact link has not been configured.</p>}
       </section>
     </>
   )
@@ -493,7 +488,7 @@ function ChallengePreview({ copy }: { copy: TemplateCopy }) {
   )
 }
 
-export function TemplatePreview({ template, copy }: PreviewProps) {
+export function TemplatePreview({ template, copy, portfolio = examplePortfolio, standalone = false }: PreviewProps) {
   const root = useRef<HTMLDivElement>(null)
   useGSAP(
     () => {
@@ -530,7 +525,7 @@ export function TemplatePreview({ template, copy }: PreviewProps) {
       {template.id === "music" && <MusicPreview copy={copy} />}
       {template.id === "lab" && <LabPreview copy={copy} />}
       {template.id === "tool" && <ToolPreview copy={copy} />}
-      {template.id === "portfolio" && <PortfolioPreview copy={copy} />}
+      {template.id === "portfolio" && <PortfolioPreview copy={copy} content={portfolio} standalone={standalone} />}
       {template.id === "creator" && <CreatorPreview copy={copy} />}
       {template.id === "challenge" && <ChallengePreview copy={copy} />}
     </div>

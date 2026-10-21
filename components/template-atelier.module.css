@@ -237,6 +237,11 @@
   font-size: 15px;
   font-weight: 600;
 }
+.studyToolbar > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
 .studyToolbar p {
   color: #606258;
 }
@@ -773,6 +778,15 @@
   --muted: #6d6055;
   --accent: #ab402f;
 }
+.portfolio :where(h2, h3, p, span, a) {
+  overflow-wrap: anywhere;
+}
+.portfolio .previewNav > *,
+.portfolio .portfolioHero > *,
+.portfolioContact > * {
+  min-width: 0;
+  max-width: 100%;
+}
 .portfolioHero {
   display: grid;
   grid-template-columns: 0.6fr 1.5fr;
@@ -801,8 +815,45 @@
   gap: 45px;
   border-top: 1px solid var(--edge);
   padding-top: 34px;
+  margin-bottom: 34px;
+}
+.portfolioContact {
+  border-top: 1px solid var(--edge);
+  padding-top: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.portfolioContact :is(h2, h3) {
+  font-family: var(--font-newsreader), serif;
+  font-size: 31px;
+  margin-bottom: 12px;
+}
+.portfolioContact p {
+  font-size: 12px;
+  line-height: 1.8;
+  max-width: 52ch;
+}
+.portfolioLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 2px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  overflow-wrap: anywhere;
+}
+.portfolioLink:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 .casePoster {
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 26px;
   background: #c3c5b4;
   color: #313b31;
@@ -823,9 +874,11 @@
   padding: 25px 0;
 }
 .caseCopy {
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding-block: 10px;
 }
-.caseCopy h3 {
+.caseCopy :is(h2, h3) {
   font-family: var(--font-newsreader), serif;
   font-size: 31px;
   line-height: 1.14;

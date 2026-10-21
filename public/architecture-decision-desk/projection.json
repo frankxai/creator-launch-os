@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "upstreamRepository": "https://github.com/AI-Architect-Studio/agentic-architecture-field-guide",
+  "upstreamBaseCommit": "d2bf5e778d5c4f08a1196551d32b90acf4244bec",
+  "upstreamIntegrationStatus": "CANDIDATE_NOT_MERGED",
+  "candidatePatch": {
+    "path": "vendor/architecture-decision-desk/guide-candidate.patch",
+    "sha256": "2f14404839cdb825095544c9472b0549bbde2154e23325e6cea04ffcd5c6caa8"
+  },
+  "canonicalEditableSource": "Field Guide web/* and scripts/build-browser-kit.mjs, reconstructed by applying the candidate patch to upstreamBaseCommit. This folder is a delivery projection.",
+  "license": "MIT",
+  "files": [
+    {
+      "path": "index.html",
+      "sha256": "3f60a6df5d799010c7a27dd88352141bce2c71d3930f521e3d1876acea9b2d25"
+    },
+    {
+      "path": "style.css",
+      "sha256": "2ca721d0969fb7194fb63c323ac27ae3dd9ffc63f0e4ad379dbb829e0b0c3af7"
+    },
+    {
+      "path": "app.js",
+      "sha256": "0c21936ba4ce652063c6db661845f99bfa980450f50442833bc36c5a59dd75e5"
+    },
+    {
+      "path": "review-core.js",
+      "sha256": "489b682f3b6247cafabe7de6de5f2e6a0a66a33207a7cf093a633f2ce49e9034"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "da24d9b3a1c5da817060dc273433f388688ad014784efb1466f9e85d6cc15397"
+    }
+  ]
+}
