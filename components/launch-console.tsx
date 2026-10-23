@@ -22,7 +22,7 @@ export function LaunchConsole() {
 
       <div className="poster-grid p-5 sm:p-7">
         <div className="border-b border-white/10 pb-6">
-          <p className="font-serif text-3xl leading-none sm:text-4xl">The Systems Field Guide</p>
+          <p className="font-serif text-3xl leading-none sm:text-4xl">The systems field guide</p>
           <div className="mt-5 flex items-end justify-between gap-5">
             <p className="max-w-xs text-sm leading-6 text-white/55">
               A small release with a complete proof, delivery, and learning loop.

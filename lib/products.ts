@@ -25,7 +25,7 @@ export const products: Product[] = [
   {
     slug: "systems-field-guide",
     eyebrow: "Flagship field guide",
-    title: "The Systems Field Guide",
+    title: "The systems field guide",
     description:
       "A concise operating manual for turning scattered expertise into a product people can understand and use.",
     longDescription:
@@ -53,7 +53,7 @@ export const products: Product[] = [
   {
     slug: "launch-week-console",
     eyebrow: "Release system",
-    title: "Launch Week Console",
+    title: "Launch week console",
     description:
       "One operational view for assets, channels, dependencies, launch-day decisions, and the week-after review.",
     longDescription:
@@ -81,7 +81,7 @@ export const products: Product[] = [
   {
     slug: "studio-notes",
     eyebrow: "Audio workshop",
-    title: "Studio Notes: Ship With Signal",
+    title: "Studio notes: ship with signal",
     description:
       "A focused audio workshop on editing an ambitious product down to the version customers can actually activate.",
     longDescription:

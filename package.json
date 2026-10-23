@@ -11,11 +11,14 @@
     "lint": "eslint .",
     "type-check": "next typegen && tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
+    "check:offer": "node scripts/check-offer-facts.mjs",
+    "check:decision-desk": "node scripts/check-decision-desk.mjs",
+    "commerce:rehearse": "node scripts/commerce-rehearsal.mjs",
     "package:release": "node scripts/package-release.mjs",
+    "package:kit": "node scripts/package-kit.mjs",
     "template:briefs": "node scripts/export-template-briefs.mjs",
     "template:projects": "node scripts/export-template-project.mjs",
-    "check:decision-desk": "node scripts/check-decision-desk.mjs",
-    "verify": "pnpm run check:decision-desk && pnpm run type-check && pnpm run lint && pnpm run test && pnpm run build"
+    "verify": "pnpm run check:decision-desk && pnpm run check:offer && pnpm run type-check && pnpm run lint && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

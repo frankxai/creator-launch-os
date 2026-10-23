@@ -37,6 +37,9 @@ export function SiteFooter() {
             <Link href="/studio" className="inline-flex min-h-11 items-center text-sm font-semibold text-ink/70 hover:text-ink">
               Open the sample studio →
             </Link>
+            <Link href="/kit" className="inline-flex min-h-11 items-center text-sm font-semibold text-ink/70 hover:text-ink">
+              Free core and commercial kit →
+            </Link>
           </div>
         </div>
       </div>
