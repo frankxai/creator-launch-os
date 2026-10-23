@@ -63,7 +63,11 @@ export interface Activity {
   at: string
 }
 
-/** Durable storage is a deployment decision; the loop only needs these calls. */
+/**
+ * Durable storage is a deployment decision; the loop only needs these calls.
+ * applyEvent writes state before markEvent, so every put must be an idempotent
+ * upsert and markEvent must only run after the writes it guards succeed.
+ */
 export interface CommerceStore {
   hasEvent(id: string): boolean
   markEvent(id: string): void
@@ -175,7 +179,7 @@ export type ApplyResult =
 
 const entitlementIdFor = (orderId: string) => "ent_" + orderId
 
-/** Apply one verified event. Idempotent per event id and per order state. */
+/** Apply one verified event. Idempotent per event id; retries after a partial failure converge. */
 export function applyEvent(store: CommerceStore, event: CommerceEvent, options: ApplyOptions): ApplyResult {
   if (event.test !== (options.mode === "test")) {
     throw new CommerceError("E_MODE_MISMATCH", `A ${options.mode}-mode store refuses ${event.test ? "test" : "live"} events`)
@@ -194,34 +198,40 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
       store.markEvent(event.id)
       return { outcome: "duplicate", eventId: event.id }
     }
-    const order: Order = existing ?? {
-      orderId: event.orderId,
-      merchant: event.merchant,
-      sku: event.sku,
-      amount: event.amount,
-      currency: event.currency,
-      email: event.email.toLowerCase(),
-      status: "paid",
-      paidAt: event.occurredAt,
-      refundedAt: null,
-      test: event.test,
-    }
-    const entitlement: Entitlement = store.getEntitlement(entitlementIdFor(order.orderId)) ?? {
-      entitlementId: entitlementIdFor(order.orderId),
-      orderId: order.orderId,
-      sku: order.sku,
-      email: order.email,
-      status: "active",
-      grantedAt: event.occurredAt,
-      revokedAt: null,
-    }
-    store.markEvent(event.id)
-    if (!existing) {
+    // Write state first and mark the event last. Each step converges, so a
+    // merchant retry after a partial failure completes only what is missing.
+    let order = existing
+    if (!order) {
+      order = {
+        orderId: event.orderId,
+        merchant: event.merchant,
+        sku: event.sku,
+        amount: event.amount,
+        currency: event.currency,
+        email: event.email.toLowerCase(),
+        status: "paid",
+        paidAt: event.occurredAt,
+        refundedAt: null,
+        test: event.test,
+      }
       store.putOrder(order)
-      store.putEntitlement(entitlement)
-      store.record({ name: "order_paid", orderId: order.orderId, at: event.occurredAt })
-      store.record({ name: "entitlement_granted", orderId: order.orderId, at: event.occurredAt })
     }
+    recordOnce(store, { name: "order_paid", orderId: order.orderId, at: order.paidAt })
+    let entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
+    if (!entitlement) {
+      entitlement = {
+        entitlementId: entitlementIdFor(order.orderId),
+        orderId: order.orderId,
+        sku: order.sku,
+        email: order.email,
+        status: "active",
+        grantedAt: event.occurredAt,
+        revokedAt: null,
+      }
+      store.putEntitlement(entitlement)
+    }
+    recordOnce(store, { name: "entitlement_granted", orderId: order.orderId, at: entitlement.grantedAt })
+    store.markEvent(event.id)
     return { outcome: "granted", order, entitlement }
   }
 
@@ -229,19 +239,29 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
   if (!order) {
     throw new CommerceError("E_UNKNOWN_ORDER", "Refund names an order this storefront never recorded")
   }
-  store.markEvent(event.id)
-  const refunded: Order = { ...order, status: "refunded", refundedAt: order.refundedAt ?? event.occurredAt }
-  const entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
-  const revoked = entitlement && { ...entitlement, status: "revoked" as const, revokedAt: entitlement.revokedAt ?? event.occurredAt }
-  if (order.status !== "refunded") {
-    store.putOrder(refunded)
-    store.record({ name: "order_refunded", orderId: order.orderId, at: event.occurredAt })
-    if (revoked) {
-      store.putEntitlement(revoked)
-      store.record({ name: "entitlement_revoked", orderId: order.orderId, at: event.occurredAt })
-    }
+  // Same order of operations: a refund retried after any partial failure must
+  // still revoke access. A refunded order can never keep an active entitlement.
+  const refunded: Order = order.status === "refunded" ? order : { ...order, status: "refunded", refundedAt: event.occurredAt }
+  if (order.status !== "refunded") store.putOrder(refunded)
+  recordOnce(store, { name: "order_refunded", orderId: order.orderId, at: refunded.refundedAt ?? event.occurredAt })
+  let entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
+  if (entitlement?.status === "active") {
+    entitlement = { ...entitlement, status: "revoked", revokedAt: refunded.refundedAt ?? event.occurredAt }
+    store.putEntitlement(entitlement)
   }
-  return { outcome: "revoked", order: refunded, entitlement: revoked }
+  if (entitlement) recordOnce(store, { name: "entitlement_revoked", orderId: order.orderId, at: entitlement.revokedAt ?? event.occurredAt })
+  store.markEvent(event.id)
+  return { outcome: "revoked", order: refunded, entitlement }
+}
+
+/**
+ * One ledger entry per order transition, so a retry neither duplicates nor
+ * drops it. A durable store should back this with a unique (name, orderId) key.
+ */
+function recordOnce(store: CommerceStore, activity: Activity) {
+  if (!store.activity().some((entry) => entry.name === activity.name && entry.orderId === activity.orderId)) {
+    store.record(activity)
+  }
 }
 
 const base64url = (value: string) => Buffer.from(value, "utf8").toString("base64url")

@@ -49,7 +49,7 @@ Test mode is refused on a production deployment.
 3. Verify the signature exactly as the merchant documents it, over the raw request body.
 4. Map the merchant's paid and refunded events to the normalized event. Ignore everything else with a 200 response so the merchant stops retrying.
 5. Add a contract test with a recorded, redacted merchant payload for each event type.
-6. Replace the in-memory store with durable storage before live mode handles a real order.
+6. Replace the in-memory store with durable storage before live mode handles a real order. The durable store must make every put an idempotent upsert, record each (activity name, order) at most once under a unique key, and persist `markEvent` only after the writes it guards. The engine marks events last so a retry after a failed write finishes the job; a store that reorders or batches these writes reintroduces lost or retained access. `tests/commerce-recovery.test.mjs` exercises the in-memory store only; port its failure-injection cases (fail each write once, then retry the same event) to your durable store adapter and pass them before going live.
 
 ## What a merchant of record changes
 

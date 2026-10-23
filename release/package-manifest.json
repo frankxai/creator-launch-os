@@ -83,6 +83,8 @@
     "scripts/commerce-rehearsal.mjs",
     "scripts/package-kit.mjs",
     "tests/commerce-loop.test.mjs",
+    "tests/commerce-recovery.test.mjs",
+    "tests/commerce-boundary.test.mjs",
     "tests/offer-facts.test.mjs",
     "tests/kit-package.test.mjs",
     "tests/support/load-commerce.mjs",
