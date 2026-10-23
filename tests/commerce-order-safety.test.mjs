@@ -65,4 +65,7 @@ test("an email differing only in case is the same buyer, not a conflict", () => 
 test("the webhook maps an order conflict to 409", () => {
   const route = readFileSync(new URL("../app/api/commerce/webhook/route.ts", import.meta.url), "utf8")
   assert.match(route, /E_ORDER_CONFLICT: 409/)
+  const logLine = route.match(/console\.error\(([^\n]*commerce_order_conflict[^\n]*)\)/)
+  assert.ok(logLine, "a conflict leaves an operator-visible log line")
+  assert.doesNotMatch(logLine[1], /email|orderId|amount/, "the log line carries no buyer data")
 })
