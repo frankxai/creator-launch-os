@@ -10,16 +10,16 @@ The immediate reuse is the existing six-composition atelier. Independent source 
 
 ## Ranked opportunities
 
-This ranking is an execution judgment, not measured market share. Prices are experimental ranges only; the canonical listing retains its undecided price state.
+This ranking is an execution judgment, not measured market share. No price is approved here; the canonical listing retains its undecided price state.
 
-| Priority | Buyer and urgent job | Product to test | Distribution | Price experiment |
-| --- | --- | --- | --- | --- |
-| 1 | Creator with an imminent release | Native site kit with real content entry, complete preview and dependable setup | One Framer or Webflow category; source edition for technical buyers | €79–149 |
-| 2 | Designer moving existing client content | Local importer, link/asset audit, migration preview and reversible export | Native builder plugin or template companion | €39–99 |
-| 3 | Small studio delivering repeat client sites | Repeatable project setup, documented variants, reuse rights and update checks | Team edition through the winning template channel | €249–499 bundle |
-| 4 | Creator answering questions about owned material | BYOK source-grounded answer module with citations, refusal and cost tests | Extension to a proven template | €99–249 |
-| 5 | Publisher maintaining many pages | Content evidence, canonical/link checks, accessibility and search readiness reports | WordPress or builder-native utility after validation | €49–129/year if maintenance economics work |
-| 6 | Designer preparing a launch | Real screenshot capture, editable listing media and product demonstration recipes | Companion workflow/asset pack | €29–79 |
+| Priority | Buyer and urgent job | Product to test | Distribution |
+| --- | --- | --- | --- |
+| 1 | Creator with an imminent release | Native site kit with real content entry, complete preview and dependable setup | One Framer or Webflow category; source edition for technical buyers |
+| 2 | Designer moving existing client content | Local importer, link/asset audit, migration preview and reversible export | Native builder plugin or template companion |
+| 3 | Small studio delivering repeat client sites | Repeatable project setup, documented variants, reuse rights and update checks | Team edition through the winning template channel |
+| 4 | Creator answering questions about owned material | BYOK source-grounded answer module with citations, refusal and cost tests | Extension to a proven template |
+| 5 | Publisher maintaining many pages | Content evidence, canonical/link checks, accessibility and search readiness reports | WordPress or builder-native utility after validation |
+| 6 | Designer preparing a launch | Real screenshot capture, editable listing media and product demonstration recipes | Companion workflow/asset pack |
 
 A general chatbot starter faces extensive free competition, including [Vercel's AI templates](https://vercel.com/templates/ai). An outcome-specific module must beat that baseline on a defined task, setup time, privacy, failure behavior and maintenance. More components alone are not a defensible distinction.
 
@@ -37,7 +37,6 @@ Content migration addresses the work after choosing a design. Existing [Framer i
 
 Do not confuse platform users, installations, downloads or gross merchandise volume with our obtainable paying market. Evidence collected here does not establish category GMV, typical seller earnings or conversion rates. Estimate obtainable demand from measured category exposure, visits, activation, purchases and retention.
 
-Arithmetic only: 20 sales at €99 are €1,980 gross; 100 are €9,900. Approximately 10,102 sales at that price exceed €1 million before costs. At an assumed 2% purchase rate, 20 sales need 1,000 qualified visits. These are scenarios, not observed conversion or promises of weekend income.
 
 Contribution per sale equals realized price minus platform/payment fees, refunds, variable API/storage costs, support time and acquisition costs. BYOK reduces inference exposure but not support. Annual updates are attractive only if renewals cover maintenance. The free MIT code remains MIT even when distributed in a paid bundle.
 

@@ -80,3 +80,18 @@ test("setup links and local commands work with JavaScript disabled", async ({ br
     await context.close()
   }
 })
+
+
+test("Decision Desk CTA opens the delivered application, including its local assets", async ({ page }) => {
+  const errors = []
+  page.on("pageerror", (error) => errors.push(error.message))
+  await page.goto("/start")
+  const link = page.getByRole("link", { name: "Open the free Architecture Decision Desk" })
+  await expect(link).toHaveAttribute("href", "/architecture-decision-desk/index.html")
+  await link.focus()
+  await link.press("Enter")
+  await expect(page).toHaveURL(/\/architecture-decision-desk\/index\.html$/)
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(/architecture/i)
+  await expect(page.getByLabel("Decision title", { exact: true })).toBeVisible()
+  expect(errors).toEqual([])
+})

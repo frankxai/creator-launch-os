@@ -20,7 +20,7 @@ The button opens Vercel's setup flow: sign in, choose an account and an unused r
 
 ## Run locally
 
-Prerequisites: Git, Node.js 22 or newer, and pnpm 10.28.0. Start in a folder without an existing `creator-launch-os` directory, or choose a different clone location.
+Prerequisites: Git, Node.js 24, and pnpm 10.28.0. Start in a folder without an existing `creator-launch-os` directory, or choose a different clone location.
 
 ```bash
 git clone https://github.com/frankxai/creator-launch-os.git
@@ -53,7 +53,7 @@ Read [`docs/PREMIUM-HOME-PAGE-SPEC.md`](docs/PREMIUM-HOME-PAGE-SPEC.md) before c
 
 Run `pnpm template:projects` to create six independent Next.js source projects from the atelier. Each includes the real local interactions, editable content, styles, pinned dependency lockfile, setup guide and a checksum receipt. Use `pnpm template:projects --input saved-template.json` to carry saved atelier copy into one project.
 
-Exports go into a fresh folder under `dist/template-projects`; existing exports are preserved. Exporting does not install, build, deploy or submit to a marketplace. See [project export](docs/TEMPLATE-PROJECT-EXPORT.md) for verification and integration boundaries, and [product families](docs/TEMPLATE-PRODUCT-FAMILIES.md) for the commercial research backlog.
+Exports go into a fresh folder under `dist/template-projects`; existing exports are preserved. Exporting does not install, build, deploy or submit to a marketplace. See [project export](docs/TEMPLATE-PROJECT-EXPORT.md) for verification and integration boundaries.
 
 ## Routes
 
@@ -70,6 +70,7 @@ Exports go into a fresh folder under `dist/template-projects`; existing exports 
 ## Verification
 
 ```bash
+pnpm check:decision-desk
 pnpm type-check
 pnpm lint
 pnpm test

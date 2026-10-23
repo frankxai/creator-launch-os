@@ -25,7 +25,7 @@ Each run creates a new directory. Earlier exports and buyer edits are preserved.
 - Next.js configuration, TypeScript configuration, lint configuration, dependencies and unchanged pnpm lockfile.
 - A tailored README, MIT license and `project-receipt.json`.
 
-The source retains all six renderers; the JSON selects the visible direction. This first version does not prune the other renderers or provide a browser editor inside the exported app. Extra development dependencies are preserved to keep the copied lockfile consistent. No dependencies are installed during export.
+The source retains all six renderers; the JSON selects the visible direction. Monograph (portfolio) exports include a public, noindex `/edit` workspace for editing content, saving unfinished working JSON, reviewing imports and exporting validated site files. Save working JSON before leaving; this local editor is not authenticated or backed by hosted storage. Use `pnpm template:projects --project saved-project.json` in this repository to rebuild independent source from that saved project. The other five directions do not include a browser editor. Extra development dependencies are preserved to keep the copied lockfile consistent. No dependencies are installed during export.
 
 ## Buyer journey and page specification
 
