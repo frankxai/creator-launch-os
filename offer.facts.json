@@ -19,7 +19,7 @@
     ]
   },
   "kit": {
-    "name": "Commercial Kit",
+    "name": "Commercial kit",
     "license": "commercial_terms_draft",
     "contents_manifest": "commercial/kit/kit.manifest.json",
     "includes": [

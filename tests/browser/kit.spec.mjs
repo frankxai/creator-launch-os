@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test"
 
-test("the kit page shows a clean available-soon state at phone, tablet and desktop", async ({ page }, info) => {
+test("the kit page shows a clean available-soon state and operates the two-step waitlist at phone, tablet and desktop", async ({ page }, info) => {
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
-  for (const width of [375, 768, 1440]) {
+  for (const width of [375, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 })
     const response = await page.goto("/kit")
     expect(response.status()).toBe(200)
@@ -17,6 +17,19 @@ test("the kit page shows a clean available-soon state at phone, tablet and deskt
     ).toBe(true)
     await page.screenshot({ path: info.outputPath(`kit-${width}.png`), fullPage: true })
   }
+
+  // Exercise the shared demand-capture two-step waitlist flow
+  await page.getByLabel("Email address to join the waitlist for Creator Launch OS").fill("buyer.simulation@example.com")
+  await page.getByRole("checkbox").check()
+  await page.getByRole("button", { name: "Join the waitlist" }).click()
+  await expect(page.getByText(/You are in, at number 1\./)).toBeVisible()
+  await page.getByRole("button", { name: "Independent creator" }).click()
+  await page.getByRole("button", { name: "25 - 99" }).click()
+  await page.getByRole("button", { name: "I need this now" }).click()
+  await page.getByPlaceholder("One line is plenty.").fill("Publish my field guide and studio templates on my own domain.")
+  await page.getByRole("button", { name: "Save answers" }).click()
+  await expect(page.getByText(/Thank you\. You are number 1\./)).toBeVisible()
+
   expect(errors).toEqual([])
 })
 

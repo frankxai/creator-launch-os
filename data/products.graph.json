@@ -1,0 +1,49 @@
+{
+  "doctrine": "DEMAND-CAPTURE-STANDARD.md",
+  "products": [
+    {
+      "id": "creator-launch-os",
+      "name": "Creator Launch OS",
+      "brand": "GenCreator",
+      "surface": "creator-launch-os-starlight-intelligence.vercel.app",
+      "stage": "gated",
+      "listType": "premium-packs",
+      "priceHypothesis": {
+        "band": "25-99",
+        "currency": "USD",
+        "evidence": "none yet - the waitlist priceBand field collects G5 evidence"
+      },
+      "buyer": "Independent creators turning source material into an owned storefront and signed release edition",
+      "mustBeat": [
+        "Supply Framer template ($99)",
+        "Supplier Framer template ($79)",
+        "Creator OS Full Stack Notion bundle ($68.99)"
+      ],
+      "gate": "G0-G2 and G4 receipts attached; G3 independent cross-model check pending; G5 price locked by Frank after waitlist evidence",
+      "waitlist": {
+        "enabled": true,
+        "publicCountThreshold": 50,
+        "foundingCohort": 100
+      },
+      "gift": {
+        "name": "The free MIT storefront, Monograph workspace and standalone exporter",
+        "deliverable": "Complete Next.js 16 storefront and six template studies, runnable locally or on Vercel with zero secrets",
+        "assetPath": "https://github.com/frankxai/creator-launch-os",
+        "status": "shipped"
+      },
+      "founding": [
+        "Price lock for life",
+        "Named in the release credits",
+        "Input on which merchant adapter ships first"
+      ],
+      "milestones": [
+        {
+          "atCount": 50,
+          "commitment": "First live merchant adapter and commercial kit release candidate open to the founding list.",
+          "publishedAt": "2026-10-23",
+          "honouredAt": null
+        }
+      ]
+    }
+  ]
+}

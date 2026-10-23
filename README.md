@@ -16,10 +16,16 @@ The repository also includes a sample `/studio` route so the public storefront a
 
 No environment variables are required. Vercel supplies the project production domain automatically. Without checkout URLs, the template uses an explicit demo checkout and never pretends to take payment.
 
+The button opens Vercel's setup flow: sign in, choose an account and an unused repository name, then confirm deployment. Change the suggested name if you already have a `creator-launch-os` repository. Hosting terms and costs are separate from the free MIT source. It clones the public default branch; it does not carry customized atelier copy. The `/start` route presents this same handoff, six interactive study links, and a local-install alternative.
+
 ## Run locally
 
+Prerequisites: Git, Node.js 24, and pnpm 10.28.0. Start in a folder without an existing `creator-launch-os` directory, or choose a different clone location.
+
 ```bash
-pnpm install
+git clone https://github.com/frankxai/creator-launch-os.git
+cd creator-launch-os
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
@@ -43,22 +49,31 @@ The repository includes `components.json`, explicit design tokens, real sample d
 
 Read [`docs/PREMIUM-HOME-PAGE-SPEC.md`](docs/PREMIUM-HOME-PAGE-SPEC.md) before changing the composition and [`docs/GSAP-SCENE-BRIEF.md`](docs/GSAP-SCENE-BRIEF.md) before changing motion. Both mobile and `prefers-reduced-motion` routes are product requirements.
 
+## Export a standalone composition
+
+Run `pnpm template:projects` to create six independent Next.js source projects from the atelier. Each includes the real local interactions, editable content, styles, pinned dependency lockfile, setup guide and a checksum receipt. Use `pnpm template:projects --input saved-template.json` to carry saved atelier copy into one project.
+
+Exports go into a fresh folder under `dist/template-projects`; existing exports are preserved. Exporting does not install, build, deploy or submit to a marketplace. See [project export](docs/TEMPLATE-PROJECT-EXPORT.md) for verification and integration boundaries.
+
 ## Routes
 
 | Route | Purpose |
 | --- | --- |
 | `/` | Editorial storefront and template explanation |
+| `/start` | Deployment handoff, template directory, and local installation |
 | `/products` | Searchable product catalog |
 | `/products/[slug]` | Product decision page |
 | `/checkout/[slug]` | Safe no-payment fallback when checkout is not configured |
 | `/studio` | Clearly labeled sample operating view |
-| `/kit` | Free core vs Commercial Kit; "Available soon" until commerce is configured and proven |
+| `/kit` | Free core vs commercial kit; waitlist-first until release gates pass |
+| `/api/waitlist` | Shared demand-capture waitlist endpoint |
 | `/api/commerce/webhook`, `/api/commerce/delivery` | Commerce adapter endpoints; refuse every request while `COMMERCE_MODE` is off |
 | `/api/health` | Deployment health response |
 
 ## Verification
 
 ```bash
+pnpm check:decision-desk
 pnpm type-check
 pnpm lint
 pnpm test
@@ -69,7 +84,7 @@ The release receipt is tracked in `template.manifest.json`. A maturity label is 
 
 ## Commerce adapter
 
-`lib/commerce/` runs one merchant-agnostic loop: a verified webhook becomes an order and an entitlement, a signed link opens delivery, and a refund revokes it. With nothing configured it is off. Test mode accepts only signed fixture events and is refused on production deployments:
+`lib/commerce/` runs one merchant-agnostic loop: a verified webhook becomes an order and an entitlement, a signed link opens delivery, and a refund revokes it. With nothing configured it is off and `/kit` captures pre-launch waitlist demand via `lib/demand-capture/`. Test mode accepts only signed fixture events and is refused on production deployments:
 
 ```bash
 pnpm build
@@ -85,6 +100,6 @@ Run `pnpm package:release` from a clean commit to create a versioned source ZIP,
 
 ## License
 
-The repository is MIT, except `commercial/`, which holds the draft Commercial Kit and its proposed terms (see `commercial/README.md`). `pnpm package:release` never includes `commercial/`; `pnpm package:kit` packages it separately.
+The repository is MIT, except `commercial/`, which holds the draft commercial kit and its proposed terms (see `commercial/README.md`). `pnpm package:release` never includes `commercial/`; `pnpm package:kit` packages it separately.
 
 MIT. Use it for personal or commercial projects. Attribution is appreciated but not required.

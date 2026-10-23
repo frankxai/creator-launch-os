@@ -3,11 +3,12 @@ import { ArrowUpRight, Check, Clock3, FlaskConical, LifeBuoy, Minus, RotateCcw }
 import Link from "next/link"
 
 import { kitAvailability, offer, readCommerceRuntime } from "@/lib/commerce/config"
+import { WaitlistForm } from "@/lib/demand-capture/WaitlistForm"
 import { siteConfig } from "@/lib/site"
 
 export const metadata: Metadata = {
-  title: "Commercial Kit",
-  description: "What the free MIT core includes, what the Commercial Kit adds, and when it can be bought.",
+  title: "Commercial kit",
+  description: "What the free MIT core includes, what the commercial kit adds, and the pre-launch waitlist.",
 }
 
 export default function KitPage() {
@@ -19,7 +20,7 @@ export default function KitPage() {
         <div className="shell max-w-4xl">
           <p className="eyebrow text-muted">{offer.title} · v{offer.version}</p>
           <h1 className="text-balance mt-5 text-5xl font-semibold tracking-[-0.05em] sm:text-7xl">
-            Free to deploy. Paid to operate with less guesswork.
+            Your source is the beginning. Your choices make the edition.
           </h1>
           <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/62">{offer.promise}</p>
         </div>
@@ -32,7 +33,7 @@ export default function KitPage() {
               <h2 id="core-title" className="text-3xl font-semibold tracking-[-0.04em]">{offer.core.name}</h2>
               <span className="shrink-0 whitespace-nowrap rounded-full border border-ink/15 px-3 py-1 font-mono text-[10px] tracking-wider">{offer.core.license}</span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-muted">Yours to clone, change and ship. No account or secret required.</p>
+            <p className="mt-3 text-sm leading-6 text-muted">Yours to clone, review, edit and export. No account or secret required.</p>
             <ul className="mt-7 divide-y divide-line border-y border-line">
               {offer.core.includes.map((item) => (
                 <li key={item} className="flex gap-3 py-3.5 text-[15px] leading-6">
@@ -41,15 +42,23 @@ export default function KitPage() {
                 </li>
               ))}
             </ul>
-            <a
-              href={siteConfig.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 self-start rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-paper"
-            >
-              Get the source
-              <ArrowUpRight className="size-4" aria-hidden="true" />
-            </a>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/start"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-paper transition-colors hover:bg-ink/90"
+              >
+                Get the free starter
+              </Link>
+              <a
+                href={siteConfig.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-ink px-6 text-sm font-semibold transition-colors hover:bg-ink hover:text-paper"
+              >
+                Inspect the source
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </a>
+            </div>
           </article>
 
           <article className="flex flex-col rounded-[2rem] bg-ink p-7 text-paper sm:p-9" aria-labelledby="kit-title">
@@ -57,7 +66,7 @@ export default function KitPage() {
               <h2 id="kit-title" className="text-3xl font-semibold tracking-[-0.04em]">{offer.kit.name}</h2>
               <span className="shrink-0 whitespace-nowrap rounded-full border border-white/20 px-3 py-1 font-mono text-[10px] tracking-wider text-white/70">Commercial terms</span>
             </div>
-            <p className="mt-3 text-sm leading-6 text-white/65">For creators who want the operating playbook, policies and commerce wiring guide.</p>
+            <p className="mt-3 text-sm leading-6 text-white/65">For creators who want the release playbook, manifest pack, policies and commerce wiring guide.</p>
             <ul className="mt-7 divide-y divide-white/12 border-y border-white/12">
               {offer.kit.includes.map((item) => (
                 <li key={item} className="flex gap-3 py-3.5 text-[15px] leading-6">
@@ -96,14 +105,22 @@ export default function KitPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex gap-3">
-                  <Clock3 className="mt-0.5 size-5 shrink-0 text-acid" aria-hidden="true" />
-                  <div>
-                    <p className="font-semibold">Available soon</p>
-                    <p className="mt-1 text-sm leading-6 text-white/65">
-                      Checkout opens after payment, delivery and refunds pass an end-to-end test. Until then nothing here takes payment.
-                    </p>
+                <div>
+                  <div className="flex gap-3">
+                    <Clock3 className="mt-0.5 size-5 shrink-0 text-acid" aria-hidden="true" />
+                    <div>
+                      <p className="font-semibold">Available soon</p>
+                      <p className="mt-1 text-sm leading-6 text-white/65">
+                        Checkout stays off until payment, delivery and refunds pass an end-to-end gate. Join the per-product waitlist below to record your use case and lock founding terms.
+                      </p>
+                    </div>
                   </div>
+                  <WaitlistForm
+                    productId="creator-launch-os"
+                    productName="Creator Launch OS"
+                    foundingBenefit="First 100 keep launch pricing for life and are named in the release credits."
+                    placeholder="you@domain.com"
+                  />
                 </div>
               )}
             </div>
@@ -118,7 +135,7 @@ export default function KitPage() {
             <div>
               <p className="text-sm font-semibold">Refunds</p>
               <p className="mt-1 text-sm leading-6 text-muted">
-                When the kit opens, a refund within {offer.refund.window_days} days of purchase needs no reason. A refund ends access to future kit updates.
+                When the kit opens, a refund within {offer.refund.window_days} days of purchase needs no reason. A refund revokes the entitlement and ends access to future kit updates.
               </p>
             </div>
           </div>
@@ -131,7 +148,7 @@ export default function KitPage() {
                 <a className="underline decoration-line underline-offset-4" href={offer.support.free_core_channel} target="_blank" rel="noreferrer">
                   GitHub issues
                 </a>
-                . Kit buyers get written answers about the kit&apos;s contents; custom engineering is out of scope.
+                . Kit buyers receive written answers about the kit&apos;s contents; custom engineering is out of scope.
               </p>
             </div>
           </div>
