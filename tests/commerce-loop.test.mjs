@@ -124,7 +124,7 @@ test("forged, foreign, live-in-test and unknown events are refused", () => {
   assert.throws(() => runtime.adapter(live, signed(live), SECRET), { code: "E_EVENT_SHAPE" })
   assert.throws(() => engine.applyEvent(store, { ...JSON.parse(body), test: false }, options), { code: "E_MODE_MISMATCH" })
   assert.throws(() => engine.applyEvent(store, { ...JSON.parse(body), sku: "sku_other" }, options), { code: "E_UNKNOWN_SKU" })
-  assert.throws(() => engine.applyEvent(store, JSON.parse(fixture("refunded")), options), { code: "E_UNKNOWN_ORDER" })
+  // Refund-before-payment is now recorded fail-safe; see tests/commerce-order-safety.test.mjs.
   assert.equal(store.orders().length, 0)
 })
 

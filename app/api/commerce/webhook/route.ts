@@ -7,6 +7,7 @@ const statusFor: Record<CommerceError["code"], number> = {
   E_EVENT_SHAPE: 400,
   E_UNKNOWN_SKU: 422,
   E_UNKNOWN_ORDER: 422,
+  E_ORDER_CONFLICT: 409,
   E_MODE_MISMATCH: 422,
   E_TOKEN: 400,
   E_TOKEN_EXPIRED: 410,

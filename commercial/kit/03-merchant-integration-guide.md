@@ -54,3 +54,5 @@ Test mode is refused on a production deployment.
 ## What a merchant of record changes
 
 A merchant of record collects tax and handles disputes, and some also host the file delivery. If yours hosts delivery, the storefront's delivery link becomes a second path; keep entitlement records anyway so refunds and reconciliation stay checkable.
+
+Out-of-order and conflicting events: the engine records a refund that arrives before its payment so that payment never grants access, and rejects a payment that reuses an order id with a different buyer, SKU, amount or currency (HTTP 409). Confirm how the chosen merchant retries 4xx responses and route a 409 to a human.

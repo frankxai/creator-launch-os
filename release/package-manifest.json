@@ -86,6 +86,7 @@
     "tests/commerce-recovery.test.mjs",
     "tests/commerce-boundary.test.mjs",
     "tests/commerce-isolation.test.mjs",
+    "tests/commerce-order-safety.test.mjs",
     "tests/offer-facts.test.mjs",
     "tests/kit-package.test.mjs",
     "tests/support/load-commerce.mjs",

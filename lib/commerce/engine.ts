@@ -40,7 +40,8 @@ export interface Order {
   currency: string
   email: string
   status: OrderStatus
-  paidAt: string
+  /** Null when a signed refund arrived before its payment; that order can never grant access. */
+  paidAt: string | null
   refundedAt: string | null
   test: boolean
 }
@@ -107,6 +108,7 @@ export class CommerceError extends Error {
       | "E_EVENT_SHAPE"
       | "E_UNKNOWN_SKU"
       | "E_UNKNOWN_ORDER"
+      | "E_ORDER_CONFLICT"
       | "E_MODE_MISMATCH"
       | "E_TOKEN"
       | "E_TOKEN_EXPIRED"
@@ -198,6 +200,10 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
       store.markEvent(event.id)
       return { outcome: "duplicate", eventId: event.id }
     }
+    if (existing && conflicts(existing, event)) {
+      // Same merchant order id, different buyer or purchase: never grant on it silently.
+      throw new CommerceError("E_ORDER_CONFLICT", "A payment reuses an order id with a different buyer, SKU, amount or currency")
+    }
     // Write state first and mark the event last. Each step converges, so a
     // merchant retry after a partial failure completes only what is missing.
     let order = existing
@@ -216,7 +222,7 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
       }
       store.putOrder(order)
     }
-    recordOnce(store, { name: "order_paid", orderId: order.orderId, at: order.paidAt })
+    recordOnce(store, { name: "order_paid", orderId: order.orderId, at: order.paidAt ?? event.occurredAt })
     let entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
     if (!entitlement) {
       entitlement = {
@@ -235,9 +241,23 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
     return { outcome: "granted", order, entitlement }
   }
 
-  const order = store.getOrder(event.orderId)
+  let order = store.getOrder(event.orderId)
   if (!order) {
-    throw new CommerceError("E_UNKNOWN_ORDER", "Refund names an order this storefront never recorded")
+    // Merchants may deliver a refund before its payment. Record the signed
+    // refund as a refunded order so the later payment can never grant access.
+    order = {
+      orderId: event.orderId,
+      merchant: event.merchant,
+      sku: event.sku,
+      amount: event.amount,
+      currency: event.currency,
+      email: event.email.toLowerCase(),
+      status: "refunded",
+      paidAt: null,
+      refundedAt: event.occurredAt,
+      test: event.test,
+    }
+    store.putOrder(order)
   }
   // Same order of operations: a refund retried after any partial failure must
   // still revoke access. A refunded order can never keep an active entitlement.
@@ -252,6 +272,12 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
   if (entitlement) recordOnce(store, { name: "entitlement_revoked", orderId: order.orderId, at: entitlement.revokedAt ?? event.occurredAt })
   store.markEvent(event.id)
   return { outcome: "revoked", order: refunded, entitlement }
+}
+
+/** Payment facts that must match when a merchant repeats an order id. */
+function conflicts(order: Order, event: CommerceEvent) {
+  return order.merchant !== event.merchant || order.sku !== event.sku || order.email !== event.email.toLowerCase() ||
+    order.amount !== event.amount || order.currency !== event.currency
 }
 
 /**
