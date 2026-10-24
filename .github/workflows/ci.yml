@@ -29,6 +29,8 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - name: Verify Decision Desk source and delivery integrity
+        run: node scripts/check-decision-desk.mjs
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Type-check
