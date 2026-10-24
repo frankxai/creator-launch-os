@@ -11,11 +11,6 @@ export type PriceBand =
 
 export type Urgency = "now" | "this-quarter" | "exploring"
 
-/**
- * Captured in two steps on purpose. Step 1 is email alone so a hesitant visitor
- * still becomes a signal; everything below `email` is step 2, asked after they
- * have already joined and therefore costs no conversions when skipped.
- */
 export interface DemandSignal {
   productId: string
   email: string
@@ -33,6 +28,9 @@ export interface DemandSignal {
   position: number
   createdAt: string
   consent: true
+  verified?: boolean
+  stepTokenHash?: string
+  verifyTokenHash?: string
 }
 
 export interface WaitlistState {
@@ -44,4 +42,6 @@ export interface WaitlistState {
   foundingCohort: number
   foundingSeatsLeft: number | null
   stage: Stage
+  /** Returned only on initial Step-1 claim so Step-2 answers cannot be overwritten by email alone. */
+  stepToken?: string
 }

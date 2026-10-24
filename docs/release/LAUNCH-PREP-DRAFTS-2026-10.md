@@ -1,93 +1,82 @@
 # Staged launch preparation drafts — Creator Launch OS (GenCreator)
 
 **Status:** `DRAFT_ONLY_DO_NOT_PUBLISH`
-**Hard stop enforced:** No checkout, no public price, no external post, no email send, no Whop publication, no merge, and no production promotion.
+**Rules enforced:** Every piece names a real buyer job in the first line, contains zero superlatives and zero unratified price promises, and maps every factual claim to an exact `file:line` in the G0 table (`docs/release/PRODUCT-RELEASE-GATE-RECEIPT-2026-10-23.md`). No checkout, price, post, email send, or Whop publication is performed.
 
 ---
 
 ## 1. Staged landing copy (GenCreator voice, sentence case, waitlist-first)
 
-### Hero
-- **Eyebrow:** Creator Launch OS · v1.1.0 · Free MIT source
-- **Headline:** Your source is the beginning. Your choices make the edition.
-- **Lede:** Turn working notes, guides and studies into an owned Next.js storefront and signed release edition. Review every change in the browser, export a standalone project, and capture pre-launch demand before opening checkout.
-- **Primary action (free core):** Get the free starter (`/start`)
-- **Secondary action (commercial kit waitlist):** Join the waitlist (`/kit`)
+When you need to publish and sell digital guides, templates or audio workshops from your own domain without paying a monthly website-builder fee, Creator Launch OS gives you a complete Next.js 16 storefront and release studio (`package.json:27`, `LICENSE:1`).
 
-### Three-step edition sequence
-1. **Start from source you control.** Clone the free MIT repository or deploy to your own Vercel account with zero required secrets.
-2. **Shape and inspect the edition.** Edit your Monograph case studies in `/studio/templates/portfolio/edit`, review local JSON imports before applying, undo removals in order, and export an independent Next.js codebase with a SHA-256 receipt.
-3. **Collect demand before you price.** Until payment, delivery and refunds pass an end-to-end gate, `/kit` runs a two-step waitlist that records who is waiting, what they are building, and the price band they expect.
+- **Headline:** Your source is the beginning. Your choices make the edition. (`app/kit/page.tsx:22`)
+- **Lede:** Start with the free MIT storefront that deploys to Vercel with zero required secrets (`template.manifest.json:39`, `LICENSE:1`). Edit your Monograph portfolio in the browser (`/studio/templates/portfolio/edit`), undo case removals in order (`components/portfolio-workspace.tsx:45`), and export a standalone Next.js project (`scripts/export-template-project.mjs:179`).
+- **How checkout and demand work today:** Without a configured payment provider, product pages route to a no-payment checkout preview (`app/checkout/[slug]/page.tsx:40`), and `/kit` runs a fail-closed two-step waitlist (`app/kit/page.tsx:118`, `lib/demand-capture/store.ts:28`) that withholds public counts below 50 signups and protects step-2 answers with a per-signup token (`lib/demand-capture/handler.ts:56,88`).
+- **Actions:** Get the free starter (`/start`) · Join the commercial kit waitlist (`/kit`)
 
 ---
 
-## 2. Five-post launch sequence (Voice Observatory moves, sentence case, draft only)
+## 2. Five-post launch sequence (each opens with a buyer job, zero superlatives, G0-traceable)
 
-### Post 1 — Specimen (The exported Monograph workspace)
-Most creator templates rent you a layout inside someone else's hosted builder. Stop paying the monthly fee and your storefront disappears.
+### Post 1 — Specimen (Exporting an owned Monograph site)
+When you want to publish a portfolio or product study on your own domain without renting a hosted page builder every month, you need source files you can export and build yourself.
 
-Creator Launch OS takes a different route: you edit your Monograph portfolio in the browser (`/studio/templates/portfolio/edit`), review any imported JSON diff before it touches your draft, and run `pnpm template:projects` to export a standalone Next.js 16 repository with its own lockfile and SHA-256 receipt.
+In Creator Launch OS, you open `/studio/templates/portfolio/edit`, edit your case studies in the browser, undo removals in order, and get a warning before an accidental reload discards unsaved edits (`components/portfolio-workspace.tsx:45`). Running `pnpm template:projects` writes a standalone Next.js 16 project (`package.json:27`, `scripts/export-template-project.mjs:179`) with its own lockfile and SHA-256 receipt.
 
-What works today: six composition studies, browser save/reopen, multi-step undo, and clean-room standalone builds.
-What is not live yet: hosted checkout stays off until the release gate finishes. The MIT source is open now, and the commercial kit waitlist is open on `/kit`.
+What is open now: the MIT repository (`LICENSE:1`), all six template studies (`lib/template-catalog.ts:18`), and the offline Architecture Decision Desk at `/architecture-decision-desk/index.html` (`app/start/page.tsx:75`). Checkout on `/kit` stays off while the release gate finishes, and the waitlist is open (`app/kit/page.tsx:118`).
 
-### Post 2 — Operator confession (Why our first webhook test lost a buyer's access)
-Our first test-mode webhook handler marked `event.id` as processed on line 1, then wrote the order and entitlement on lines 2 and 3.
+### Post 2 — Operator confession (Fixing webhook retries before taking an order)
+When you wire a digital-product webhook to deliver paid downloads, a transient database error during checkout fulfillment should not leave your customer without access.
 
-That passed every happy-path test. When we injected a single transient failure on `putEntitlement`, the route returned HTTP 500, the merchant retried the same event ID, and our handler answered `200 duplicate`—leaving a paid buyer with no access. Worse: if a signed refund arrived before a delayed payment webhook, returning `422` meant the later payment granted lasting access to a refunded order.
+Our initial test-mode webhook handler marked `event.id` as processed before writing the order and entitlement. When a simulated write failed and returned HTTP 500, the merchant retry hit the processed marker and returned `200 duplicate`—dropping the buyer's entitlement. And if a refund webhook arrived before a delayed payment webhook, returning `422` allowed the later payment to grant access to a refunded order.
 
-We rewrote `lib/commerce/engine.ts` (`PR #18`) so state writes converge first, early signed refunds record a tombstone (`paidAt: null`), reused order IDs with conflicting buyer facts return `409 E_ORDER_CONFLICT` with a PII-free operator log, and `markEvent` runs last. Verified across 28 fault-injection, isolation and order-safety tests.
+In `lib/commerce/engine.ts`, state writes now converge before `store.markEvent(event.id)` runs (`lib/commerce/engine.ts:219-250`), early signed refunds record a refunded tombstone with `paidAt: null` (`lib/commerce/engine.ts:265`), and reused order IDs with conflicting buyer facts return `409 E_ORDER_CONFLICT` with a PII-free log line (`app/api/commerce/webhook/route.ts:10,45`).
 
-### Post 3 — Receipt (Catching a buyer-ZIP failure that git checkouts hide)
-A test suite that passes in your git checkout can still fail for every person who downloads your release ZIP.
+### Post 3 — Receipt (Testing the actual ZIP a buyer downloads)
+When you package a codebase as a downloadable release archive, a test suite that passes in your git working tree can still fail for the person who unzips the file.
 
-During release verification of Creator Launch OS, `21/21` packaging tests passed in the repository. When an independent checker extracted the built buyer ZIP into `/tmp` outside the git tree, `pnpm test` failed with `ENOENT`: a shipped test read an internal research file that the release allowlist intentionally excluded.
+During verification of Creator Launch OS, our packaging tests passed in the repository checkout while a shipped test still read an internal research document excluded from `release/package-manifest.json`. Extracting the built ZIP into `/tmp` outside the git checkout exposed an immediate `ENOENT` failure.
 
-We separated repository-only policy tests from shipped buyer tests and added a clean-ZIP verification gate: extract the built archive into `/tmp`, run `pnpm install --frozen-lockfile && pnpm verify`, and run the browser suite against the extracted build. All 121 shipped tests now pass from the extracted ZIP.
+We separated repository-only policy checks from shipped tests so extracting the release ZIP and running `pnpm install --frozen-lockfile && pnpm verify` passes cleanly on the 31-route Next.js 16 build (`package.json:27`, `template.manifest.json:39`).
 
-### Post 4 — Calibration (Why pre-launch pages should run a waitlist, not a guess price)
-Most digital products launch with a guessed price and a checkout link that has never been tested through a real refund.
+### Post 4 — Calibration (Running a per-product waitlist before locking a price)
+When you prepare to launch a commercial kit alongside an open-source core, guessing a price or displaying a broken buy button wastes visitor trust.
 
-On Creator Launch OS `/kit`, `COMMERCE_MODE` defaults to `off`. Until a live merchant adapter, delivery link and refund revocation pass a full gate receipt, the page renders no buy button and no unverified price. Instead, it runs a two-step waitlist: step 1 claims a real queue position by email; step 2 asks three optional questions—your role, what you are trying to ship, and the price band you expect. Counts below 50 are withheld rather than rounded or seeded.
+On Creator Launch OS `/kit`, `COMMERCE_MODE` defaults to `off` (`lib/commerce/config.ts`). While no live merchant adapter is configured, `/kit` renders `Available soon` (`app/kit/page.tsx:118`) and embeds the shared two-step waitlist. Step 1 claims an atomic queue position in KV (`lib/demand-capture/store.ts:44`); step 2 asks your role, urgency, and expected price band without incrementing your position or exposing counts below 50 (`lib/demand-capture/handler.ts:56`).
 
-### Post 5 — Escalation ladder (From local markdown to a full release studio)
-One release workflow, four levels of depth depending on what you need today:
-1. **Free worksheet & Decision Desk (`/architecture-decision-desk/index.html`):** Plan an architecture decision, trust boundaries, failure tests and all-attempts cost in the browser with `connect-src 'none'`.
-2. **Free MIT storefront & studio (`/`, `/products`, `/studio`):** Deploy a Next.js 16 catalog with an honest demo checkout fallback and zero required secrets.
-3. **Standalone composition exporter (`pnpm template:projects`):** Export any of the six template studies into its own Next.js repository.
-4. **Commercial kit waitlist (`/kit`):** Join the founding cohort for the launch playbook, manifest pack, policy templates and merchant integration guide.
+### Post 5 — Escalation ladder (Four steps from a local decision to a storefront)
+When you are turning scattered notes and drafts into a digital product catalog, you can adopt Creator Launch OS one layer at a time:
+1. Open the local Architecture Decision Desk at `/architecture-decision-desk/index.html` to map options, trust boundaries and failure tests (`app/start/page.tsx:75`).
+2. Deploy the MIT storefront with zero required environment variables (`LICENSE:1`, `template.manifest.json:39`) and an honest demo checkout preview (`app/checkout/[slug]/page.tsx:40`).
+3. Customize any of the six template studies (`lib/template-catalog.ts:18`) and export a standalone Next.js project (`scripts/export-template-project.mjs:179`).
+4. Join the `/kit` waitlist for the commercial kit—which adds the launch playbook, manifest pack, merchant integration guide, and refund revocation runbook (`app/kit/page.tsx:118`, `lib/commerce/engine.ts:344`).
 
 ---
 
-## 3. Staged launch / welcome email draft (first-run gift + honest status, draft only)
+## 3. Staged launch / welcome email draft (buyer job in line 1, zero superlatives, no unratified price promise, G0-traceable)
 
-**Subject:** Your Creator Launch OS starter and founding waitlist position (`#{position}`)
+**Subject:** Your Creator Launch OS starter and waitlist position (`#{position}`)
 **From:** GenCreator (`noreply@gencreator.ai` — draft only, not sent)
 
-Hello,
+When you want to publish digital products from your own domain without stitching together a storefront, editor and delivery check from scratch, you can start with the free MIT core of Creator Launch OS today (`LICENSE:1`, `package.json:27`).
 
-You are on the founding waitlist for the Creator Launch OS commercial kit at position `#{position}`.
+Your email is recorded at position `#{position}` on the waitlist for the Creator Launch OS commercial kit (`lib/demand-capture/handler.ts:56`).
 
-While the commercial kit completes its release gate, the complete MIT storefront, Monograph editor and standalone project exporter are ready for you to use right now on your own machine or Vercel account—with no API keys or secrets required:
-
-1. **Run locally in four commands (Node.js 24 + pnpm 10.28.0):**
+**Use the free MIT core right now (zero required secrets — `template.manifest.json:39`):**
+1. Clone and run locally on Node.js 24 and pnpm 10.28.0:
    ```bash
    git clone https://github.com/frankxai/creator-launch-os.git
    cd creator-launch-os
    pnpm install --frozen-lockfile
    pnpm dev
    ```
-2. **Edit and export your own Monograph site:**
-   Open `http://localhost:3000/studio/templates/portfolio/edit`, replace the sample case studies, download your project JSON, and run `pnpm template:projects --project your-saved-project.json` to generate a standalone Next.js repository.
+2. Open `/studio/templates/portfolio/edit` to edit your Monograph case studies with multi-step undo and an unsaved-changes guard (`components/portfolio-workspace.tsx:45`), then run `pnpm template:projects` to export a standalone Next.js project (`scripts/export-template-project.mjs:179`).
+3. Browse the six template studies (`lib/template-catalog.ts:18`), the demo checkout handoff (`app/checkout/[slug]/page.tsx:40`), and the offline Architecture Decision Desk at `/architecture-decision-desk/index.html` (`app/start/page.tsx:75`).
 
-**What your founding spot locks in:**
-- First 100 keep launch pricing for life once pricing is ratified.
-- Named credit in the release notes (optional—your choice).
-- One email when the commercial kit passes its release gate and opens. Nothing else.
-
-If you skipped the three optional questions on `/kit`, you can reply to this email with one line on what you are launching this quarter and what you use today. Every reply is read.
-
-To leave this list at any time, use the unsubscribe link below.
+**What your founding waitlist spot includes (`app/kit/page.tsx:118-122`):**
+- First 100 are named in the release credits (optional—your choice) and help choose which merchant adapter ships first (`data/products.graph.json:37`).
+- Draft refund policy (`offer.facts.json:50`, pending owner ratification): once checkout opens, processing a refund revokes the entitlement and delivery link (`lib/commerce/engine.ts:344`).
+- One email when the commercial kit passes its release gate and opens. Unsubscribe in any email.
 
 — Frank / GenCreator
 
@@ -95,4 +84,4 @@ To leave this list at any time, use the unsubscribe link below.
 
 ## 4. Staged Whop product draft (unpublished, no price set)
 
-Stored as machine-readable payload at `commercial/whop-product-draft.json` for review only. **Not submitted or published to Whop.**
+Stored at `commercial/whop-product-draft.json` (`status: "STAGED_LOCAL_DRAFT_NOT_CREATED_OR_PUBLISHED"`, `price_set: null`, `checkout_enabled: false`).

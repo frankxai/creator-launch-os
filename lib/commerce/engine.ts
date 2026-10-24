@@ -134,6 +134,15 @@ function safeEqual(a: string, b: string) {
 }
 
 /** Generic HMAC check used by the fixture adapter. Live adapters bring their merchant's scheme. */
+/** Rejects webhook deliveries whose x-commerce-timestamp is outside the allowed clock-skew window (default 300s). */
+export function verifyWebhookTimestamp(timestampHeader: string | null, now = new Date(), maxSkewSeconds = 300) {
+  if (timestampHeader === null) return
+  const parsed = Number(timestampHeader.trim())
+  if (!Number.isInteger(parsed) || Math.abs(Math.floor(now.getTime() / 1000) - parsed) > maxSkewSeconds) {
+    throw new CommerceError("E_SIGNATURE", "Webhook timestamp is malformed or outside the freshness window")
+  }
+}
+
 export function verifySignature(rawBody: string, signature: string | null, secret: string) {
   if (!signature || !safeEqual(signature, signPayload(rawBody, secret))) {
     throw new CommerceError("E_SIGNATURE", "Webhook signature does not match")

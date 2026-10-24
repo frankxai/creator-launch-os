@@ -15,11 +15,13 @@
       },
       "buyer": "Independent creators turning source material into an owned storefront and signed release edition",
       "mustBeat": [
-        "Supply Framer template ($99)",
         "Supplier Framer template ($79)",
-        "Creator OS Full Stack Notion bundle ($68.99)"
+        "Creator OS Full Stack Notion bundle ($68.99)",
+        "ThatVibeCoder Digital Product OS + Creator OS ($54)",
+        "Mention Framer storefront template ($39)",
+        "Notion Creator OS ($29)"
       ],
-      "gate": "G0-G2 and G4 receipts attached; G3 independent cross-model check pending; G5 price locked by Frank after waitlist evidence",
+      "gate": "G0, G1, G2 and G4 receipts attached; G3 independent cross-model check in progress; G5 price locked by Frank after waitlist evidence",
       "waitlist": {
         "enabled": true,
         "publicCountThreshold": 50,
@@ -32,8 +34,7 @@
         "status": "shipped"
       },
       "founding": [
-        "Price lock for life",
-        "Named in the release credits",
+        "Named in the release credits (optional)",
         "Input on which merchant adapter ships first"
       ],
       "milestones": [

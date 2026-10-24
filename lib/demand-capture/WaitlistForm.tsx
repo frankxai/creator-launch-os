@@ -75,6 +75,7 @@ export function WaitlistForm({
   const copy = { ...DEFAULT_COPY, ...copyOverrides }
   const [step, setStep] = useState<"join" | "refine" | "done">("join")
   const [state, setState] = useState<WaitlistState | undefined>(initialState)
+  const [stepToken, setStepToken] = useState<string | undefined>(undefined)
   const [email, setEmail] = useState("")
   const [consent, setConsent] = useState(false)
   const [answers, setAnswers] = useState<Record<string, string>>({})
@@ -88,11 +89,12 @@ export function WaitlistForm({
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId, email, consent, ...payload }),
+        body: JSON.stringify({ productId, email, consent, stepToken, ...payload }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? "Something went wrong")
       setState(data)
+      if (typeof data.stepToken === "string") setStepToken(data.stepToken)
       return true
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong")

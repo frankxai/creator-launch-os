@@ -111,14 +111,14 @@ export default function KitPage() {
                     <div>
                       <p className="font-semibold">Available soon</p>
                       <p className="mt-1 text-sm leading-6 text-white/65">
-                        Checkout stays off until payment, delivery and refunds pass an end-to-end gate. Join the per-product waitlist below to record your use case and lock founding terms.
+                        Checkout stays off until payment, delivery and refunds pass an end-to-end gate. Join the per-product waitlist below to record your use case and get one email when this edition opens.
                       </p>
                     </div>
                   </div>
                   <WaitlistForm
                     productId="creator-launch-os"
                     productName="Creator Launch OS"
-                    foundingBenefit="First 100 keep launch pricing for life and are named in the release credits."
+                    foundingBenefit="First 100 are named in the release credits (optional) and help choose which merchant adapter ships first."
                     placeholder="you@domain.com"
                   />
                 </div>
@@ -133,9 +133,9 @@ export default function KitPage() {
           <div className="flex gap-3">
             <RotateCcw className="size-5 shrink-0 text-coral" aria-hidden="true" />
             <div>
-              <p className="text-sm font-semibold">Refunds</p>
+              <p className="text-sm font-semibold">Refunds (draft terms)</p>
               <p className="mt-1 text-sm leading-6 text-muted">
-                When the kit opens, a refund within {offer.refund.window_days} days of purchase needs no reason. A refund revokes the entitlement and ends access to future kit updates.
+                Draft policy ({offer.refund.state}, pending owner ratification): when the kit opens, the proposed refund window is {offer.refund.window_days} days. Processing a refund revokes the entitlement and ends access to future kit updates.
               </p>
             </div>
           </div>

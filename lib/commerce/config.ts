@@ -1,6 +1,6 @@
 import offer from "@/offer.facts.json"
 
-import { CommerceError, parseEvent, verifySignature, type CommerceEvent, type CommerceMode } from "@/lib/commerce/engine"
+import { CommerceError, parseEvent, verifySignature, verifyWebhookTimestamp, type CommerceEvent, type CommerceMode } from "@/lib/commerce/engine"
 
 /**
  * Environment contract for selling the Commercial Kit. Every value is optional:
@@ -22,6 +22,7 @@ const adapters: Record<string, { mode: Exclude<CommerceMode, "off">; adapter: Me
   fixture: {
     mode: "test",
     adapter(rawBody, headers, secret) {
+      verifyWebhookTimestamp(headers.get("x-commerce-timestamp"))
       verifySignature(rawBody, headers.get("x-commerce-signature"), secret)
       let payload: unknown
       try {
@@ -82,7 +83,7 @@ export function readCommerceRuntime(env: Env = process.env): CommerceRuntime {
   }
 
   if (mode === "off") runtime.blockers.push("COMMERCE_MODE is off")
-  if (mode === "test" && env.VERCEL_ENV === "production") {
+  if (mode === "test" && (env.VERCEL_ENV === "production" || env.COMMERCE_ENV === "production")) {
     runtime.blockers.push("test mode is refused on a production deployment")
   }
   if (mode !== "off" && !runtime.adapter) runtime.blockers.push(`no ${mode} adapter for merchant "${merchant ?? "unset"}"`)

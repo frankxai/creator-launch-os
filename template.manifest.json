@@ -51,7 +51,10 @@
     "KV_REST_API_URL",
     "KV_REST_API_TOKEN",
     "RESEND_API_KEY",
-    "RESEND_AUDIENCE_ID"
+    "RESEND_AUDIENCE_ID",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_TOKEN",
+    "RESEND_AUDIENCE_ID__CREATOR_LAUNCH_OS"
   ],
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
