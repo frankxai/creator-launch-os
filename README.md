@@ -20,7 +20,7 @@ The button opens Vercel's setup flow: sign in, choose an account and an unused r
 
 ## Run locally
 
-Prerequisites: Git, Node.js 22 or newer, and pnpm 10.28.0. Start in a folder without an existing `creator-launch-os` directory, or choose a different clone location.
+Prerequisites: Git, Node.js 24, and pnpm 10.28.0. Start in a folder without an existing `creator-launch-os` directory, or choose a different clone location.
 
 ```bash
 git clone https://github.com/frankxai/creator-launch-os.git
@@ -53,7 +53,7 @@ Read [`docs/PREMIUM-HOME-PAGE-SPEC.md`](docs/PREMIUM-HOME-PAGE-SPEC.md) before c
 
 Run `pnpm template:projects` to create six independent Next.js source projects from the atelier. Each includes the real local interactions, editable content, styles, pinned dependency lockfile, setup guide and a checksum receipt. Use `pnpm template:projects --input saved-template.json` to carry saved atelier copy into one project.
 
-Exports go into a fresh folder under `dist/template-projects`; existing exports are preserved. Exporting does not install, build, deploy or submit to a marketplace. See [project export](docs/TEMPLATE-PROJECT-EXPORT.md) for verification and integration boundaries, and [product families](docs/TEMPLATE-PRODUCT-FAMILIES.md) for the commercial research backlog.
+Exports go into a fresh folder under `dist/template-projects`; existing exports are preserved. Exporting does not install, build, deploy or submit to a marketplace. See [project export](docs/TEMPLATE-PROJECT-EXPORT.md) for verification and integration boundaries.
 
 ## Routes
 
@@ -65,11 +65,15 @@ Exports go into a fresh folder under `dist/template-projects`; existing exports 
 | `/products/[slug]` | Product decision page |
 | `/checkout/[slug]` | Safe no-payment fallback when checkout is not configured |
 | `/studio` | Clearly labeled sample operating view |
+| `/kit` | Free core vs commercial kit; waitlist-first until release gates pass |
+| `/api/waitlist` | Shared demand-capture waitlist endpoint |
+| `/api/commerce/webhook`, `/api/commerce/delivery` | Commerce adapter endpoints; refuse every request while `COMMERCE_MODE` is off |
 | `/api/health` | Deployment health response |
 
 ## Verification
 
 ```bash
+pnpm check:decision-desk
 pnpm type-check
 pnpm lint
 pnpm test
@@ -78,10 +82,24 @@ pnpm build
 
 The release receipt is tracked in `template.manifest.json`. A maturity label is a claim: update it only when the corresponding checks have passed.
 
+## Commerce adapter
+
+`lib/commerce/` runs one merchant-agnostic loop: a verified webhook becomes an order and an entitlement, a signed link opens delivery, and a refund revokes it. With nothing configured it is off and `/kit` captures pre-launch waitlist demand via `lib/demand-capture/`. Test mode accepts only signed fixture events and is refused on production deployments:
+
+```bash
+pnpm build
+COMMERCE_MODE=test COMMERCE_MERCHANT=fixture COMMERCE_WEBHOOK_SECRET=<32+ chars> COMMERCE_DELIVERY_SECRET=<32+ chars> pnpm start
+COMMERCE_WEBHOOK_SECRET=<same> pnpm commerce:rehearse http://localhost:3000
+```
+
+`/kit` reads its availability at build time. No live merchant adapter ships yet; see `docs/release/READINESS.md`.
+
 ## Delivery package
 
 Run `pnpm package:release` from a clean commit to create a versioned source ZIP, SHA-256 checksums and an exact-commit receipt. See [release packaging](docs/RELEASE-PACKAGING.md) for reproduction and review. Template CI also makes this package available as a downloadable workflow artifact.
 
 ## License
+
+The repository is MIT, except `commercial/`, which holds the draft commercial kit and its proposed terms (see `commercial/README.md`). `pnpm package:release` never includes `commercial/`; `pnpm package:kit` packages it separately.
 
 MIT. Use it for personal or commercial projects. Attribution is appreciated but not required.

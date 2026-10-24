@@ -35,6 +35,7 @@ export const siteConfig = {
   navigation: [
     { label: "Releases", href: "/products" },
     { label: "Studio", href: "/studio" },
+    { label: "Kit", href: "/kit" },
     { label: "Get started", href: "/start" },
   ],
 } as const

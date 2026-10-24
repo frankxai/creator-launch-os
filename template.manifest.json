@@ -30,7 +30,11 @@
     "/start",
     "/studio/templates",
     "/studio/templates/[templateId]",
-    "/studio/templates/[templateId]/edit"
+    "/studio/templates/[templateId]/edit",
+    "/kit",
+    "/api/commerce/webhook",
+    "/api/commerce/delivery",
+    "/api/waitlist"
   ],
   "requiredEnvironmentVariables": [],
   "optionalEnvironmentVariables": [
@@ -38,17 +42,29 @@
     "NEXT_PUBLIC_CONTACT_EMAIL",
     "NEXT_PUBLIC_CHECKOUT_GUIDE_URL",
     "NEXT_PUBLIC_CHECKOUT_CONSOLE_URL",
-    "NEXT_PUBLIC_CHECKOUT_AUDIO_URL"
+    "NEXT_PUBLIC_CHECKOUT_AUDIO_URL",
+    "COMMERCE_MODE",
+    "COMMERCE_MERCHANT",
+    "COMMERCE_WEBHOOK_SECRET",
+    "COMMERCE_DELIVERY_SECRET",
+    "NEXT_PUBLIC_KIT_CHECKOUT_URL",
+    "KV_REST_API_URL",
+    "KV_REST_API_TOKEN",
+    "RESEND_API_KEY",
+    "RESEND_AUDIENCE_ID",
+    "UPSTASH_REDIS_REST_URL",
+    "UPSTASH_REDIS_REST_TOKEN",
+    "RESEND_AUDIENCE_ID__CREATOR_LAUNCH_OS"
   ],
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
   "verification": {
-    "typeCheck": "Candidate verification is recorded in docs/RELEASE-INTEGRATION-20261021.md; prior declarations are preserved in docs/HISTORICAL-VERIFICATION-20261021.md.",
-    "lint": "Candidate verification is recorded in docs/RELEASE-INTEGRATION-20261021.md; prior declarations are preserved in docs/HISTORICAL-VERIFICATION-20261021.md.",
-    "contractTests": "Candidate verification is recorded in docs/RELEASE-INTEGRATION-20261021.md; prior declarations are preserved in docs/HISTORICAL-VERIFICATION-20261021.md.",
-    "productionBuild": "Candidate verification is recorded in docs/RELEASE-INTEGRATION-20261021.md; prior declarations are preserved in docs/HISTORICAL-VERIFICATION-20261021.md.",
+    "typeCheck": "NOT_VERIFIED_FOR_THIS_PACKAGE: run pnpm type-check on the exact extracted source and retain the log. Packaging and historical checks are not current runtime verification.",
+    "lint": "NOT_VERIFIED_FOR_THIS_PACKAGE: run pnpm lint on the exact extracted source and retain the log. Packaging and historical checks are not current runtime verification.",
+    "contractTests": "NOT_VERIFIED_FOR_THIS_PACKAGE: run pnpm test on the exact extracted source and retain the log. Packaging and historical checks are not current runtime verification.",
+    "productionBuild": "NOT_VERIFIED_FOR_THIS_PACKAGE: run pnpm build on the exact extracted source and retain the log. Packaging and historical checks are not current runtime verification.",
     "cleanAccountDeploy": "NOT_RUN: an owner-account deployment or HTTP 200 does not prove a fresh-customer account clone and deploy.",
-    "browserDesktop": "Candidate verification is recorded in docs/RELEASE-INTEGRATION-20261021.md; prior declarations are preserved in docs/HISTORICAL-VERIFICATION-20261021.md.",
-    "browserMobile": "Candidate verification is recorded in docs/RELEASE-INTEGRATION-20261021.md; prior declarations are preserved in docs/HISTORICAL-VERIFICATION-20261021.md."
+    "browserDesktop": "NOT_VERIFIED_FOR_THIS_PACKAGE: run pnpm exec playwright test on the exact extracted source and retain the log. Packaging and historical checks are not current runtime verification.",
+    "browserMobile": "NOT_VERIFIED_FOR_THIS_PACKAGE: run pnpm exec playwright test on the exact extracted source and retain the log. Packaging and historical checks are not current runtime verification."
   }
 }
