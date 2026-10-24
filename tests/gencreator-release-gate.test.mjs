@@ -121,3 +121,52 @@ test("every tracked image carries a valid .vis.provenance.json sidecar and no Hi
     assert.doesNotMatch(JSON.stringify(sidecar), /higgsfield/i)
   }
 })
+
+test("G5 price evidence pack defines launch, standard and team proposals while keeping offer.facts.json unlocked", () => {
+  const g5 = read("docs/release/G5-PRICE-EVIDENCE.md")
+  for (const url of [
+    "https://virtualbacon.com/products/supply",
+    "https://www.framer.com/marketplace/templates/supplier/",
+    "https://builtbyjoshstudio.com/products/creator-os-full-stack.html",
+    "https://framplates.com/templateshop",
+    "https://www.thatvibecoder.io/products",
+  ]) {
+    assert.ok(g5.includes(url), `G5 evidence must include competitor URL: ${url}`)
+  }
+  assert.match(g5, /\*\*\$49 USD\*\* one-time/)
+  assert.match(g5, /\*\*\$69 USD\*\* one-time/)
+  assert.match(g5, /\*\*\$149 USD\*\* one-time/)
+  assert.match(g5, /What would you expect something like this to cost\?/)
+  assert.match(g5, /Decision: Do Not Bundle/)
+  const facts = JSON.parse(read("offer.facts.json"))
+  assert.equal(facts.price.state, "decision_required")
+  assert.equal(facts.price.amount, null)
+})
+
+test("launch copy final pass opens with a buyer job, uses zero superlatives and maps claims to G0 file:line citations", () => {
+  const drafts = read("docs/release/LAUNCH-PREP-DRAFTS-2026-10.md")
+  assert.doesNotMatch(
+    drafts,
+    /\b(best|ultimate|fastest|easiest|first-ever|unbeatable|premier|greatest|flawless|seamless|revolutionary|game-changing|supercharge|skyrocket)\b/i,
+    "launch copy must contain no superlatives or hype words",
+  )
+  // Every section (landing, 5 posts, email) opens with "When you..." naming a concrete buyer job
+  const buyerJobOpeners = drafts.match(/^When you (?:need|want|wire|package|prepare|are turning) /gm) ?? []
+  assert.equal(buyerJobOpeners.length, 7, "landing copy, 5 posts and 1 email must each open with a concrete buyer job")
+  for (const citation of [
+    "package.json:27",
+    "LICENSE:1",
+    "template.manifest.json:39",
+    "components/portfolio-workspace.tsx:45",
+    "scripts/export-template-project.mjs:179",
+    "app/start/page.tsx:75",
+    "lib/commerce/engine.ts:200",
+    "lib/commerce/engine.ts:256",
+    "app/api/commerce/webhook/route.ts:10",
+    "lib/commerce/engine.ts:335",
+    "app/kit/page.tsx:118",
+    "lib/demand-capture/handler.ts:31",
+  ]) {
+    assert.ok(drafts.includes(citation), `launch copy must cite G0 evidence: ${citation}`)
+  }
+})
