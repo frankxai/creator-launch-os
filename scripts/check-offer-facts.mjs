@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -64,6 +64,30 @@ export function checkOfferFacts(root = ROOT) {
   }
   if (new URL(facts.canonical_offer_url).origin !== new URL(listing.canonical_offer_url).origin) {
     drift.push("offer.facts.json canonical_offer_url must live on the listing's canonical origin")
+  }
+  const cmoFactsPath = resolve(root, "docs/release/FACTS.md")
+  if (existsSync(cmoFactsPath)) {
+    const cmo = read("docs/release/FACTS.md")
+    const relManifest = JSON.parse(read("release/package-manifest.json"))
+    const kitManifestPath = resolve(root, "commercial/kit/kit.manifest.json")
+    const requiredTokens = [
+      `\`${facts.product_id}\``,
+      `\`${facts.sku_id}\``,
+      `\`${pkg.version}\``,
+      `\`${pkg.dependencies.next}\``,
+      `\`${facts.price.state}\` (\`amount: ${JSON.stringify(facts.price.amount)}\`)`,
+      `\`${facts.refund.state}\` (\`window_days: ${facts.refund.window_days}\``,
+      `\`${relManifest.files.length}\` files`,
+    ]
+    if (existsSync(kitManifestPath)) {
+      const kitManifest = JSON.parse(read("commercial/kit/kit.manifest.json"))
+      requiredTokens.push(`\`${kitManifest.files.length}\` files`)
+    }
+    for (const token of requiredTokens) {
+      if (!cmo.includes(token)) {
+        drift.push(`docs/release/FACTS.md is stale: missing ${token}`)
+      }
+    }
   }
   return drift
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { PAIN_PROMPT, PRICE_BANDS, PRICE_PROMPT, URGENCY, rolesFor } from "./questions"
 import type { WaitlistState } from "./types"
 
@@ -53,6 +53,8 @@ export const DEFAULT_COPY: WaitlistCopy = {
 const fill = (template: string, vars: Record<string, string | number>) =>
   template.replace(/\{(\w+)\}/g, (_, key: string) => String(vars[key] ?? ""))
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 type Props = {
   productId: string
   productName: string
@@ -82,6 +84,20 @@ export function WaitlistForm({
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState("")
 
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const consentInputRef = useRef<HTMLInputElement>(null)
+  const refineStatusRef = useRef<HTMLParagraphElement>(null)
+  const doneStatusRef = useRef<HTMLDivElement>(null)
+
+  const emailId = `${productId}-waitlist-email`
+  const errorId = `${productId}-waitlist-error`
+  const noteId = `${productId}-waitlist-note`
+
+  useEffect(() => {
+    if (step === "refine") refineStatusRef.current?.focus()
+    if (step === "done") doneStatusRef.current?.focus()
+  }, [step])
+
   async function post(payload: Record<string, unknown>) {
     setBusy(true)
     setError("")
@@ -110,42 +126,75 @@ export function WaitlistForm({
   if (step === "join") {
     return (
       <form
+        noValidate
         className="mt-4 space-y-4"
         onSubmit={async (event) => {
           event.preventDefault()
+          const trimmedEmail = email.trim()
+          if (!trimmedEmail || !EMAIL_RE.test(trimmedEmail)) {
+            setError("Valid email required")
+            emailInputRef.current?.focus()
+            return
+          }
+          if (!consent) {
+            setError("Consent required")
+            consentInputRef.current?.focus()
+            return
+          }
           const source = typeof window === "undefined" ? "" : window.location.pathname
           if (await post({ source })) setStep("refine")
         }}
       >
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder={placeholder}
-            aria-label={"Email address to join the waitlist for " + productName}
-            className="wl-input flex-1"
-          />
-          <button type="submit" disabled={busy} className="wl-btn">
-            {busy ? copy.joining : copy.join}
-          </button>
+        <div className="space-y-2">
+          <label htmlFor={emailId} className="wl-label">
+            {"Email address to join the waitlist for " + productName}
+          </label>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <input
+              ref={emailInputRef}
+              id={emailId}
+              type="email"
+              required
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value)
+                if (error) setError("")
+              }}
+              placeholder={placeholder}
+              aria-invalid={Boolean(error)}
+              aria-describedby={error ? `${errorId} ${noteId}` : noteId}
+              className="wl-input flex-1"
+            />
+            <button type="submit" disabled={busy} className="wl-btn">
+              {busy ? copy.joining : copy.join}
+            </button>
+          </div>
         </div>
 
         <label className="wl-note flex items-start gap-2.5">
           <input
+            ref={consentInputRef}
             type="checkbox"
             required
             checked={consent}
-            onChange={(event) => setConsent(event.target.checked)}
+            onChange={(event) => {
+              setConsent(event.target.checked)
+              if (error) setError("")
+            }}
+            aria-invalid={Boolean(error && !consent)}
+            aria-describedby={error ? errorId : undefined}
             className="wl-check mt-1"
           />
           <span>{fill(copy.consent, { product: productName })}</span>
         </label>
 
-        {error ? <p className="wl-error" role="alert">{error}</p> : null}
+        {error ? (
+          <p id={errorId} className="wl-error" role="alert" aria-live="assertive">
+            {error}
+          </p>
+        ) : null}
 
-        <p className="wl-note">
+        <p id={noteId} className="wl-note">
           {shownCount !== null ? fill(copy.waiting, { count: shownCount.toLocaleString() }) + " " : ""}
           {foundingBenefit && seats !== 0 ? foundingBenefit : copy.quiet}
         </p>
@@ -157,7 +206,7 @@ export function WaitlistForm({
     return (
       <div className="mt-4 space-y-5">
         <div className="wl-panel">
-          <p className="wl-panel-title" role="status">
+          <p ref={refineStatusRef} tabIndex={-1} className="wl-panel-title" role="status" aria-live="polite">
             {state?.position ? fill(copy.entered, { n: state.position }) : copy.enteredNoPosition}
           </p>
           {foundingBenefit && seats !== null && seats > 0 ? (
@@ -202,7 +251,11 @@ export function WaitlistForm({
           </label>
         </div>
 
-        {error ? <p className="wl-error" role="alert">{error}</p> : null}
+        {error ? (
+          <p id={errorId} className="wl-error" role="alert" aria-live="assertive">
+            {error}
+          </p>
+        ) : null}
 
         <div className="flex items-center gap-4">
           <button
@@ -224,7 +277,7 @@ export function WaitlistForm({
   }
 
   return (
-    <div className="mt-4 wl-panel" role="status">
+    <div ref={doneStatusRef} tabIndex={-1} className="mt-4 wl-panel" role="status" aria-live="polite">
       <p className="wl-panel-title">{state?.position ? fill(copy.done, { n: state.position }) : copy.doneNoPosition}</p>
       <p className="wl-panel-text">{fill(copy.doneText, { product: productName })}</p>
     </div>

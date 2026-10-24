@@ -272,6 +272,7 @@ test("release/package-manifest.json excludes internal release-gate and price-pro
   const manifest = JSON.parse(read("release/package-manifest.json"))
   for (const internalDoc of [
     "docs/release/COMPETITIVE-BAR-2026-10.md",
+    "docs/release/FACTS.md",
     "docs/release/G5-PRICE-EVIDENCE.md",
     "docs/release/LAUNCH-DAY-RUNBOOK.md",
     "docs/release/LAUNCH-PREP-DRAFTS-2026-10.md",
@@ -420,5 +421,23 @@ test("launch-day runbook and first-week metrics spec cover ordered steps, rollba
     "06-funnel-telemetry-schema.json",
   ]) {
     assert.ok(runbook.includes(requiredSection), `LAUNCH-DAY-RUNBOOK.md must include: ${requiredSection}`)
+  }
+})
+
+test("CMO facts sheet (docs/release/FACTS.md) stays in sync with live counts and starlight-estate#70 demand-capture SHA-256 parity", (t) => {
+  if (!existsSync(new URL("docs/release/FACTS.md", root))) {
+    t.skip("Internal release-gate docs are excluded from the buyer package")
+    return
+  }
+  const cmo = read("docs/release/FACTS.md")
+  const relManifest = JSON.parse(read("release/package-manifest.json"))
+  assert.ok(cmo.includes(`\`${relManifest.files.length}\` files`))
+  assert.ok(cmo.includes("`131 pass, 0 fail`"))
+  assert.ok(cmo.includes("`32 pass, 0 fail`"))
+  assert.ok(cmo.includes("`11 pass, 0 fail`"))
+  assert.ok(cmo.includes("https://github.com/frankxai/starlight-estate/pull/70"))
+  for (const name of ["types.ts", "questions.ts", "store.ts", "handler.ts", "WaitlistForm.tsx"]) {
+    const sha = createHash("sha256").update(readBytes(`lib/demand-capture/${name}`)).digest("hex")
+    assert.ok(cmo.includes(sha), `FACTS.md must record current SHA-256 for lib/demand-capture/${name}: ${sha}`)
   }
 })

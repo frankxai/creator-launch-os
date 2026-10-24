@@ -18,7 +18,8 @@
     "package:kit": "node scripts/package-kit.mjs",
     "template:briefs": "node scripts/export-template-briefs.mjs",
     "template:projects": "node scripts/export-template-project.mjs",
-    "verify": "pnpm run check:decision-desk && pnpm run check:offer && pnpm run type-check && pnpm run lint && pnpm run test && pnpm run build"
+    "verify": "pnpm run check:decision-desk && pnpm run check:offer && pnpm run type-check && pnpm run lint && pnpm run test && pnpm run build && pnpm run check:perf",
+    "check:perf": "node scripts/check-performance-budget.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -34,6 +35,7 @@
     "@types/node": "^22.19.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
+    "axe-core": "4.14.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "16.3.3",
     "tailwindcss": "^4.3.3",

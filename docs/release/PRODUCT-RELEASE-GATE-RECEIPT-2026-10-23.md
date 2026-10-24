@@ -14,7 +14,7 @@
 | Gate | Status | Evidence | Owner |
 | :--- | :--- | :--- | :--- |
 | **G0 — Claim truth** | **PASS (P2s 1–7 fixed)** | 18/18 buyer-facing claims mapped to exact `file:line` in §1 below. Resolved all 7 P2 items from G3 #2 (`#17#issuecomment-6378752105`): staged double-opt-in verification email + full verify test, excluded internal docs from `release/package-manifest.json`, verified-only `foundingSeatsLeft` + per-instance rate-limiter note, accurate `32 commerce contract tests` & build-time rehearsal labels on `/kit`, required `x-commerce-timestamp` signed as `timestamp.rawBody`, aligned `COMPETITIVE-BAR-2026-10.md:7` with the DIY boundary, and re-synced all G0 line references. | Maker (`Gemini 4 Argon`) |
-| **G1 — Deterministic pass** | **PASS** | All 4 GitHub Actions jobs (`verify`, `research-boundary`, `portfolio-export (preview)`, `portfolio-export (published)`) and local `pnpm verify` pass (**130/130 contract tests**, `0 fail`, `0` ESLint warnings, 31-page Next.js 16.4.3 build, `137` MIT files excluding internal release-gate docs, `12` kit files). | Maker (`Gemini 4 Argon`) |
+| **G1 — Deterministic pass** | **PASS** | All 4 GitHub Actions jobs (`verify`, `research-boundary`, `portfolio-export (preview)`, `portfolio-export (published)`) and local `pnpm verify` pass (**131/131 contract tests**, `0 fail`, `0` ESLint warnings, 31-page Next.js 16.4.3 build, `138` MIT files excluding internal release-gate docs, `12` kit files). | Maker (`Gemini 4 Argon`) |
 | **G2 — Buyer simulation** | **SCHEDULED FOR MORNING (REAL BROWSER)** | Container Playwright (`10/10`) and fresh extracted ZIP verification (`125 pass, 0 fail, 5 internal-doc/kit skips`) pass; real-browser G2 runs in the morning per owner direction. | Frank / Maker |
 | **G3 — Independent check (maker ≠ checker)** | **PASS AT `ec9c44c` (P2s fixed on new head)** | Claude Opus 5.5 (`claude-opus-5-5`) posted **PASS for G0, G1 and G4 with 0 P0 / 0 P1** at `ec9c44c` (`#17#issuecomment-6378752105`), plus 7 P2 items resolved in this commit. | Claude Opus 5.5 (`claude-opus-5-5`) |
 | **G4 — Post-purchase & first-run email path** | **PASS (Test Rehearsal)** | Build-verified 4-step `FirstSaleRehearsal` on `/kit#prove-it-works` + HTTP `scripts/commerce-rehearsal.mjs` (`TEST_REHEARSAL_PASSED_NOT_A_SALE`), mandatory `x-commerce-timestamp` (`±300s`) signed into `timestamp.rawBody`, early-refund tombstone, `409 E_ORDER_CONFLICT` + PII-free log, 7-day (>24h) signed token TTL, fail-closed waitlist (`503` when KV unset), and staged double-opt-in verification email (`sendVerificationEmail` → `handleVerify` → `markVerified` → `addToAudience`). | Maker (test mode) / Frank (live rail) |
@@ -50,8 +50,8 @@
 ## 2. G1 Receipt — Deterministic Test & Build Counts
 
 - **Commerce contract suite (`node --test tests/commerce-*.test.mjs`):** `32 pass, 0 fail`.
-- **Full repository suite (`pnpm verify`):** `130 pass, 0 fail`, `0` ESLint warnings, 31-page Next.js `16.4.3` build.
-- **Fresh buyer ZIP (`137` files, internal release-gate & price-proposal docs excluded):** `125 pass, 0 fail, 5 skips` (`2` commercial-kit-only tests + `2` internal release-gate doc tests).
+- **Full repository suite (`pnpm verify`):** `131 pass, 0 fail`, `0` ESLint warnings, 31-page Next.js `16.4.3` build.
+- **Fresh buyer ZIP (`138` files, internal release-gate & price-proposal docs excluded):** `125 pass, 0 fail, 5 skips` (`2` commercial-kit-only tests + `2` internal release-gate doc tests).
 
 ---
 
@@ -60,10 +60,10 @@
 > **Label:** **Maker G2 evidence** (executed in Playwright Chromium `145.0.7632.6` by the maker lane; **independent real-browser G2 runs in the morning**).
 
 ### 3.1 Printed Verification & Browser Counts
-- **Repository contract & unit tests (`pnpm verify`):** `130 tests, 130 pass, 0 fail`, `0` ESLint warnings, `31/31` static pages built on Next.js `16.4.3`.
+- **Repository contract & unit tests (`pnpm verify`):** `131 tests, 131 pass, 0 fail`, `0` ESLint warnings, `31/31` static pages built on Next.js `16.4.3`.
 - **Commerce contract subset (`node --test tests/commerce-*.test.mjs`):** `32 tests, 32 pass, 0 fail`.
-- **Fresh extracted buyer ZIP (`137` files in `/tmp`, internal `docs/release/*` excluded):** `130 tests, 125 pass, 0 fail, 5 skipped` (`2` commercial-kit-only + `3` internal release-gate doc tests).
-- **Parent Playwright suite (`pnpm exec playwright test`):** `10 passed (40.8s)` across `atelier.spec.mjs` (`4`), `install.spec.mjs` (`4`), and `kit.spec.mjs` (`2`).
+- **Fresh extracted buyer ZIP (`138` files in `/tmp`, internal `docs/release/*` excluded):** `131 tests, 125 pass, 0 fail, 6 skipped` (`2` commercial-kit-only + `3` internal release-gate doc tests).
+- **Parent Playwright suite (`pnpm exec playwright test`):** `11 passed (47.3s)` across `atelier.spec.mjs` (`4`), `install.spec.mjs` (`4`), and `kit.spec.mjs` (`2`).
 
 ### 3.2 Five-Stage Buyer Journey Covered at `390px` & `1440px` (`tests/browser/kit.spec.mjs:25-118`)
 1. **Stage (a) — `/kit` first screen:** Verified H1 (*"Sell digital products from your own domain—and prove payment, delivery and refunds work before you go live."*), `data-kit-availability="available-soon"`, zero live `Buy` button, and `scrollWidth <= clientWidth + 1` at `375px`, `390px`, `768px`, and `1440px`.

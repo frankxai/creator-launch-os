@@ -118,7 +118,12 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
           </p>
           <h3 className="mt-2 text-xl font-semibold">{current.title}</h3>
           <p className="mt-2 text-sm leading-6 text-muted">{current.summary}</p>
-          <pre className="mt-4 overflow-x-auto rounded-xl bg-ink p-4 font-mono text-xs leading-6 text-paper">
+          <pre
+            tabIndex={0}
+            role="region"
+            aria-label={`Step ${current.number} input`}
+            className="mt-4 overflow-x-auto rounded-xl bg-ink p-4 font-mono text-xs leading-6 text-paper"
+          >
             <code>{current.commandOrInput}</code>
           </pre>
         </div>
@@ -126,6 +131,9 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
           <p className="font-mono text-xs text-muted">Verified engine output (computed at build)</p>
           <p className="mt-2 text-sm font-semibold text-ink">{current.outcomeLabel}</p>
           <pre
+            tabIndex={0}
+            role="region"
+            aria-label={`Step ${current.number} verified engine output`}
             data-rehearsal-output
             className="mt-4 overflow-x-auto rounded-xl border border-line bg-paper p-4 font-mono text-xs leading-6 text-ink"
           >

@@ -56,7 +56,12 @@ button {
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 4px;
 }
@@ -244,6 +249,15 @@ button:focus-visible {
     scroll-behavior: auto;
   }
 
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
   .signal-line::after {
     animation: none;
     display: none;
@@ -364,7 +378,17 @@ button:focus-visible {
 
 .wl-error {
   font-size: 0.8rem;
-  color: var(--coral);
+  font-weight: 600;
+  color: #ff856d;
+}
+
+.wl-input:focus-visible,
+.wl-btn:focus-visible,
+.wl-check:focus-visible,
+.wl-chip:focus-visible,
+.wl-link:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 3px;
 }
 
 .wl-panel {

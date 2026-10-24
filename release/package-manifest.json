@@ -102,6 +102,7 @@
     "release/package-manifest.json",
     "scripts/check-decision-desk.mjs",
     "scripts/check-offer-facts.mjs",
+    "scripts/check-performance-budget.mjs",
     "scripts/commerce-rehearsal.mjs",
     "scripts/export-template-briefs.mjs",
     "scripts/export-template-project.mjs",
