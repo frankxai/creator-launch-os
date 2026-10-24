@@ -273,6 +273,7 @@ test("release/package-manifest.json excludes internal release-gate and price-pro
   for (const internalDoc of [
     "docs/release/COMPETITIVE-BAR-2026-10.md",
     "docs/release/G5-PRICE-EVIDENCE.md",
+    "docs/release/LAUNCH-DAY-RUNBOOK.md",
     "docs/release/LAUNCH-PREP-DRAFTS-2026-10.md",
     "docs/release/PRODUCT-RELEASE-GATE-RECEIPT-2026-10-23.md",
   ]) {
@@ -396,4 +397,28 @@ test("kit page embeds the 4-step FirstSaleRehearsal and the honest What you stil
   assert.match(rehearsal, /Walk one test order from webhook to delivery email and refund revocation\./)
   assert.match(rehearsal, /computed at build time against fixture events/)
   assert.doesNotMatch(rehearsal, /\$\s?\d/, "rehearsal component must not render a hand-typed dollar price")
+})
+
+test("launch-day runbook and first-week metrics spec cover ordered steps, rollback and repo-native funnel metrics", (t) => {
+  if (!existsSync(new URL("docs/release/LAUNCH-DAY-RUNBOOK.md", root))) {
+    t.skip("Internal release-gate docs are excluded from the buyer package")
+    return
+  }
+  const runbook = read("docs/release/LAUNCH-DAY-RUNBOOK.md")
+  for (const requiredSection of [
+    "## 1. Pre-Launch Plan Object",
+    "## 2. `offer.facts.json` & Manifest Ratification",
+    "## 3. PR Merge Order (`#16` → `#17` → `main`",
+    "## 4. Production Deploy & Environment Wiring",
+    "## 5. Production Smoke Checks",
+    "## 6. Waitlist Announcement Email",
+    "## 7. Five-Post Launch Sequence Timing",
+    "## 8. Rollback Procedure",
+    "## 9. First-Week Metrics Spec (Zero New Tracking Vendors — Repo Primitives Only)",
+    "waitlist:creator-launch-os:verified_count",
+    "priceBandDistribution",
+    "06-funnel-telemetry-schema.json",
+  ]) {
+    assert.ok(runbook.includes(requiredSection), `LAUNCH-DAY-RUNBOOK.md must include: ${requiredSection}`)
+  }
 })

@@ -14,8 +14,8 @@
 | Gate | Status | Evidence | Owner |
 | :--- | :--- | :--- | :--- |
 | **G0 — Claim truth** | **PASS (P2s 1–7 fixed)** | 18/18 buyer-facing claims mapped to exact `file:line` in §1 below. Resolved all 7 P2 items from G3 #2 (`#17#issuecomment-6378752105`): staged double-opt-in verification email + full verify test, excluded internal docs from `release/package-manifest.json`, verified-only `foundingSeatsLeft` + per-instance rate-limiter note, accurate `32 commerce contract tests` & build-time rehearsal labels on `/kit`, required `x-commerce-timestamp` signed as `timestamp.rawBody`, aligned `COMPETITIVE-BAR-2026-10.md:7` with the DIY boundary, and re-synced all G0 line references. | Maker (`Gemini 4 Argon`) |
-| **G1 — Deterministic pass** | **PASS** | All 4 GitHub Actions jobs (`verify`, `research-boundary`, `portfolio-export (preview)`, `portfolio-export (published)`) and local `pnpm verify` pass (**129/129 contract tests**, `0 fail`, `0` ESLint warnings, 31-page Next.js 16.4.3 build, `137` MIT files excluding internal release-gate docs, `12` kit files). | Maker (`Gemini 4 Argon`) |
-| **G2 — Buyer simulation** | **SCHEDULED FOR MORNING (REAL BROWSER)** | Container Playwright (`10/10`) and fresh extracted ZIP verification (`125 pass, 0 fail, 4 internal-doc/kit skips`) pass; real-browser G2 runs in the morning per owner direction. | Frank / Maker |
+| **G1 — Deterministic pass** | **PASS** | All 4 GitHub Actions jobs (`verify`, `research-boundary`, `portfolio-export (preview)`, `portfolio-export (published)`) and local `pnpm verify` pass (**130/130 contract tests**, `0 fail`, `0` ESLint warnings, 31-page Next.js 16.4.3 build, `137` MIT files excluding internal release-gate docs, `12` kit files). | Maker (`Gemini 4 Argon`) |
+| **G2 — Buyer simulation** | **SCHEDULED FOR MORNING (REAL BROWSER)** | Container Playwright (`10/10`) and fresh extracted ZIP verification (`125 pass, 0 fail, 5 internal-doc/kit skips`) pass; real-browser G2 runs in the morning per owner direction. | Frank / Maker |
 | **G3 — Independent check (maker ≠ checker)** | **PASS AT `ec9c44c` (P2s fixed on new head)** | Claude Opus 5.5 (`claude-opus-5-5`) posted **PASS for G0, G1 and G4 with 0 P0 / 0 P1** at `ec9c44c` (`#17#issuecomment-6378752105`), plus 7 P2 items resolved in this commit. | Claude Opus 5.5 (`claude-opus-5-5`) |
 | **G4 — Post-purchase & first-run email path** | **PASS (Test Rehearsal)** | Build-verified 4-step `FirstSaleRehearsal` on `/kit#prove-it-works` + HTTP `scripts/commerce-rehearsal.mjs` (`TEST_REHEARSAL_PASSED_NOT_A_SALE`), mandatory `x-commerce-timestamp` (`±300s`) signed into `timestamp.rawBody`, early-refund tombstone, `409 E_ORDER_CONFLICT` + PII-free log, 7-day (>24h) signed token TTL, fail-closed waitlist (`503` when KV unset), and staged double-opt-in verification email (`sendVerificationEmail` → `handleVerify` → `markVerified` → `addToAudience`). | Maker (test mode) / Frank (live rail) |
 | **G5 — Price integrity** | **PREPARED FOR FRANK** | `docs/release/G5-PRICE-EVIDENCE.md` (excluded from the free buyer ZIP at `release/package-manifest.json:64-65`) proposes `$49` Launch / `$69` Standard / `$149` Team with buyer value logic, refund policy, and waitlist price-band wording. `offer.facts.json` keeps `price.state: "decision_required", amount: null`. | Frank Riemer |
@@ -50,5 +50,39 @@
 ## 2. G1 Receipt — Deterministic Test & Build Counts
 
 - **Commerce contract suite (`node --test tests/commerce-*.test.mjs`):** `32 pass, 0 fail`.
-- **Full repository suite (`pnpm verify`):** `129 pass, 0 fail`, `0` ESLint warnings, 31-page Next.js `16.4.3` build.
-- **Fresh buyer ZIP (`137` files, internal release-gate & price-proposal docs excluded):** `125 pass, 0 fail, 4 skips` (`2` commercial-kit-only tests + `2` internal release-gate doc tests).
+- **Full repository suite (`pnpm verify`):** `130 pass, 0 fail`, `0` ESLint warnings, 31-page Next.js `16.4.3` build.
+- **Fresh buyer ZIP (`137` files, internal release-gate & price-proposal docs excluded):** `125 pass, 0 fail, 5 skips` (`2` commercial-kit-only tests + `2` internal release-gate doc tests).
+
+---
+
+## 3. Maker G2 Evidence — Playwright Buyer Journey at `390px` & `1440px` (`tests/browser/kit.spec.mjs`)
+
+> **Label:** **Maker G2 evidence** (executed in Playwright Chromium `145.0.7632.6` by the maker lane; **independent real-browser G2 runs in the morning**).
+
+### 3.1 Printed Verification & Browser Counts
+- **Repository contract & unit tests (`pnpm verify`):** `130 tests, 130 pass, 0 fail`, `0` ESLint warnings, `31/31` static pages built on Next.js `16.4.3`.
+- **Commerce contract subset (`node --test tests/commerce-*.test.mjs`):** `32 tests, 32 pass, 0 fail`.
+- **Fresh extracted buyer ZIP (`137` files in `/tmp`, internal `docs/release/*` excluded):** `130 tests, 125 pass, 0 fail, 5 skipped` (`2` commercial-kit-only + `3` internal release-gate doc tests).
+- **Parent Playwright suite (`pnpm exec playwright test`):** `10 passed (40.8s)` across `atelier.spec.mjs` (`4`), `install.spec.mjs` (`4`), and `kit.spec.mjs` (`2`).
+
+### 3.2 Five-Stage Buyer Journey Covered at `390px` & `1440px` (`tests/browser/kit.spec.mjs:25-118`)
+1. **Stage (a) — `/kit` first screen:** Verified H1 (*"Sell digital products from your own domain—and prove payment, delivery and refunds work before you go live."*), `data-kit-availability="available-soon"`, zero live `Buy` button, and `scrollWidth <= clientWidth + 1` at `375px`, `390px`, `768px`, and `1440px`.
+2. **Stage (b) — `#prove-it-works` 4-step rehearsal:** Clicked `Run all 4 test steps` in `[data-rehearsal-panel]`; verified `Throws E_REVOKED` and `[data-diy-boundary]` (*"What you still do yourself"*).
+3. **Stage (c) — Free core download path (`/start`):** Clicked `Get the free starter` on `/kit`, navigated to `/start`, verified zero horizontal overflow and the local `/architecture-decision-desk/index.html` link.
+4. **Stage (d) — Waitlist Step 1 & Step 2:** Submitted `buyer.simulation@example.com` + consent (`count: 0`, `foundingSeatsLeft: 100` before verification, `stepToken` issued), then selected `Independent creator` / `25 - 99` / `I need this now` + pain note and verified Step 2 POST carried `stepToken`.
+5. **Stage (e) — `?verify=` link (test mode + fail-closed `503`):** Followed `GET /api/waitlist?productId=creator-launch-os&email=buyer.simulation%40example.com&verify=verify-token-fixture-1` in test mode (`{ ok: true, verified: true, productId: "creator-launch-os", position: 1, count: 1 }`) and verified that without KV configured it fails closed with HTTP `503`.
+
+### 3.3 Screenshot & `.vis.provenance.json` SHA-256 Receipts (`390px` & `1440px`)
+
+| Stage | Viewport | Capture file | SHA-256 (`*.vis.provenance.json`) |
+| :--- | :--- | :--- | :--- |
+| `/kit` full page | `390×900` | `kit-390.png` | `320c7e5835e8cb4b1e6ab7ae367368938f3d8ffb2de4d5b49d283ed6095dea15` |
+| `/kit` full page | `1440×900` | `kit-1440.png` | `e2bdce6f5dbe5c3a06a67ebe45a2d9f5c611bcf721e7eaf9b5fb07a894ac9203` |
+| `#prove-it-works` (Step 04 `E_REVOKED`) | `390×900` | `g2-rehearsal-390.png` | `4dbdd402dca561d59714b0e6ea15b5ab3f777a0e32d724fbee143598baaf9abd` |
+| `#prove-it-works` (Step 04 `E_REVOKED`) | `1440×900` | `g2-rehearsal-1440.png` | `dded0423ab9fc1249d6cb5c7f6efc44477701f0204dc42d93bdfaf21d4567367` |
+| Free core starter (`/start`) | `390×900` | `g2-free-starter-390.png` | `cc296d1733e06630e0b6e3096a33513f8fdc69fdacb961146e1947ed380f5ede` |
+| Free core starter (`/start`) | `1440×900` | `g2-free-starter-1440.png` | `9e6c7f5229c7f75212c7655d0e7eed0bd67dea02aa6a52ac955afb1658665da6` |
+| Waitlist Step 1 (`#1`, `stepToken`) | `390×900` | `g2-waitlist-step1-390.png` | `f596afdc19072e82e8d6c23e711ee7e03249e36c7bf7d7d70275d58791b94c2c` |
+| Waitlist Step 1 (`#1`, `stepToken`) | `1440×900` | `g2-waitlist-step1-1440.png` | `36130427b3cbb540f06809bb5ea7f6a6d1f04f45b1922f1799511c75b1dd1871` |
+| Waitlist Step 2 (`Save answers`) | `390×900` | `g2-waitlist-step2-390.png` | `a6ee20172583c88fc990ce90bcce94bfcdd7b1abf1fbef4189d2dc84a7cba5e9` |
+| Waitlist Step 2 (`Save answers`) | `1440×900` | `g2-waitlist-step2-1440.png` | `350c47f0b47280ab1f1e8114c80e709e069b4dd38d2fe740e787e88465b8dc1f` |
