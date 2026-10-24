@@ -5,11 +5,13 @@ sku_id: sku_creator_launch_os_v1
 state: published
 canonical_offer_url: https://creator-launch-os-starlight-intelligence.vercel.app
 title: Creator Launch OS
+version: "1.1.0"
+offer_facts: offer.facts.json
 short_description: Deploy a clear multi-product storefront with an honest checkout handoff and a built-in release studio.
 buyer_job: launch_and_maintain_a_small_digital_product_catalog
 outcome: verified_deployable_storefront_and_repeatable_release_workflow
-includes: [source_code, product_catalog, product_pages, demo_checkout_fallback, studio_example, verification_scripts]
-excludes: [payment_api, customer_database, entitlements, email_automation, fabricated_analytics]
+includes: [source_code, product_catalog, product_pages, demo_checkout_fallback, commerce_adapter_test_mode, studio_example, verification_scripts]
+excludes: [live_merchant_integration, customer_database, email_automation, fabricated_analytics]
 price_state: free_core_paid_extension_decision_required
 license: MIT_for_repository
 support_url: https://github.com/frankxai/creator-launch-os/issues
@@ -22,7 +24,7 @@ channels:
   - id: gumroad
     state: not_submitted
 preview_assets: []
-rights_record: pending
+rights_record: docs/release/RIGHTS-AND-PROVENANCE.md
 maintenance:
   last_checked: "2026-09-03"
   next_review: "2026-10-03"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, type ChangeEvent } from "react"
+import { useEffect, useRef, useState, type ChangeEvent } from "react"
 import { copyLimits, getTemplate } from "@/lib/template-catalog"
 import { examplePortfolio, type PortfolioCase, type PortfolioContent } from "@/lib/portfolio-content"
 import { examplePublication } from "@/lib/site-publication"
@@ -41,7 +41,11 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
   const [incoming, setIncoming] = useState<PortfolioProject | null>(null)
   const [reading, setReading] = useState(false)
   const [status, setStatus] = useState("")
-  const [removedCases, setRemovedCases] = useState<PortfolioCase[] | null>(null)
+  // Each removal pushes the prior case list; undo restores them one step at a time.
+  const [undoStack, setUndoStack] = useState<PortfolioCase[][]>([])
+  // Last state the buyer has safely in hand (initial load, a saved download or an applied import).
+  const [savedJson, setSavedJson] = useState(() => JSON.stringify(draft))
+  const unsaved = JSON.stringify(draft) !== savedJson
   const [narrow, setNarrow] = useState(false)
   const firstField = useRef<HTMLInputElement>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -56,16 +60,25 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
     error = cause instanceof Error ? cause.message : "Complete the project before exporting site files."
   }
 
+  useEffect(() => {
+    if (!unsaved) return
+    // Full navigations (header links, reload, closing the tab) would discard edits held only in this tab.
+    const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = "" }
+    window.addEventListener("beforeunload", warn)
+    return () => window.removeEventListener("beforeunload", warn)
+  }, [unsaved])
+
   function update(next: PortfolioProject) { setDraft(next); setStatus("") }
   function saveProject(name: string) {
     try {
       download(name, parsePortfolioProject(JSON.stringify(draft)))
+      setSavedJson(JSON.stringify(draft))
       setStatus("Project download requested, including incomplete fields. Nothing was published.")
     } catch (cause) { setStatus(cause instanceof Error ? cause.message : "Project could not be saved. Your edits are still here.") }
   }
   function updateCase(index: number, patch: Partial<PortfolioCase>) {
     update({ ...draft, portfolio: { ...draft.portfolio, cases: draft.portfolio.cases.map((entry, position) => position === index ? { ...entry, ...patch } : entry) } })
-    setRemovedCases(null)
+    setUndoStack([])
   }
 
   return <main id="main-content" className={`${atelier.atelier} ${styles.workspace}`}>
@@ -114,22 +127,22 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
               <label className={styles.check}><input type="checkbox" checked={entry.illustrative}
                 onChange={(event) => updateCase(index, { illustrative: event.target.checked })} />This is an illustrative example</label>
               <button type="button" disabled={draft.portfolio.cases.length === 1} onClick={() => {
-                setRemovedCases(structuredClone(draft.portfolio.cases))
+                setUndoStack([...undoStack, structuredClone(draft.portfolio.cases)])
                 update({ ...draft, portfolio: { ...draft.portfolio, cases: draft.portfolio.cases.filter((_, position) => position !== index) } })
                 setStatus("Case removed from this draft. Undo is available until you edit or add another case.")
               }}>Remove case {index + 1}</button>
             </details>)}
             <div className={styles.actions}>
               <button type="button" disabled={draft.portfolio.cases.length === 6} onClick={() => {
-                setRemovedCases(null)
+                setUndoStack([])
                 update({ ...draft, portfolio: { ...draft.portfolio, cases: [...draft.portfolio.cases, {
                   title: "", category: "", role: "", poster: "", summary: "", context: "", decision: "", evidence: "", evidenceUrl: null, illustrative: true,
                 }] } })
               }}>Add a case</button>
-              {removedCases && <button type="button" onClick={() => {
-                update({ ...draft, portfolio: { ...draft.portfolio, cases: removedCases } })
-                setRemovedCases(null)
-                setStatus("Removed case restored.")
+              {undoStack.length > 0 && <button type="button" onClick={() => {
+                update({ ...draft, portfolio: { ...draft.portfolio, cases: undoStack.at(-1)! } })
+                setUndoStack(undoStack.slice(0, -1))
+                setStatus(undoStack.length > 1 ? `Removed case restored. ${undoStack.length - 1} more removal${undoStack.length > 2 ? "s" : ""} can be undone.` : "Removed case restored.")
               }}>Undo removal</button>}
             </div>
           </section>
@@ -196,7 +209,7 @@ export function PortfolioWorkspace({ initialProject, standalone = false }: {
               <p>{incoming.copy.brand || "Untitled project"} / {incoming.portfolio.cases.length} cases / {incoming.publication.mode}</p>
               <p>Applying replaces this draft. Save the current project first to retain it.</p>
               <button type="button" onClick={() => saveProject("monograph-before-import.json")}>Save current project</button>
-              <button type="button" onClick={() => { setDraft(incoming); setIncoming(null); setRemovedCases(null); setStatus("Saved project restored."); firstField.current?.focus() }}>Apply project</button>
+              <button type="button" onClick={() => { setDraft(incoming); setSavedJson(JSON.stringify(incoming)); setIncoming(null); setUndoStack([]); setStatus("Saved project restored."); firstField.current?.focus() }}>Apply project</button>
               <button type="button" onClick={() => { setIncoming(null); setStatus("Import canceled. Current edits are unchanged."); fileInput.current?.focus() }}>Cancel import</button>
             </div>}
           </section>
