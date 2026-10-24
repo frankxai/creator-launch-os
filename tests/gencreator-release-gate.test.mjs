@@ -236,7 +236,7 @@ test("buyer-facing copy stays in GenCreator voice, labels refund terms as draft 
     "buyer-facing copy must avoid hype words",
   )
   const kitPage = read("app/kit/page.tsx")
-  assert.match(kitPage, /Your source is the beginning\. Your choices make the edition\./)
+  assert.match(kitPage, /Sell digital products from your own domain—and prove payment, delivery and refunds work before you go live\./)
   assert.match(kitPage, /Draft policy \(\{offer\.refund\.state\}, pending owner ratification\)/)
   assert.doesNotMatch(kitPage, /keep launch pricing for life|lock founding terms/i)
   assert.doesNotMatch(read("data/products.graph.json"), /Price lock for life/i)
@@ -298,9 +298,21 @@ test("launch copy final pass opens with a buyer job, uses zero superlatives and 
     "lib/commerce/engine.ts:265",
     "app/api/commerce/webhook/route.ts:10,45",
     "lib/commerce/engine.ts:344",
-    "app/kit/page.tsx:118",
+    "app/kit/page.tsx:208",
+    "app/kit/page.tsx:239",
+    "app/kit/page.tsx:332",
+    "app/kit/page.tsx:353",
     "lib/demand-capture/handler.ts:56",
   ]) {
     assert.ok(drafts.includes(citation), `launch copy must cite G0 evidence: ${citation}`)
   }
+})
+
+test("kit page embeds the 4-step FirstSaleRehearsal and the honest What you still do yourself boundary", () => {
+  const kitPage = read("app/kit/page.tsx")
+  const rehearsal = read("components/first-sale-rehearsal.tsx")
+  assert.match(kitPage, /<FirstSaleRehearsal steps=\{rehearsalSteps\} \/>/)
+  assert.match(kitPage, /What you still do yourself/)
+  assert.match(rehearsal, /Walk one test order from webhook to delivery email and refund revocation\./)
+  assert.doesNotMatch(rehearsal, /\$\s?\d/, "rehearsal component must not render a hand-typed dollar price")
 })

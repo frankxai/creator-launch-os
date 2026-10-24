@@ -18,6 +18,13 @@ test("the kit page shows a clean available-soon state and operates the two-step 
     await page.screenshot({ path: info.outputPath(`kit-${width}.png`), fullPage: true })
   }
 
+  // Exercise the interactive 4-step FirstSaleRehearsal ("Prove it works") and check the DIY boundary box
+  const rehearsal = page.locator("[data-rehearsal-panel]")
+  await expect(rehearsal).toBeVisible()
+  await expect(page.locator("[data-diy-boundary]")).toContainText("What you still do yourself")
+  await rehearsal.getByRole("button", { name: "Run all 4 test steps" }).click()
+  await expect(rehearsal.locator("[data-rehearsal-output]")).toContainText("E_REVOKED")
+
   // Intercept /api/waitlist to verify the client-side two-step flow and stepToken roundtrip
   const payloads = []
   await page.route("/api/waitlist", async (route) => {

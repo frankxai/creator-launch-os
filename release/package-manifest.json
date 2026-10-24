@@ -35,6 +35,7 @@
     "app/studio/templates/page.tsx",
     "components.json",
     "components/copy-install-command.tsx",
+    "components/first-sale-rehearsal.tsx",
     "components/home-motion.tsx",
     "components/launch-console.tsx",
     "components/portfolio-workspace.module.css",

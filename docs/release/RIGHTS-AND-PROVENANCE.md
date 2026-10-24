@@ -22,7 +22,7 @@ No photographs, video, audio, partner marks or third-party screenshots are track
 
 | Dependency | Version | License as declared in its package | Note |
 | --- | --- | --- | --- |
-| next, react, react-dom, tailwindcss | 16.3.8, 19.2.8, 19.2.8, 4.3.3 | MIT | — |
+| next, react, react-dom, tailwindcss | 16.4.3, 19.2.8, 19.2.8, 4.3.3 | MIT | — |
 | lucide-react | 1.34.0 | ISC | — |
 | gsap, @gsap/react | 3.15.0, 2.1.2 | GSAP Standard "no charge" license, https://gsap.com/standard-license | *Owner:* read the current terms before selling; the free core depends on GSAP and the kit references it. Not assessed here from memory. |
 | Geist, Geist Mono, Newsreader | via `next/font/google` | Fonts are fetched from Google Fonts at build time | *Owner:* confirm each family's license on its Google Fonts page before listing assets are captured. |
