@@ -123,8 +123,9 @@ export class CommerceError extends Error {
 
 const SIGNATURE_PREFIX = "sha256="
 
-export function signPayload(rawBody: string, secret: string) {
-  return SIGNATURE_PREFIX + createHmac("sha256", secret).update(rawBody, "utf8").digest("hex")
+/** Signs `timestamp.rawBody` so a captured payload cannot be replayed with a fresh timestamp header. */
+export function signPayload(rawBody: string, secret: string, timestamp: string) {
+  return SIGNATURE_PREFIX + createHmac("sha256", secret).update(`${timestamp}.${rawBody}`, "utf8").digest("hex")
 }
 
 function safeEqual(a: string, b: string) {
@@ -133,18 +134,22 @@ function safeEqual(a: string, b: string) {
   return left.length === right.length && timingSafeEqual(left, right)
 }
 
-/** Generic HMAC check used by the fixture adapter. Live adapters bring their merchant's scheme. */
-/** Rejects webhook deliveries whose x-commerce-timestamp is outside the allowed clock-skew window (default 300s). */
-export function verifyWebhookTimestamp(timestampHeader: string | null, now = new Date(), maxSkewSeconds = 300) {
-  if (timestampHeader === null) return
-  const parsed = Number(timestampHeader.trim())
+/** Requires `x-commerce-timestamp` and rejects deliveries outside the allowed clock-skew window (default 300s). */
+export function verifyWebhookTimestamp(timestampHeader: string | null, now = new Date(), maxSkewSeconds = 300): string {
+  if (timestampHeader === null || !timestampHeader.trim()) {
+    throw new CommerceError("E_SIGNATURE", "Webhook timestamp header is required")
+  }
+  const trimmed = timestampHeader.trim()
+  const parsed = Number(trimmed)
   if (!Number.isInteger(parsed) || Math.abs(Math.floor(now.getTime() / 1000) - parsed) > maxSkewSeconds) {
     throw new CommerceError("E_SIGNATURE", "Webhook timestamp is malformed or outside the freshness window")
   }
+  return trimmed
 }
 
-export function verifySignature(rawBody: string, signature: string | null, secret: string) {
-  if (!signature || !safeEqual(signature, signPayload(rawBody, secret))) {
+/** Generic HMAC check used by the fixture adapter over `timestamp.rawBody`. Live adapters bring their merchant's scheme. */
+export function verifySignature(rawBody: string, signature: string | null, secret: string, timestamp: string) {
+  if (!signature || !safeEqual(signature, signPayload(rawBody, secret, timestamp))) {
     throw new CommerceError("E_SIGNATURE", "Webhook signature does not match")
   }
 }

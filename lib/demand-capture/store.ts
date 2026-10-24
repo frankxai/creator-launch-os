@@ -56,6 +56,22 @@ export async function getCount(productId: string): Promise<number> {
   return raw ? Number(raw) : 0
 }
 
+/** Count only verified subscribers toward public scarcity and foundingSeatsLeft. */
+export async function getVerifiedCount(productId: string): Promise<number> {
+  const raw = await kv(["get", key(productId, "verified_count")])
+  return raw ? Number(raw) : 0
+}
+
+/** Atomically mark an email verified via HSETNX so verified_count increments at most once per subscriber. */
+export async function markVerified(productId: string, email: string): Promise<boolean> {
+  const newlyVerified = Number(await kv(["hsetnx", key(productId, "verified"), email, "1"]))
+  if (newlyVerified === 1) {
+    await kv(["incr", key(productId, "verified_count")])
+    return true
+  }
+  return false
+}
+
 export async function getSignal(productId: string, email: string): Promise<DemandSignal | null> {
   const raw = await kv(["hget", key(productId, "signals"), email])
   return typeof raw === "string" && raw ? (JSON.parse(raw) as DemandSignal) : null
@@ -72,7 +88,34 @@ export async function allSignals(productId: string): Promise<DemandSignal[]> {
   return values.map((v) => JSON.parse(String(v)) as DemandSignal)
 }
 
-/** Called only after email verification (or when explicitly verified) to prevent unverified audience spam. */
+/**
+ * Send the double-opt-in verification email when RESEND_API_KEY is configured.
+ * Opening verifyUrl calls GET /api/waitlist?productId=...&email=...&verify=...
+ */
+export async function sendVerificationEmail(email: string, productId: string, position: number, verifyUrl: string) {
+  const resendKey = process.env.RESEND_API_KEY
+  if (!resendKey) return
+  const from = process.env.RESEND_FROM_EMAIL?.trim() || "GenCreator <noreply@gencreator.ai>"
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from,
+        to: [email],
+        subject: `Confirm your ${productId} waitlist spot (#${position})`,
+        text: `Confirm your ${productId} waitlist spot (#${position}) by opening this link:\n\n${verifyUrl}\n\nIf you did not request this, you can ignore this email.`,
+      }),
+    })
+    if (!res.ok) {
+      console.error(`demand-capture: verification email ${res.status} for ${productId}`)
+    }
+  } catch (err) {
+    console.error(`demand-capture: verification email failed for ${productId}`, err)
+  }
+}
+
+/** Called only after email verification to prevent unverified audience spam. */
 export async function addToAudience(email: string, name: string | undefined, productId: string) {
   const resendKey = process.env.RESEND_API_KEY
   const audience = audienceFor(productId)

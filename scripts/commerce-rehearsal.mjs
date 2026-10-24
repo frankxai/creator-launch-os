@@ -13,11 +13,12 @@ if (!base || !secret) {
   process.exit(1)
 }
 const fixture = (name) => readFileSync(new URL(`../tests/fixtures/commerce/${name}.json`, import.meta.url), "utf8")
-const sign = (body) => "sha256=" + createHmac("sha256", secret).update(body, "utf8").digest("hex")
+const sign = (timestamp, body) => "sha256=" + createHmac("sha256", secret).update(`${timestamp}.${body}`, "utf8").digest("hex")
 const post = async (body) => {
+  const timestamp = String(Math.floor(Date.now() / 1000))
   const response = await fetch(new URL("/api/commerce/webhook", base), {
     method: "POST",
-    headers: { "content-type": "application/json", "x-commerce-signature": sign(body) },
+    headers: { "content-type": "application/json", "x-commerce-timestamp": timestamp, "x-commerce-signature": sign(timestamp, body) },
     body,
   })
   return { status: response.status, body: await response.json() }

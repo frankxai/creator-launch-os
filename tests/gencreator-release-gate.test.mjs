@@ -25,19 +25,19 @@ async function loadDemandCapture() {
   }
   const store = await import(pathToFileURL(join(dir, "store.mjs")).href)
   const handler = await import(pathToFileURL(join(dir, "handler.mjs")).href)
-  const questions = await import(pathToFileURL(join(dir, "questions.mjs")).href)
-  return { store, handler, questions }
+  return { store, handler }
 }
 
-const { store, handler, questions } = await loadDemandCapture()
+const { store, handler } = await loadDemandCapture()
 const { engine, config } = await loadCommerce()
 const registry = JSON.parse(read("data/products.graph.json"))
 const product = registry.products.find((entry) => entry.id === "creator-launch-os")
 
-/** Simulate Upstash/Vercel KV REST commands in-test while exercising real fetch() in store.ts. */
+/** Simulate Upstash/Vercel KV and Resend REST calls in-test while exercising real fetch() in store.ts. */
 function withMockKv(fn) {
   const hashes = new Map()
   const strings = new Map()
+  const emailCalls = []
   const audienceCalls = []
   const origFetch = globalThis.fetch
   const origEnv = { ...process.env }
@@ -45,6 +45,7 @@ function withMockKv(fn) {
   return async () => {
     hashes.clear()
     strings.clear()
+    emailCalls.length = 0
     audienceCalls.length = 0
     process.env.UPSTASH_REDIS_REST_URL = "https://kv.example.invalid"
     process.env.UPSTASH_REDIS_REST_TOKEN = "token-fixture"
@@ -52,7 +53,11 @@ function withMockKv(fn) {
     process.env.RESEND_AUDIENCE_ID__CREATOR_LAUNCH_OS = "aud_creator_launch_os"
 
     globalThis.fetch = async (url, init) => {
-      if (String(url).startsWith("https://api.resend.com/")) {
+      if (String(url) === "https://api.resend.com/emails") {
+        emailCalls.push(JSON.parse(init.body))
+        return new Response(JSON.stringify({ id: "email_1" }), { status: 200 })
+      }
+      if (String(url).startsWith("https://api.resend.com/audiences/")) {
         audienceCalls.push(JSON.parse(init.body))
         return new Response(JSON.stringify({ id: "contact_1" }), { status: 200 })
       }
@@ -92,10 +97,10 @@ function withMockKv(fn) {
     }
 
     try {
-      await fn({ hashes, strings, audienceCalls })
+      await fn({ hashes, strings, emailCalls, audienceCalls })
     } finally {
       globalThis.fetch = origFetch
-      for (const k of [" KV_REST_API_URL", "KV_REST_API_URL", "KV_REST_API_TOKEN", "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "RESEND_API_KEY", "RESEND_AUDIENCE_ID__CREATOR_LAUNCH_OS"]) {
+      for (const k of ["KV_REST_API_URL", "KV_REST_API_TOKEN", "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN", "RESEND_API_KEY", "RESEND_AUDIENCE_ID__CREATOR_LAUNCH_OS"]) {
         if (origEnv[k] === undefined) delete process.env[k]
         else process.env[k] = origEnv[k]
       }
@@ -129,8 +134,8 @@ test("waitlist fails closed (KvNotConfiguredError) when neither KV_REST_API_* no
 })
 
 test(
-  "waitlist enforces atomic HSETNX position claim, stepToken overwrite guard, honeypot, rate limit and verification",
-  withMockKv(async ({ audienceCalls }) => {
+  "waitlist sends verification email on join, counts only verified signups toward foundingSeatsLeft, and syncs Resend audience on ?verify=",
+  withMockKv(async ({ emailCalls, audienceCalls }) => {
     handler.resetWaitlistRateLimiter()
     const makeReq = (ip = "203.0.113.10") =>
       new Request("https://creator-launch-os-starlight-intelligence.vercel.app/api/waitlist?utm_source=test", {
@@ -142,13 +147,24 @@ test(
     const bot = await handler.handleJoin(product, { email: "bot@example.com", consent: true, website: "https://spam.invalid" }, makeReq())
     assert.equal(bot.status, 400)
 
-    // Step 1: atomic claim returns position 1, stepToken, and withholds publicCount below threshold (50)
+    // Step 1: atomic claim returns position 1, stepToken, sends verification email, and keeps verified count at 0 (foundingSeatsLeft: 100)
     const step1 = await handler.handleJoin(product, { email: "Creator@Example.com", consent: true, source: "/kit" }, makeReq())
     assert.equal(step1.status, 200)
     assert.equal(step1.body.position, 1)
+    assert.equal(step1.body.count, 0, "unverified signup must not increment verified count")
+    assert.equal(step1.body.foundingSeatsLeft, 100, "unverified signup must not consume founding places")
     assert.equal(step1.body.publicCount, null)
     assert.equal(typeof step1.body.stepToken, "string")
+    assert.equal(emailCalls.length, 1, "Step 1 must send the double-opt-in verification email")
+    assert.deepEqual(emailCalls[0].to, ["creator@example.com"])
     assert.equal(audienceCalls.length, 0, "unverified signup must not immediately push to Resend audience")
+
+    // Extract the ?verify= token from the staged verification email
+    const urlMatch = emailCalls[0].text.match(/https:\/\/[^\s]+/)
+    assert.ok(urlMatch, "verification email must contain a verification URL")
+    const verifyUrl = new URL(urlMatch[0])
+    const verifyToken = verifyUrl.searchParams.get("verify")
+    assert.ok(verifyToken, "verification URL must carry a verify token")
 
     // Attempting to overwrite Step-2 answers by email alone (missing or wrong stepToken) is rejected with 403
     const spoofed = await handler.handleJoin(
@@ -164,7 +180,7 @@ test(
     )
     assert.equal(wrongToken.status, 403)
 
-    // Step 2 with the valid stepToken succeeds and keeps position 1
+    // Step 2 with the valid stepToken succeeds, keeps position 1, and does not resend the verification email
     const step2 = await handler.handleJoin(
       product,
       {
@@ -180,15 +196,40 @@ test(
     )
     assert.equal(step2.status, 200)
     assert.equal(step2.body.position, 1)
-    assert.equal(step2.body.count, 1)
+    assert.equal(step2.body.count, 0)
+    assert.equal(emailCalls.length, 1, "Step 2 must not send a second verification email")
+
+    // Invalid verification token is rejected with 400
+    const badVerify = await handler.handleVerify(product, "creator@example.com", "wrong-verify-token")
+    assert.equal(badVerify.status, 400)
+    assert.equal(audienceCalls.length, 0)
+
+    // Full double-opt-in completion: GET ?verify= marks signal verified, increments verified_count to 1, and syncs to Resend audience
+    const verified = await handler.handleVerify(product, "creator@example.com", verifyToken)
+    assert.equal(verified.status, 200)
+    assert.equal(verified.body.verified, true)
+    assert.equal(verified.body.count, 1)
+    assert.equal(audienceCalls.length, 1, "verified subscriber must be synced to Resend audience")
+    assert.equal(audienceCalls[0].email, "creator@example.com")
+
+    // Repeating ?verify= is idempotent (verified_count stays 1, audience is not called twice)
+    const repeatVerify = await handler.handleVerify(product, "creator@example.com", verifyToken)
+    assert.equal(repeatVerify.status, 200)
+    assert.equal(repeatVerify.body.count, 1)
+    assert.equal(audienceCalls.length, 1)
+
+    // handleState now reflects 1 verified subscriber (foundingSeatsLeft: 99)
+    const stateAfterVerify = await handler.handleState(product)
+    assert.equal(stateAfterVerify.body.count, 1)
+    assert.equal(stateAfterVerify.body.foundingSeatsLeft, 99)
 
     const signals = await store.allSignals("creator-launch-os")
     assert.equal(signals.length, 1)
     assert.equal(signals[0].role, "Independent creator")
     assert.equal(signals[0].priceBand, "25-99")
-    assert.equal(signals[0].verified, false)
+    assert.equal(signals[0].verified, true)
 
-    // Per-IP rate limiter blocks excessive POSTs from the same IP with 429
+    // Per-IP rate limiter (per-instance in process memory) blocks excessive POSTs from the same IP with 429
     for (let i = 0; i < 8; i++) {
       await handler.handleJoin(product, { email: `r${i}@example.com`, consent: true }, makeReq("198.51.100.77"))
     }
@@ -197,17 +238,25 @@ test(
   }),
 )
 
-test("webhook timestamp freshness and self-hosted COMMERCE_ENV=production guard hold", () => {
+test("webhook timestamp is required, signed as timestamp.rawBody, and self-hosted COMMERCE_ENV=production guard holds", () => {
   const now = new Date("2026-10-24T01:00:00.000Z")
   const freshTs = String(Math.floor(now.getTime() / 1000))
   const staleTs = String(Math.floor(now.getTime() / 1000) - 301)
   const futureTs = String(Math.floor(now.getTime() / 1000) + 301)
+  const secret = "fixture-webhook-secret-0123456789abcdef"
+  const rawBody = JSON.stringify({ id: "evt_1" })
 
-  assert.doesNotThrow(() => engine.verifyWebhookTimestamp(null, now))
-  assert.doesNotThrow(() => engine.verifyWebhookTimestamp(freshTs, now))
+  assert.throws(() => engine.verifyWebhookTimestamp(null, now), { code: "E_SIGNATURE" })
+  assert.throws(() => engine.verifyWebhookTimestamp("   ", now), { code: "E_SIGNATURE" })
+  assert.equal(engine.verifyWebhookTimestamp(freshTs, now), freshTs)
   assert.throws(() => engine.verifyWebhookTimestamp(staleTs, now), { code: "E_SIGNATURE" })
   assert.throws(() => engine.verifyWebhookTimestamp(futureTs, now), { code: "E_SIGNATURE" })
   assert.throws(() => engine.verifyWebhookTimestamp("not-a-timestamp", now), { code: "E_SIGNATURE" })
+
+  // HMAC covers timestamp.rawBody so a signature from one timestamp cannot be replayed with a fresh timestamp
+  const sig = engine.signPayload(rawBody, secret, freshTs)
+  assert.doesNotThrow(() => engine.verifySignature(rawBody, sig, secret, freshTs))
+  assert.throws(() => engine.verifySignature(rawBody, sig, secret, String(Number(freshTs) + 1)), { code: "E_SIGNATURE" })
 
   const prodRuntime = config.readCommerceRuntime({
     COMMERCE_MODE: "test",
@@ -217,6 +266,25 @@ test("webhook timestamp freshness and self-hosted COMMERCE_ENV=production guard 
     COMMERCE_ENV: "production",
   })
   assert.deepEqual(config.kitAvailability(prodRuntime), { state: "available-soon" })
+})
+
+test("release/package-manifest.json excludes internal release-gate and price-proposal docs from the buyer package", () => {
+  const manifest = JSON.parse(read("release/package-manifest.json"))
+  for (const internalDoc of [
+    "docs/release/COMPETITIVE-BAR-2026-10.md",
+    "docs/release/G5-PRICE-EVIDENCE.md",
+    "docs/release/LAUNCH-PREP-DRAFTS-2026-10.md",
+    "docs/release/PRODUCT-RELEASE-GATE-RECEIPT-2026-10-23.md",
+  ]) {
+    assert.ok(!manifest.files.includes(internalDoc), `buyer package manifest must exclude internal doc: ${internalDoc}`)
+  }
+  assert.ok(manifest.files.includes("docs/release/READINESS.md"))
+  assert.ok(manifest.files.includes("docs/release/RIGHTS-AND-PROVENANCE.md"))
+  for (const file of manifest.files) {
+    if (file.startsWith("tests/")) continue
+    const text = read(file)
+    assert.doesNotMatch(text, /founding price lock|\$49 USD|\$69 USD|\$149 USD/i, `shipped file ${file} must not contain unratified price proposals`)
+  }
 })
 
 test("buyer-facing copy stays in GenCreator voice, labels refund terms as draft and makes no unratified price-lock promise", () => {
@@ -237,10 +305,11 @@ test("buyer-facing copy stays in GenCreator voice, labels refund terms as draft 
   )
   const kitPage = read("app/kit/page.tsx")
   assert.match(kitPage, /Sell digital products from your own domain—and prove payment, delivery and refunds work before you go live\./)
+  assert.match(kitPage, /32 commerce contract tests/)
+  assert.match(kitPage, /computed at build time/)
   assert.match(kitPage, /Draft policy \(\{offer\.refund\.state\}, pending owner ratification\)/)
   assert.doesNotMatch(kitPage, /keep launch pricing for life|lock founding terms/i)
   assert.doesNotMatch(read("data/products.graph.json"), /Price lock for life/i)
-  assert.doesNotMatch(read("docs/release/LAUNCH-PREP-DRAFTS-2026-10.md"), /keep launch pricing for life|Founding price lock/i)
 })
 
 test("every tracked image carries a valid .vis.provenance.json sidecar and no Higgsfield provenance", () => {
@@ -255,7 +324,11 @@ test("every tracked image carries a valid .vis.provenance.json sidecar and no Hi
   }
 })
 
-test("G5 price evidence pack defines launch, standard and team proposals against verified HTTP-200 competitors", () => {
+test("G5 price evidence pack defines launch, standard and team proposals against verified HTTP-200 competitors", (t) => {
+  if (!existsSync(new URL("docs/release/G5-PRICE-EVIDENCE.md", root))) {
+    t.skip("Internal release-gate docs are excluded from the buyer package")
+    return
+  }
   const g5 = read("docs/release/G5-PRICE-EVIDENCE.md")
   const bar = read("docs/release/COMPETITIVE-BAR-2026-10.md")
   for (const url of [
@@ -268,6 +341,8 @@ test("G5 price evidence pack defines launch, standard and team proposals against
     assert.ok(g5.includes(url), `G5 evidence must include verified competitor URL: ${url}`)
     assert.ok(bar.includes(url), `COMPETITIVE-BAR must include verified competitor URL: ${url}`)
   }
+  assert.doesNotMatch(bar, /wiring fragile webhooks by hand/i)
+  assert.doesNotMatch(g5, /founding price lock/i)
   assert.match(g5, /\*\*\$49 USD\*\* one-time/)
   assert.match(g5, /\*\*\$69 USD\*\* one-time/)
   assert.match(g5, /\*\*\$149 USD\*\* one-time/)
@@ -278,7 +353,11 @@ test("G5 price evidence pack defines launch, standard and team proposals against
   assert.equal(facts.price.amount, null)
 })
 
-test("launch copy final pass opens with a buyer job, uses zero superlatives and maps claims to G0 file:line citations", () => {
+test("launch copy final pass opens with a buyer job, uses zero superlatives and maps claims to G0 file:line citations", (t) => {
+  if (!existsSync(new URL("docs/release/LAUNCH-PREP-DRAFTS-2026-10.md", root))) {
+    t.skip("Internal release-gate docs are excluded from the buyer package")
+    return
+  }
   const drafts = read("docs/release/LAUNCH-PREP-DRAFTS-2026-10.md")
   assert.doesNotMatch(
     drafts,
@@ -294,15 +373,15 @@ test("launch copy final pass opens with a buyer job, uses zero superlatives and 
     "components/portfolio-workspace.tsx:45",
     "scripts/export-template-project.mjs:179",
     "app/start/page.tsx:75",
-    "lib/commerce/engine.ts:219-250",
-    "lib/commerce/engine.ts:265",
+    "lib/commerce/engine.ts:223-255",
+    "lib/commerce/engine.ts:270",
     "app/api/commerce/webhook/route.ts:10,45",
-    "lib/commerce/engine.ts:344",
-    "app/kit/page.tsx:208",
-    "app/kit/page.tsx:239",
-    "app/kit/page.tsx:332",
-    "app/kit/page.tsx:353",
-    "lib/demand-capture/handler.ts:56",
+    "lib/commerce/engine.ts:349",
+    "app/kit/page.tsx:208-210",
+    "app/kit/page.tsx:240",
+    "app/kit/page.tsx:333",
+    "app/kit/page.tsx:346-370",
+    "lib/demand-capture/handler.ts:55-68",
   ]) {
     assert.ok(drafts.includes(citation), `launch copy must cite G0 evidence: ${citation}`)
   }
@@ -313,6 +392,8 @@ test("kit page embeds the 4-step FirstSaleRehearsal and the honest What you stil
   const rehearsal = read("components/first-sale-rehearsal.tsx")
   assert.match(kitPage, /<FirstSaleRehearsal steps=\{rehearsalSteps\} \/>/)
   assert.match(kitPage, /What you still do yourself/)
+  assert.doesNotMatch(kitPage, /"200 granted"|"200 delivery"|"410 /)
   assert.match(rehearsal, /Walk one test order from webhook to delivery email and refund revocation\./)
+  assert.match(rehearsal, /computed at build time against fixture events/)
   assert.doesNotMatch(rehearsal, /\$\s?\d/, "rehearsal component must not render a hand-typed dollar price")
 })

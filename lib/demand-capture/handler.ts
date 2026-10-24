@@ -1,6 +1,6 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto"
 import type { DemandSignal, PriceBand, Stage, Urgency, WaitlistState } from "./types"
-import { addToAudience, claimPosition, getCount, getSignal, saveSignal } from "./store"
+import { addToAudience, claimPosition, getSignal, getVerifiedCount, markVerified, saveSignal, sendVerificationEmail } from "./store"
 
 export interface ProductConfig {
   id: string
@@ -26,7 +26,7 @@ const safeMatch = (left: string | undefined, right: string | undefined) => {
   return a.length === b.length && timingSafeEqual(a, b)
 }
 
-// Per-IP sliding-window rate limiter (max 8 POSTs per 60s per client IP)
+// Per-IP sliding-window rate limiter (max 8 POSTs per 60s per client IP, stored per instance in process memory)
 const RATE_WINDOW_MS = 60_000
 const RATE_MAX_REQUESTS = 8
 const ipHits = new Map<string, number[]>()
@@ -47,15 +47,20 @@ function checkRateLimit(req: Request, now = Date.now()): boolean {
   return true
 }
 
-export function publicState(product: ProductConfig, count: number, position?: number, stepToken?: string): WaitlistState {
+/**
+ * Public waitlist state counts only verified subscribers (`verifiedCount`) toward
+ * `publicCount` and `foundingSeatsLeft` so unverified or scripted signups cannot
+ * artificially deplete founding places.
+ */
+export function publicState(product: ProductConfig, verifiedCount: number, position?: number, stepToken?: string): WaitlistState {
   const { publicCountThreshold, foundingCohort } = product.waitlist
   const state: WaitlistState = {
     productId: product.id,
-    count,
+    count: verifiedCount,
     position,
-    publicCount: count >= publicCountThreshold ? count : null,
+    publicCount: verifiedCount >= publicCountThreshold ? verifiedCount : null,
     foundingCohort,
-    foundingSeatsLeft: count < foundingCohort ? foundingCohort - count : 0,
+    foundingSeatsLeft: verifiedCount < foundingCohort ? foundingCohort - verifiedCount : 0,
     stage: product.stage,
   }
   if (stepToken) state.stepToken = stepToken
@@ -79,7 +84,7 @@ export async function handleJoin(product: ProductConfig, body: Record<string, un
   const { position, created } = await claimPosition(product.id, email)
   const existing = created ? null : await getSignal(product.id, email)
 
-  // If a signal already exists, updating Step-2 fields requires the stepToken issued at Step 1
+  // If a signal already exists, updating Step-2 answers requires the stepToken issued at Step 1
   // so a third party who only knows the email address cannot overwrite their answers.
   const hasStep2Fields = Boolean(body.role || body.pain || body.urgency || body.priceBand || body.alternative)
   if (existing && hasStep2Fields) {
@@ -90,8 +95,8 @@ export async function handleJoin(product: ProductConfig, body: Record<string, un
   }
 
   if (existing && !hasStep2Fields) {
-    const count = await getCount(product.id)
-    return { status: 200 as const, body: publicState(product, count, position) }
+    const verifiedCount = await getVerifiedCount(product.id)
+    return { status: 200 as const, body: publicState(product, verifiedCount, position) }
   }
 
   const rawStepToken = created || !existing ? randomBytes(18).toString("base64url") : undefined
@@ -123,8 +128,15 @@ export async function handleJoin(product: ProductConfig, body: Record<string, un
   }
 
   await saveSignal(signal)
-  const count = await getCount(product.id)
-  return { status: 200 as const, body: publicState(product, count, position, rawStepToken) }
+  if (rawVerifyToken) {
+    const verifyUrl = new URL("/api/waitlist", url.origin)
+    verifyUrl.searchParams.set("productId", product.id)
+    verifyUrl.searchParams.set("email", email)
+    verifyUrl.searchParams.set("verify", rawVerifyToken)
+    await sendVerificationEmail(email, product.id, position, verifyUrl.toString())
+  }
+  const verifiedCount = await getVerifiedCount(product.id)
+  return { status: 200 as const, body: publicState(product, verifiedCount, position, rawStepToken) }
 }
 
 export async function handleVerify(product: ProductConfig, emailRaw: string | null, tokenRaw: string | null) {
@@ -137,12 +149,16 @@ export async function handleVerify(product: ProductConfig, emailRaw: string | nu
   }
   if (!existing.verified) {
     await saveSignal({ ...existing, verified: true })
+  }
+  const newlyVerified = await markVerified(product.id, existing.email)
+  if (newlyVerified) {
     await addToAudience(existing.email, existing.name, product.id)
   }
-  return { status: 200 as const, body: { ok: true, verified: true, productId: product.id, position: existing.position } }
+  const verifiedCount = await getVerifiedCount(product.id)
+  return { status: 200 as const, body: { ok: true, verified: true, productId: product.id, position: existing.position, count: verifiedCount } }
 }
 
 export async function handleState(product: ProductConfig) {
-  const count = await getCount(product.id)
-  return { status: 200 as const, body: publicState(product, count) }
+  const verifiedCount = await getVerifiedCount(product.id)
+  return { status: 200 as const, body: publicState(product, verifiedCount) }
 }

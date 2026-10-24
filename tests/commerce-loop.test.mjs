@@ -15,7 +15,7 @@ const testEnv = {
   COMMERCE_WEBHOOK_SECRET: SECRET,
   COMMERCE_DELIVERY_SECRET: DELIVERY,
 }
-const signed = (body, secret = SECRET) => new Headers({ "x-commerce-signature": engine.signPayload(body, secret) })
+const signed = (body, secret = SECRET, timestamp = String(Math.floor(Date.now() / 1000))) => new Headers({ "x-commerce-timestamp": timestamp, "x-commerce-signature": engine.signPayload(body, secret, timestamp) })
 
 test("a fresh clone with no environment renders available soon and accepts nothing", () => {
   const runtime = config.readCommerceRuntime({})

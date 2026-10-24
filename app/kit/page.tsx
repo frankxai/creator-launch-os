@@ -44,9 +44,9 @@ function buildVerifiedRehearsalSteps(): RehearsalStep[] {
     test: true,
   }
   const paidRaw = JSON.stringify(paidEvent)
-  const signature = signPayload(paidRaw, secret)
-  verifyWebhookTimestamp(timestampHeader, now)
-  verifySignature(paidRaw, signature, secret)
+  const verifiedTimestamp = verifyWebhookTimestamp(timestampHeader, now)
+  const signature = signPayload(paidRaw, secret, verifiedTimestamp)
+  verifySignature(paidRaw, signature, secret, verifiedTimestamp)
 
   const granted = applyEvent(store, paidEvent, options)
   const duplicateReplay = applyEvent(store, paidEvent, options)
@@ -75,19 +75,20 @@ function buildVerifiedRehearsalSteps(): RehearsalStep[] {
     {
       number: "01",
       title: "Connect merchant in test mode",
-      summary: "Configure test-mode secrets and verify HMAC-SHA256 webhook signature and 5-minute timestamp freshness.",
-      httpStatus: "HMAC OK",
-      outcomeLabel: "Signature & timestamp verified",
+      summary: "Require x-commerce-timestamp within 300s and verify the HMAC-SHA256 signature over timestamp.rawBody.",
+      badge: "HMAC verified",
+      outcomeLabel: "Timestamp & signature verified",
       commandOrInput: [
         "COMMERCE_MODE=test",
         "COMMERCE_MERCHANT=fixture",
-        `x-commerce-timestamp: ${timestampHeader}`,
+        `x-commerce-timestamp: ${verifiedTimestamp}`,
         `x-commerce-signature: ${signature.slice(0, 31)}...`,
       ].join("\n"),
       verifiedOutput: JSON.stringify(
         {
           mode: "test",
           merchant: "fixture",
+          signedPayloadFormat: "timestamp.rawBody",
           timestampFreshnessWindowSeconds: 300,
           signatureVerified: true,
           liveCheckoutExposed: false,
@@ -100,7 +101,7 @@ function buildVerifiedRehearsalSteps(): RehearsalStep[] {
       number: "02",
       title: "Send a test order & replay it",
       summary: "Apply order.paid to grant the entitlement, then replay the same event ID to prove retries never double-grant.",
-      httpStatus: "200 granted",
+      badge: "Outcome: granted",
       outcomeLabel: `Order ${granted.order.orderId} -> ${granted.entitlement.entitlementId} (${duplicateReplay.outcome} on replay)`,
       commandOrInput: JSON.stringify(
         {
@@ -128,7 +129,7 @@ function buildVerifiedRehearsalSteps(): RehearsalStep[] {
       number: "03",
       title: "Open delivery email & signed link",
       summary: "Issue the 7-day signed delivery link for the buyer's receipt email and redeem it to record delivery_opened.",
-      httpStatus: "200 delivery",
+      badge: "Token redeemed",
       outcomeLabel: `Signed link opens ${delivery.sku}`,
       commandOrInput: [
         `To: ${paidEvent.email}`,
@@ -150,7 +151,7 @@ function buildVerifiedRehearsalSteps(): RehearsalStep[] {
       number: "04",
       title: "Refund order & revoke access",
       summary: "Apply order.refunded and confirm the previously issued delivery link immediately returns 410 E_REVOKED.",
-      httpStatus: `410 ${postRefundCode}`,
+      badge: `Throws ${postRefundCode}`,
       outcomeLabel: "Entitlement revoked & link blocked",
       commandOrInput: JSON.stringify(
         {
@@ -187,7 +188,7 @@ const diyResponsibilities = [
   },
   {
     title: "Add the webhook translator for the live merchant you choose",
-    detail: "The kit ships the shared post-webhook engine (orders, entitlements, signed links, refund revocation and 35 contract tests) plus the integration guide (commercial/kit/03-merchant-integration-guide.md). Because no single live merchant is locked yet, you wire the webhook signature translator and durable table for your chosen merchant before enabling live mode.",
+    detail: "The kit ships the shared post-webhook engine (orders, entitlements, signed links, refund revocation and 32 commerce contract tests) plus the integration guide (commercial/kit/03-merchant-integration-guide.md). Because no single live merchant is locked yet, you wire the webhook signature translator and durable table for your chosen merchant before enabling live mode.",
   },
   {
     title: "Review and approve your own legal terms",
@@ -208,7 +209,7 @@ export default function KitPage() {
             Sell digital products from your own domain—and prove payment, delivery and refunds work before you go live.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-ink/68">
-            Start with the free MIT Next.js 16 storefront and browser Monograph editor. When you are ready to take orders, the commercial kit adds the webhook fulfillment loop, signed download links, refund revocation and a four-step test rehearsal you can run right on this page.
+            Start with the free MIT Next.js 16 storefront and browser Monograph editor. When you are ready to take orders, the commercial kit adds the webhook fulfillment loop, signed download links, refund revocation and a four-step test rehearsal on this page showing verified results from the real engine, computed at build time.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <a

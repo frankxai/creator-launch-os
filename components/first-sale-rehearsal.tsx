@@ -7,7 +7,7 @@ export interface RehearsalStep {
   number: string
   title: string
   summary: string
-  httpStatus: string
+  badge: string
   outcomeLabel: string
   commandOrInput: string
   verifiedOutput: string
@@ -47,7 +47,7 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
             Walk one test order from webhook to delivery email and refund revocation.
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-            Every step below runs against the real commerce engine in <code className="font-mono text-xs text-ink">lib/commerce/engine.ts</code> using fixture events. No live merchant account or secret is needed to inspect the loop.
+            Every step below shows results from the real commerce engine in <code className="font-mono text-xs text-ink">lib/commerce/engine.ts</code>, computed at build time against fixture events. No live merchant account or network request is needed to inspect the loop.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -99,7 +99,7 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
                   }`}
                 >
                   {isDone ? <Check className="size-3" aria-hidden="true" /> : null}
-                  {step.httpStatus}
+                  {step.badge}
                 </span>
               </div>
               <p className="mt-3 text-sm font-semibold leading-5">{step.title}</p>
@@ -114,7 +114,7 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
       <div className="mt-6 grid gap-6 rounded-2xl border border-line bg-paper-bright p-4 sm:p-7 lg:grid-cols-2" role="tabpanel">
         <div className="min-w-0">
           <p className="font-mono text-xs text-muted">
-            Step {current.number} input · {current.httpStatus}
+            Step {current.number} input · {current.badge}
           </p>
           <h3 className="mt-2 text-xl font-semibold">{current.title}</h3>
           <p className="mt-2 text-sm leading-6 text-muted">{current.summary}</p>
@@ -123,7 +123,7 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
           </pre>
         </div>
         <div className="min-w-0">
-          <p className="font-mono text-xs text-muted">Verified engine output</p>
+          <p className="font-mono text-xs text-muted">Verified engine output (computed at build)</p>
           <p className="mt-2 text-sm font-semibold text-ink">{current.outcomeLabel}</p>
           <pre
             data-rehearsal-output
@@ -133,7 +133,7 @@ export function FirstSaleRehearsal({ steps }: { steps: readonly RehearsalStep[] 
           </pre>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <span className="text-xs text-muted">
-              Run the same rehearsal over HTTP in your terminal:{" "}
+              Run the HTTP rehearsal against a local server:{" "}
               <code className="font-mono text-ink">pnpm commerce:rehearse http://localhost:3000</code>
             </span>
             {activeStep < steps.length - 1 ? (

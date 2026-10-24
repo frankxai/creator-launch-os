@@ -4,7 +4,7 @@
 
 ## Buyer and transformation (one sentence)
 
-An independent creator with working material in scattered folders turns their source into an owned Next.js storefront and signed release edition with a working pre-launch waitlist, inspected export, and fail-closed delivery loop in one afternoon—without paying a monthly builder tax or wiring fragile webhooks by hand.
+An independent creator or developer-operator with working material in scattered folders turns their source into an owned Next.js storefront and release edition with a fail-closed waitlist, standalone project export, and a tested post-webhook fulfillment engine (orders, entitlements, signed delivery links and refund revocation)—while keeping full control over their own hosting, durable store and live merchant webhook translator.
 
 ## Five closest paid alternatives (verified HTTP 200 on 2026-10-24)
 
@@ -21,7 +21,7 @@ An independent creator with working material in scattered folders turns their so
 ## The one product we must beat and the dimension we beat it on
 
 - **Product to beat:** **Supplier (`https://www.framer.com/marketplace/templates/supplier/`, $79.00)**.
-- **Dimension we beat it on:** **Owned, portable Next.js 16 code + verified fulfillment and fail-closed demand capture vs. platform-locked Framer shells.** Where Supplier charges $79 for a Framer template that still requires a monthly Framer hosting plan and relies on outbound checkout links, **Creator Launch OS** gives the creator an owned MIT Next.js 16 storefront (`LICENSE:1`, `package.json:27`), a browser Monograph editor that exports standalone Next.js projects (`scripts/export-template-project.mjs:179`), the shared `@starlight/demand-capture` two-step waitlist (`app/kit/page.tsx:118`), and a convergent webhook-to-entitlement-to-refund engine (`lib/commerce/engine.ts:207-240`).
+- **Dimension we beat it on:** **Owned, portable Next.js 16 code + verified fulfillment and fail-closed demand capture vs. platform-locked Framer shells.** Where Supplier charges $79 for a Framer template that still requires a monthly Framer hosting plan and relies on outbound checkout links, **Creator Launch OS** gives the creator an owned MIT Next.js 16 storefront (`LICENSE:1`, `package.json:27`), a browser Monograph editor that exports standalone Next.js projects (`scripts/export-template-project.mjs:179`), the shared `@starlight/demand-capture` two-step waitlist (`app/kit/page.tsx:333`), and a convergent webhook-to-entitlement-to-refund engine (`lib/commerce/engine.ts:223-255`).
 
 ## PR convergence state (#8, #11, #15, #16, #17, #18, #19)
 

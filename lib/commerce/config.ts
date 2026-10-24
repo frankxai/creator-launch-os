@@ -22,8 +22,8 @@ const adapters: Record<string, { mode: Exclude<CommerceMode, "off">; adapter: Me
   fixture: {
     mode: "test",
     adapter(rawBody, headers, secret) {
-      verifyWebhookTimestamp(headers.get("x-commerce-timestamp"))
-      verifySignature(rawBody, headers.get("x-commerce-signature"), secret)
+      const timestamp = verifyWebhookTimestamp(headers.get("x-commerce-timestamp"))
+      verifySignature(rawBody, headers.get("x-commerce-signature"), secret, timestamp)
       let payload: unknown
       try {
         payload = JSON.parse(rawBody)
