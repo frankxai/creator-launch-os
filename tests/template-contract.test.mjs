@@ -19,7 +19,7 @@ test("Next.js image processing uses the patched sharp/libheif release", async ()
   assert.equal(info.width, 1)
   assert.equal(info.height, 1)
   assert.equal(info.format, "webp")
-  assert.match(read("pnpm-workspace.yaml"), /sharp: 0\.35\.4/)
+  assert.match(read("pnpm-workspace.yaml"), /sharp: 0\.35\.(?:[4-9]|\d{2,})\b/)
   assert.doesNotMatch(read("pnpm-lock.yaml"), /sharp(?:-[a-z0-9-]+)?@0\.35\.[0-3](?:\b|\()/)
 })
 
