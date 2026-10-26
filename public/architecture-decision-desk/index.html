@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Write a defensible architecture decision. Compare alternatives, name trust boundaries, plan failure tests and export an inspectable review packet.">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <title>Architecture Decision Desk · Starlight</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="review-core.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to your decision</a>
+  <div class="page-shell">
+    <header class="masthead"><a href="https://github.com/AI-Architect-Studio/agentic-architecture-field-guide">Starlight <span>/ Field guide</span></a><span class="edition">Free MIT tool · v1 input contract</span></header>
+    <section class="introduction" aria-labelledby="page-title">
+      <p class="eyebrow">Architecture Decision Desk</p>
+      <h1 id="page-title">Make the architecture<br>earn its place.</h1>
+      <div class="intro-grid"><p class="lede">Start with the job. Compare a simpler way. Leave with a decision another builder can inspect.</p><p>One editable decision connects alternatives, trust boundaries, failure tests, recovery and cost assumptions. The tool organizes your reasoning. You choose the architecture.</p></div>
+    </section>
+    <div class="toolbar" role="group" aria-label="Decision actions">
+      <button id="load-example" type="button" class="secondary">Load worked example</button>
+      <label class="file-label" for="decision-file">Import decision JSON<input id="decision-file" type="file" accept=".json,application/json"></label>
+      <button id="save-working" type="button" class="secondary">Save working JSON</button>
+      <button id="save-json" type="button">Export validated JSON</button>
+      <button id="save-markdown" type="button">Export Markdown</button>
+      <button id="print-report" type="button" class="secondary">Print review packet</button>
+    </div>
+    <p id="action-status" class="status" role="status" aria-live="polite">Loading the local worked example…</p>
+    <button id="repair-import" type="button" class="secondary" hidden>Open rejected JSON for repair</button>
+    <section id="import-review" class="import-review" aria-labelledby="import-title" hidden><h2 id="import-title">Review incoming decision</h2><p id="import-summary"></p><p>Applying this replaces the decision in this tab. Save the current JSON first to retain it.</p><div class="inline-actions"><button id="apply-import" type="button">Apply incoming decision</button><button id="cancel-import" type="button" class="secondary">Cancel</button></div></section>
+    <main id="workspace" class="workspace">
+      <div class="editor">
+        <div class="section-heading"><p class="eyebrow">01 / Author the decision</p><h2>The job before the stack.</h2></div>
+        <p class="privacy-note">Work stays in this tab until you explicitly download a file. Refreshing loses unsaved edits. No account, model call, upload, autosave or shared history is connected.</p>
+        <div id="decision-fields"></div>
+        <details class="advanced"><summary>Cost assumptions and observation state</summary><p>All example rates, volumes and time values are fictional. Replace them with comparable assumptions. A cash-limit comparison never stops real provider spend.</p><div id="economics-fields"></div><p id="observation-note"></p><p>To add or change observation rows, use the complete JSON below. Keep every failed, rejected and accepted attempt. Imported observations are declarations to inspect, not verified results.</p></details>
+        <details class="advanced" id="json-disclosure"><summary>Complete decision JSON</summary><p>The version-1 schema remains canonical. This editor accepts up to 1 MiB of UTF-8 JSON. An invalid import leaves the current decision unchanged.</p><p>Save working JSON keeps incomplete fields without claiming validity. Empty number fields become null. To recover an unfinished file, import it and choose Open rejected JSON for repair, correct the reported fields here, then review and apply. The strict CLI requires a complete valid decision.</p><button id="refresh-json" type="button" class="secondary">Copy current decision into this editor</button><label for="full-json">Editable decision JSON</label><textarea id="full-json" class="json-editor" rows="14" spellcheck="false"></textarea><div class="inline-actions"><button id="review-json" type="button">Review JSON before applying</button><button id="save-raw-json" type="button" class="secondary">Save JSON editor text</button></div></details>
+      </div>
+      <aside class="review-pane" aria-labelledby="review-heading"><div class="section-heading"><p class="eyebrow">02 / Inspect the consequence</p><h2 id="review-heading">A reviewable decision.</h2></div><p id="origin-label" class="origin-label"></p><div id="validation-state" role="status" aria-live="polite"></div><div id="decision-report"></div></aside>
+    </main>
+    <footer class="footer"><p>This is an authored plan and calculation tool. It does not verify a runtime, enforce permissions, authenticate evidence or approve release. A distinct reviewer must inspect the actual implementation and output.</p><details><summary>Source, license and reproducibility</summary><p id="source-info"></p><p>Browser validation, analysis and Markdown rendering are generated from the existing MIT review CLI. Downloads match its semantics; browser exports do not claim CLI input/tool fingerprint receipts.</p><p>Uses your system UI, serif and monospace fonts. No hosted font or private asset dependency. Retain the repository LICENSE when redistributing.</p></details></footer>
+  </div>
+  <noscript><p class="noscript">This local editor needs JavaScript. The free repository also provides an editable JSON example and a Node.js review CLI.</p></noscript>
+</body>
+</html>

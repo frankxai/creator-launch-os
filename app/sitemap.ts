@@ -4,7 +4,7 @@ import { products } from "@/lib/products"
 import { siteConfig } from "@/lib/site"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/products", "/studio"]
+  const routes = ["", "/products", "/studio", "/start"]
 
   return [
     ...routes.map((route) => ({

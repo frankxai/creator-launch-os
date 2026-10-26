@@ -65,14 +65,14 @@ export default function HomePage() {
               </p>
               <div data-hero-follow className="mt-9 flex flex-wrap items-center gap-5">
                 <Link
-                  href="/products"
+                  href="/start"
                   className="inline-flex min-h-12 items-center gap-2 rounded-full bg-paper px-6 text-sm font-semibold text-ink transition-transform hover:-translate-y-0.5"
                 >
-                  Browse the releases
+                  Get the free starter
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
-                <Link href="/studio" className="inline-flex min-h-12 items-center gap-2 text-sm font-semibold text-white/68 hover:text-white">
-                  See the operating view
+                <Link href="/products" className="inline-flex min-h-12 items-center gap-2 text-sm font-semibold text-white/68 hover:text-white">
+                  Browse the demo
                   <MoveRight className="size-4" aria-hidden="true" />
                 </Link>
               </div>
@@ -213,8 +213,8 @@ export default function HomePage() {
                 Replace three files. Ship the first useful version.
               </h2>
             </div>
-            <Link href="/products/systems-field-guide" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-paper">
-              Inspect the product flow
+            <Link href="/start" className="inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full bg-ink px-6 text-sm font-semibold text-paper">
+              Make it yours
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
