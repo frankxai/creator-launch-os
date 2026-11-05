@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { TemplateAtelier } from "@/components/template-atelier"
+import { PortfolioWorkspace } from "@/components/portfolio-workspace"
 import { findTemplate, templates } from "@/lib/template-catalog"
 
 export const dynamicParams = false
@@ -16,7 +17,7 @@ export async function generateMetadata({
   if (!template) notFound()
   return {
     title: `Personalize ${template.name}`,
-    description: `Edit the ${template.audience.toLowerCase()} composition and export a reusable v0 brief.`,
+    description: template.id === "portfolio" ? "Edit your identity, case studies, contact and publication settings; save a complete Monograph project." : `Edit the ${template.audience.toLowerCase()} composition and export a reusable v0 brief.`,
     robots: { index: false, follow: false },
   }
 }
@@ -26,5 +27,6 @@ export default async function TemplateEditorPage({
 }: PageProps<"/studio/templates/[templateId]/edit">) {
   const template = findTemplate((await params).templateId)
   if (!template) notFound()
+  if (template.id === "portfolio") return <PortfolioWorkspace />
   return <TemplateAtelier key={template.id} initialTemplate={template.id} />
 }
