@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "sku_id": "sku_creator_launch_os_v1",
+  "name": "creator-launch-os-commercial-kit",
+  "license": "commercial_terms_draft",
+  "files": [
+    "commercial/LICENSE-DRAFT.md",
+    "commercial/kit/README.md",
+    "commercial/kit/01-launch-playbook.md",
+    "commercial/kit/02-manifest-pack/offer.facts.template.json",
+    "commercial/kit/02-manifest-pack/product.manifest.template.yaml",
+    "commercial/kit/02-manifest-pack/marketplace.listing.template.yaml",
+    "commercial/kit/03-merchant-integration-guide.md",
+    "commercial/kit/04-fulfillment-runbook.md",
+    "commercial/kit/05-policy-templates/refund-policy.template.md",
+    "commercial/kit/05-policy-templates/support-policy.template.md",
+    "commercial/kit/06-funnel-telemetry.schema.json",
+    "commercial/kit/kit.manifest.json"
+  ]
+}

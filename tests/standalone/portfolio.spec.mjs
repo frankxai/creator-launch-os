@@ -196,3 +196,35 @@ test("the site rebuilt from the browser's saved project renders the exact buyer 
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow")
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(0)
 })
+
+test("each removal can be undone in order and unsaved edits warn before leaving", async ({ page }) => {
+  test.skip(process.env.PORTFOLIO_ROUNDTRIP_CHECK === "1", "Workspace behaviour is exercised before the rebuild")
+  page.setDefaultTimeout(10000)
+  expect((await page.goto("/edit")).status()).toBe(200)
+  const cases = page.locator("section").filter({ has: page.getByRole("button", { name: "Add a case", exact: true }) })
+  const titles = async () => cases.locator("details").evaluateAll((nodes) => nodes.map((node) => node.querySelector('input[id$="-title"]')?.value ?? ""))
+  // A fresh load is not dirty: leaving must not prompt.
+  const fresh = await page.evaluate(() => { const event = new Event("beforeunload", { cancelable: true }); window.dispatchEvent(event); return event.defaultPrevented })
+  expect(fresh).toBe(false)
+  for (let n = 0; n < 2; n++) await page.getByRole("button", { name: "Add a case", exact: true }).click()
+  const count = await cases.locator("details").count()
+  expect(count).toBeGreaterThanOrEqual(3)
+  for (let index = 0; index < count; index++) {
+    const entry = cases.locator("details").nth(index)
+    if (await entry.getAttribute("open") === null) await entry.locator("summary").click()
+    await entry.getByLabel("Title", { exact: true }).fill(`Case ${index + 1}`)
+  }
+  const original = await titles()
+  await cases.getByRole("button", { name: `Remove case ${count}`, exact: true }).click()
+  await cases.getByRole("button", { name: `Remove case ${count - 1}`, exact: true }).click()
+  expect(await titles()).toEqual(original.slice(0, -2))
+  await page.getByRole("button", { name: "Undo removal" }).click()
+  expect(await titles()).toEqual(original.slice(0, -1))
+  await expect(page.getByRole("status").filter({ hasText: "1 more removal can be undone" })).toHaveCount(1)
+  await page.getByRole("button", { name: "Undo removal" }).click()
+  expect(await titles()).toEqual(original)
+  await expect(page.getByRole("button", { name: "Undo removal" })).toHaveCount(0)
+  // Unsaved edits: leaving is guarded.
+  const dirty = await page.evaluate(() => { const event = new Event("beforeunload", { cancelable: true }); window.dispatchEvent(event); return event.defaultPrevented })
+  expect(dirty).toBe(true)
+})

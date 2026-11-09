@@ -1,0 +1,15 @@
+{
+  "$schema": "https://frankx.ai/schemas/vis-provenance-sidecar.schema.json",
+  "asset_id": "icon",
+  "image_path": "icon.svg",
+  "sidecar_path": "icon.svg.vis.provenance.json",
+  "source_method": "hand-authored-svg",
+  "provider": "Codex",
+  "model": "deterministic-browser-or-svg",
+  "sha256": "5d85639aa9381d5724884843bbb328ee045c0c1e48b4ad06534d8abc86df9482",
+  "alt": "SVG vector mark for Edition Zero / Creator Launch OS",
+  "viewport": null,
+  "rights": "Owned MIT repository UI and deterministic SVG/Playwright capture",
+  "review": "Verified repository evidence; deterministic capture or hand-authored SVG",
+  "timestamp": "2026-10-23T18:40:00Z"
+}

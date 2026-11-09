@@ -5,7 +5,7 @@ import Link from "next/link"
 import { products } from "@/lib/products"
 
 export const metadata: Metadata = {
-  title: "Release Studio",
+  title: "Release studio",
   description: "The sample operations view included with Creator Launch OS.",
 }
 
@@ -32,7 +32,7 @@ export default function StudioPage() {
               <Radio className="size-4 text-acid" aria-hidden="true" />
               <p className="eyebrow text-white/55">Sample operations view</p>
             </div>
-            <h1 className="text-balance mt-5 text-5xl font-semibold tracking-[-0.05em] sm:text-7xl">Release Studio</h1>
+            <h1 className="text-balance mt-5 text-5xl font-semibold tracking-[-0.05em] sm:text-7xl">Release studio</h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-white/55">A compact view of readiness, products, signals, and the next consequential work. All values below are labeled demo data.</p>
           </div>
           <Link href="/products" className="inline-flex min-h-12 items-center gap-2 rounded-full bg-paper px-6 text-sm font-semibold text-ink">
@@ -67,7 +67,7 @@ export default function StudioPage() {
             <div className="flex items-center justify-between gap-5">
               <div>
                 <p className="eyebrow text-white/55">Current release</p>
-                <h2 className="mt-3 font-serif text-3xl">The Systems Field Guide</h2>
+                <h2 className="mt-3 font-serif text-3xl">The systems field guide</h2>
               </div>
               <span className="rounded-full bg-acid px-3 py-1 font-mono text-[10px] font-semibold tracking-wider text-ink">Demo</span>
             </div>

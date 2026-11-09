@@ -41,3 +41,5 @@
 .empty { padding: 32px 24px; background: #e6e9db; border: 1px dashed #abb09e; }
 @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 500px) { .editor section, .save { padding: 18px; } }
+
+@media (prefers-reduced-motion: reduce) { .workspace *, .workspace *::before, .workspace *::after { animation-duration: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; } }

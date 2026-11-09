@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "product_id": "product_your_product",
+  "sku_id": "sku_your_product_v1",
+  "brand_id": "brand_your_brand",
+  "title": "Your Product",
+  "version": "1.0.0",
+  "promise": "One sentence a buyer can check after they use it.",
+  "core": { "name": "Free core", "license": "MIT", "price_state": "free", "includes": [] },
+  "kit": { "name": "Paid edition", "license": "commercial_terms", "contents_manifest": "", "includes": [], "excludes": [] },
+  "price": { "state": "decision_required", "amount": null, "currency": "USD" },
+  "merchant": { "state": "decision_required", "adapter": null },
+  "refund": { "state": "draft", "window_days": 14, "policy": "" },
+  "support": { "state": "draft", "policy": "", "free_core_channel": "", "kit_channel": "decision_required" },
+  "activation_event": { "core": "", "kit": "delivery_opened" },
+  "canonical_offer_url": "https://your-domain.example/kit"
+}

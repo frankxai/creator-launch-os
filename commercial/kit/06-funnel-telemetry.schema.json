@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Funnel event",
+  "description": "One row per event. Counts are derived; never hand-entered.",
+  "type": "object",
+  "required": ["event", "sku", "at", "test"],
+  "additionalProperties": false,
+  "properties": {
+    "event": { "enum": ["visit", "activation", "paid_order", "refund", "repeat_buyer"] },
+    "sku": { "type": "string", "pattern": "^sku_[a-z0-9_]+$" },
+    "at": { "type": "string", "format": "date-time" },
+    "test": { "type": "boolean", "description": "Test events never enter reported totals." },
+    "orderId": { "type": "string" },
+    "amountMinor": { "type": "integer", "minimum": 0 },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" },
+    "source": { "enum": ["owned_storefront", "github", "vercel_templates", "marketplace", "direct", "unknown"] }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "status": "STAGED_LOCAL_DRAFT_NOT_CREATED_OR_PUBLISHED",
+  "channel": "whop",
+  "role_per_payment_rails_strategy": "Community and membership companion channel only; not the primary owned-storefront Merchant of Record",
+  "visibility": "hidden_unpublished_draft",
+  "price_set": null,
+  "checkout_enabled": false,
+  "payload_preview": {
+    "name": "Creator Launch OS \u2014 commercial kit and release studio",
+    "headline": "Turn your source material into an owned Next.js storefront and signed release edition.",
+    "description": "Includes the launch playbook, product and listing manifest pack, merchant integration guide, fulfillment and reconciliation runbook, refund/support policy templates, and funnel telemetry schema. Built on top of the free MIT Creator Launch OS core.",
+    "visibility": "hidden",
+    "release_gate_precondition": "Requires G0-G5 PASS receipt and Frank's price ruling before creating a priced plan or publishing."
+  }
+}

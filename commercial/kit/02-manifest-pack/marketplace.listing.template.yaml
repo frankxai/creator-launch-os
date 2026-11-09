@@ -1,0 +1,19 @@
+# One canonical listing. Channel copy is generated from it; title, promise,
+# version, price state and license never drift per channel.
+schema_version: "1.0.0"
+listing_id: listing_your_product_canonical
+product_id: product_your_product
+sku_id: sku_your_product_v1
+state: draft
+title: Your Product
+version: "1.0.0"
+offer_facts: offer.facts.json
+short_description: One sentence a buyer can check after they use it.
+price_state: free_core_paid_extension_decision_required
+support_url: https://github.com/your-org/your-repo/issues
+canonical_offer_url: https://your-domain.example
+channels:
+  - id: owned_storefront
+    state: not_submitted
+preview_assets: []
+rights_record: pending

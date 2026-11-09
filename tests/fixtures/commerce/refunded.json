@@ -1,0 +1,12 @@
+{
+  "id": "evt_fixture_refund_0001",
+  "type": "order.refunded",
+  "merchant": "fixture",
+  "orderId": "ord_fixture_0001",
+  "sku": "sku_creator_launch_os_v1",
+  "amount": 100,
+  "currency": "USD",
+  "email": "Rehearsal.Buyer@example.invalid",
+  "occurredAt": "2026-10-22T09:00:00.000Z",
+  "test": true
+}

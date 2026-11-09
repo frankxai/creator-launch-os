@@ -8,4 +8,4 @@ allowBuilds:
 # GHSA-rgj7-g3m4-5g8c: patched prebuilt libheif is included from sharp 0.35.4.
 # Keep Next.js's transitive image processor on the reviewed patch release.
 overrides:
-  sharp: 0.35.4
+  sharp: 0.35.5

@@ -56,7 +56,12 @@ button {
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 4px;
 }
@@ -244,6 +249,15 @@ button:focus-visible {
     scroll-behavior: auto;
   }
 
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
   .signal-line::after {
     animation: none;
     display: none;
@@ -314,4 +328,119 @@ button:focus-visible {
     right: 0;
     bottom: 3.35rem;
   }
+}
+
+.wl-input {
+  min-height: 2.75rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(255 255 255 / 0.06);
+  color: var(--paper-bright);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+}
+
+.wl-input::placeholder {
+  color: rgb(255 255 255 / 0.5);
+}
+
+.wl-btn {
+  min-height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--acid);
+  color: var(--ink);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wl-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.wl-btn-quiet {
+  background: var(--paper-bright);
+  color: var(--ink);
+}
+
+.wl-check {
+  accent-color: var(--acid);
+}
+
+.wl-note {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.68);
+}
+
+.wl-error {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ff856d;
+}
+
+.wl-input:focus-visible,
+.wl-btn:focus-visible,
+.wl-check:focus-visible,
+.wl-chip:focus-visible,
+.wl-link:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 3px;
+}
+
+.wl-panel {
+  border-radius: 1rem;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(255 255 255 / 0.05);
+  padding: 0.9rem 1rem;
+}
+
+.wl-panel-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--acid);
+}
+
+.wl-panel-text {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.wl-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.wl-chip {
+  min-height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: transparent;
+  color: rgb(255 255 255 / 0.75);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.wl-chip-active {
+  border-color: var(--acid);
+  background: var(--acid);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.wl-link {
+  background: transparent;
+  border: 0;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
 }

@@ -72,7 +72,7 @@ export default function StartPage() {
           <p>Use Git, Node.js 24, and pnpm 10.28.0. Run these commands in a folder where you want a new copy.</p>
           <p>If a <code>creator-launch-os</code> folder already exists, choose another location. Nothing here runs automatically.</p>
           <a href={`${starterSourceUrl}#run-locally`} className={styles.textLink}>Read the setup guide <ArrowUpRight size={16} aria-hidden="true" /></a>
-          <p>Still choosing the workflow? <a href="/architecture-decision-desk/" className={styles.textLink}>Open the free Architecture Decision Desk <ArrowUpRight size={16} aria-hidden="true" /></a></p>
+          <p>Still choosing the workflow? <a href="/architecture-decision-desk/index.html" className={styles.textLink}>Open the free Architecture Decision Desk <ArrowUpRight size={16} aria-hidden="true" /></a></p>
         </div>
         <CopyInstallCommand commands={localInstallCommands} />
       </section>

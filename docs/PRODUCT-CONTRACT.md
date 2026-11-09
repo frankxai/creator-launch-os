@@ -14,20 +14,21 @@ The free template includes:
 - Search and format filters
 - Product detail routes with static generation
 - Honest checkout fallback when no provider is configured
+- A merchant-agnostic commerce adapter (`lib/commerce/`) with a fixture test mode that exercises order → entitlement → delivery → refund; it stays off until configured
 - Sample release studio with clearly labeled demo metrics
 - Metadata, sitemap, robots, Open Graph image, health endpoint, loading, error, empty, and not-found states
 - Environment-variable contract and one-click Vercel deployment metadata
 
 It intentionally does not pretend to include:
 
-- Payment-provider API calls
-- Entitlement or secure-download storage
+- A live merchant adapter or payment-provider API calls
+- Durable entitlement storage or secure file hosting
 - Authentication
 - Customer records
 - Email automation
 - Analytics events
 
-Those are provider-specific production concerns. A commercial extension may add them, but the free repository remains useful without fabricated wiring.
+Those are provider-specific production concerns. The Commercial Kit (`commercial/`, separate terms) documents how to add them; the free repository remains useful without fabricated wiring. Shared facts for both live in `offer.facts.json`; `pnpm check:offer` fails when a manifest drifts from them. Release readiness is tracked in `docs/release/READINESS.md`.
 
 ## Activation event
 
