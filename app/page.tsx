@@ -208,7 +208,7 @@ export default function HomePage() {
         <section className="border-b border-line bg-coral py-16 sm:py-20">
           <div className="shell flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="eyebrow text-ink/60">Your first edition</p>
+              <p className="eyebrow text-ink">Your first edition</p>
               <h2 className="text-balance mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">
                 Replace three files. Ship the first useful version.
               </h2>

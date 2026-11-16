@@ -34,9 +34,7 @@ export function ProductCard({ product, priority = false }: { product: Product; p
           <span className="font-mono text-[10px] tracking-[0.16em]">{product.format}</span>
           <p className="mt-2 max-w-sm font-serif text-4xl leading-[0.98] sm:text-5xl">{product.title}</p>
         </div>
-        <span aria-hidden="true" className="absolute -bottom-12 -right-8 font-serif text-[10rem] leading-none opacity-[0.08]">
-          {product.edition}
-        </span>
+        <svg aria-hidden="true" focusable="false" className="pointer-events-none absolute -bottom-12 -right-8 h-40 w-48 font-serif opacity-[0.08]" viewBox="0 0 192 160"><text x="0" y="150" fontSize="160" fill="currentColor">{product.edition}</text></svg>
       </Link>
 
       <div className="flex flex-col justify-between p-5 sm:p-6">

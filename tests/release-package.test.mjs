@@ -180,3 +180,22 @@ test("global Git attributes cannot silently exclude a delivery file", (t) => {
   git(root, ["config", "core.attributesFile", attributes])
   assert.throws(() => buildRelease({ root }), /export transforms/)
 })
+
+
+test("npm profile packages a committed npm lockfile without pnpm files", (t) => {
+ const root = fixture(t, ({root, config}) => {
+  config.packageProfile = "npm";
+  config.files = config.files.filter(path => !["pnpm-lock.yaml", "pnpm-workspace.yaml"].includes(path));
+  config.files.push("package-lock.json");
+  rmSync(join(root,"pnpm-lock.yaml")); rmSync(join(root,"pnpm-workspace.yaml"));
+  write(root,"package-lock.json",JSON.stringify({lockfileVersion:3}));
+ });
+ const result = buildRelease({root});
+ assert.ok(result.receipt.files.some(f => f.path === "package-lock.json"));
+ assert.ok(!result.receipt.files.some(f => f.path === "pnpm-lock.yaml"));
+});
+
+test("unknown package profile is rejected", (t) => {
+ const root = fixture(t, ({config}) => {config.packageProfile="unreviewed";});
+ assert.throws(() => buildRelease({root}), /Unsupported package profile/);
+});

@@ -38,7 +38,7 @@
   ],
   "sourceRepository": "https://github.com/frankxai/creator-launch-os",
   "deployUrl": "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrankxai%2Fcreator-launch-os&project-name=creator-launch-os&repository-name=creator-launch-os",
-  "verification": {
+  "historicalVerification": {
     "typeCheck": "passed locally; GitHub Actions enforces this on every pull request",
     "lint": "passed locally with zero warnings; GitHub Actions enforces this on every pull request",
     "contractTests": "passed locally (14/14); GitHub Actions enforces this on every pull request",
@@ -46,5 +46,10 @@
     "cleanAccountDeploy": "public Creator Launch production domain https://creator-launch-os-starlight-intelligence.vercel.app assigned; returns HTTP 200 with all public routes and security headers",
     "browserDesktop": "passed at 1440x1000: hero, three GSAP story beats, catalog, product flow, studio, reduced motion, and browser console inspected",
     "browserMobile": "passed at 390x844: no overflow, lens collision, or content loss; mobile story, catalog controls, product route, coarse pointer, and 44px navigation targets inspected"
+  },
+  "verification": {
+    "state": "candidate_requires_current_commit_evidence",
+    "receipt": "GitHub Commercial release evidence workflow",
+    "publication": "not_performed"
   }
 }

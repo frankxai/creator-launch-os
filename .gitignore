@@ -11,3 +11,8 @@ next-env.d.ts
 .env*.local
 playwright-report/
 test-results/
+
+dist/
+release-evidence/
+playwright-report/
+test-results/

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "title": "Creator Launch OS",
+  "promise": "A portable storefront and release workspace for independent creators.",
+  "boundary": "Hosted checkout handoff only; no payment processing, entitlement service or customer database.",
+  "demo": {
+    "state": "protected_staging_review",
+    "url": "https://creator-launch-33gln97dn-starlight-intelligence.vercel.app/",
+    "production": "approval_required",
+    "verification": "Serving commit is recorded separately in the PR evidence; this reference is not a self-verification receipt."
+  },
+  "tokenSources": [
+    {
+      "path": "app/globals.css",
+      "selector": ":root"
+    }
+  ],
+  "blockers": [
+    "Current-commit browser/visual approval",
+    "Per-asset listing rights review",
+    "Owner publication approval"
+  ],
+  "captureRoutes": [
+    "/",
+    "/products",
+    "/studio/templates"
+  ],
+  "screenshotPolicy": {
+    "data": "fictional samples only",
+    "publication": "review_required",
+    "cover": [
+      1280,
+      720
+    ],
+    "thumbnail": [
+      600,
+      600
+    ],
+    "mobile": [
+      390,
+      844
+    ]
+  }
+}

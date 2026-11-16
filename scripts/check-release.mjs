@@ -1,0 +1,12 @@
+import {readFileSync,existsSync} from 'node:fs';
+import {listingPacket} from './export-marketplace.mjs';
+import {projectTokens} from './export-design-tokens.mjs';
+const read=p=>readFileSync(p,'utf8');
+const pkg=JSON.parse(read('package.json')), template=JSON.parse(read('template.manifest.json'));
+listingPacket({pkg,template,listing:read('marketplace.listing.yaml')});
+const config=JSON.parse(read('release/pipeline.json'));
+for(const path of ['LICENSE','CHANGELOG.md','docs/release/setup.html','docs/release/README.md','docs/release/COMPONENTS.md','release/rights.json','release/component-map.json']) if(!existsSync(path)) throw Error('Missing release file '+path);
+const rights=JSON.parse(read('release/rights.json'));
+if(rights.repositoryLicense!=='MIT' || rights.publication!=='approval_required') throw Error('Rights metadata must preserve MIT and approval boundary');
+projectTokens(config.tokenSources,read);
+console.log('Release structure, identity, license metadata and token sources passed. Visual, rights and publication approvals are separate.');
