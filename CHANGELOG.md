@@ -7,3 +7,5 @@
 - Add responsive browser capture, accessibility reports and opt-in approved-golden visual regression.
 
 No product publication, pricing change or marketplace submission.
+
+- Fix measured 320px navigation overflow, exclude decorative poster initials from assistive text and raise the measured CTA label contrast.
