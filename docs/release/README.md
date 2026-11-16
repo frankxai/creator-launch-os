@@ -37,3 +37,7 @@ Official requirements checked 2026-11-16: [Vercel](https://vercel.com/templates/
 - Current-commit browser/visual approval
 - Per-asset listing rights review
 - Owner publication approval
+
+## Executed regression reference
+
+`release/visual-baseline.json` pins decoded RGBA pixel hashes, dimensions, viewports and source revision from passing browser artifacts. Playwright compares against these references and attaches current images on mismatch. The technical regression reference is separate from founder publication approval. Optional image goldens remain supported for tolerance-based comparison.

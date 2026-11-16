@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1.0.0",
+  "purpose": "Technical regression reference; publication approval remains separate",
+  "sourceRun": "https://github.com/frankxai/creator-launch-os/actions/runs/43780116949",
+  "review": "Real rendered source inspected; no product publication approval",
+  "records": [
+    {
+      "route": "/",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "dpr": 1,
+      "sha256": "7401dbbbaec3de4c000c97cf2b5e0854e3e96e6af77ce583eed7e93bf163a139",
+      "bytes": 667270,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "48px",
+          "fontWeight": "600"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "a0fcf061829ce9af08df6d1e6f8cc482581859a54344226895392575dec3479c",
+      "imageWidth": 320,
+      "imageHeight": 7074
+    },
+    {
+      "route": "/products",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "dpr": 1,
+      "sha256": "38a9b6179ebab9e0c7571a7a0a0dc772ef5389b0ec64d7098fbdfcc576f8c40e",
+      "bytes": 140706,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "48px",
+          "fontWeight": "600"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "e7a78db7bed38acb036278ce9b13a3f9529bdda263f48bd5444513490c5ec719",
+      "imageWidth": 320,
+      "imageHeight": 2972
+    },
+    {
+      "route": "/studio/templates",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "dpr": 1,
+      "sha256": "4231d3c957b6cd755e5092ddbb9fc0fd724a1108dcc4a1e49fdcda979abc8aac",
+      "bytes": 434275,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "39px",
+          "fontWeight": "500"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "46ac38838564ae0bf9ea81540630eb01121bfbb23d13cc2dbe1f26b61bcbe0bf",
+      "imageWidth": 320,
+      "imageHeight": 5212
+    },
+    {
+      "route": "/",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "dpr": 1,
+      "sha256": "1b4a5f68a1ce685b649ad6dfd46766df13ae2c407517768885bc62f97b3a91d2",
+      "bytes": 965531,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "89.6px",
+          "fontWeight": "600"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "9a3a510b508b8691c6f708355d2a433b64cbc7aca5fb00840263a1e31c002b93",
+      "imageWidth": 1280,
+      "imageHeight": 5659
+    },
+    {
+      "route": "/products",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "dpr": 1,
+      "sha256": "8824ced2b517a571ba0dd9a696e9b16ae81bcc8368162da00781ec9ed54f2478",
+      "bytes": 151893,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "72px",
+          "fontWeight": "600"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "ce7dbfe6c4954a1bab94f3343602d527afecf41e51eb77a2a1e2397356f07508",
+      "imageWidth": 1280,
+      "imageHeight": 1710
+    },
+    {
+      "route": "/studio/templates",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "dpr": 1,
+      "sha256": "801de369891b4a23d161929d05e3df8e1ca92f3bf93309d2f0b7c2613bf283bc",
+      "bytes": 632224,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "74.24px",
+          "fontWeight": "500"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "76ac7c7f97f4a605400706abe447aa3678b33b5af151fd23e6b2650d1e75a0ae",
+      "imageWidth": 1280,
+      "imageHeight": 3239
+    },
+    {
+      "route": "/",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dpr": 1,
+      "sha256": "9fe2dada10bbbaeaf458c2270cf2834c3995e7432e4f29c45e274a944eeffa94",
+      "bytes": 699083,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "48px",
+          "fontWeight": "600"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "e16c1e7d506a6a7633e6fd269f1a1dfcf06ebee9b68276fd839aa506f5a5cdbc",
+      "imageWidth": 390,
+      "imageHeight": 6502
+    },
+    {
+      "route": "/products",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dpr": 1,
+      "sha256": "300942a99660a1ba453f39512a52dfc8f5382ae880398f9a466a1eb74d147855",
+      "bytes": 141011,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "48px",
+          "fontWeight": "600"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "544c280dd0bfdc4552c4f41b8d4104444114ed78c5561de060a40f97a80bde83",
+      "imageWidth": 390,
+      "imageHeight": 2725
+    },
+    {
+      "route": "/studio/templates",
+      "revision": "7d25fb274b63f22d57380798edf402eac4e0f9c9",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "dpr": 1,
+      "sha256": "3d942fa0b0330c15760773a3c8999d64be6aadf916ad408dfcbb0e75d18dde17",
+      "bytes": 450593,
+      "mime": "image/png",
+      "fonts": [
+        {
+          "tag": "BODY",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "16px",
+          "fontWeight": "400"
+        },
+        {
+          "tag": "H1",
+          "fontFamily": "Geist, \"Geist Fallback\", Arial, sans-serif",
+          "fontSize": "39px",
+          "fontWeight": "500"
+        }
+      ],
+      "a11y": "passed",
+      "visualRegression": "capture-only-no-approved-baseline",
+      "pixelSha256": "bef82d5d79ea4e620d9badac6ae60638f00845407bf92b1df2452cbe812186e3",
+      "imageWidth": 390,
+      "imageHeight": 4871
+    }
+  ]
+}

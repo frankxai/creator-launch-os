@@ -71,6 +71,7 @@
     "release/package-manifest.json",
     "release/pipeline.json",
     "release/rights.json",
+    "release/visual-baseline.json",
     "scripts/check-release.mjs",
     "scripts/export-design-tokens.mjs",
     "scripts/export-marketplace.mjs",

@@ -3,6 +3,9 @@ import AxeBuilder from '@axe-core/playwright';
 import {writeFile,readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);const sharp=createRequire(require.resolve('next/package.json'))('sharp');
+const golden=JSON.parse(await readFile('release/visual-baseline.json','utf8')); 
 const config=JSON.parse(await readFile('release/pipeline.json','utf8'));
 const revision=execFileSync('git',['rev-parse','HEAD']).toString().trim();
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -22,9 +25,13 @@ for(const width of [1280,390,320]) test(`release routes reflow and expose access
   expect(a11y.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target)}))).toEqual([]);
   const basename=route==='/'?'home':route.replace(/\//g,'-').replace(/^-/, '');
   const bytes=await page.screenshot({path:info.outputPath(`${basename}-${width}.png`),fullPage:true,animations:'disabled',caret:'hide'});
+  const baseline=golden.records.find(r=>r.route===route && r.viewport.width===width);
+  expect(baseline,'A reviewed technical pixel baseline must exist').toBeTruthy();
+  const decoded=await sharp(bytes).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  expect({width:decoded.info.width,height:decoded.info.height,pixels:digest(decoded.data)},'Rendered pixels changed; inspect the attached image before revising the reference').toEqual({width:baseline.imageWidth,height:baseline.imageHeight,pixels:baseline.pixelSha256});
   if(process.env.VISUAL_REGRESSION==='1') await expect(page).toHaveScreenshot(`${basename}-${width}.png`,{fullPage:true,animations:'disabled',maxDiffPixelRatio:.001});
   const fonts=await page.locator('body,h1').evaluateAll(nodes=>nodes.map(n=>({tag:n.tagName,fontFamily:getComputedStyle(n).fontFamily,fontSize:getComputedStyle(n).fontSize,fontWeight:getComputedStyle(n).fontWeight})));
-  receipt.push({route,revision,viewport:{width,height:width===1280?720:844},dpr:1,sha256:digest(bytes),bytes:bytes.length,mime:'image/png',fonts,a11y:'passed',visualRegression:process.env.VISUAL_REGRESSION==='1'?'approved-baseline-compared':'capture-only-no-approved-baseline'});
+  receipt.push({route,revision,viewport:{width,height:width===1280?720:844},dpr:1,sha256:digest(bytes),bytes:bytes.length,mime:'image/png',fonts,a11y:'passed',visualRegression:'decoded-pixels-compared-to-reviewed-technical-baseline'});
  }
  expect(errors).toEqual([]);await writeFile(info.outputPath('receipt.json'),JSON.stringify(receipt,null,2));
 });
