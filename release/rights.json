@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "repositoryLicense": "MIT",
+  "notice": "LICENSE must accompany copies or substantial portions of the source. Brand names, third-party assets and fonts are reviewed separately.",
+  "publication": "approval_required",
+  "screenshots": {
+    "source": "built application with fictional sample data",
+    "approval": "pending",
+    "captureReceipt": "CI release-evidence manifest"
+  },
+  "thirdParty": [
+    {
+      "asset": "dependency code",
+      "source": "lockfile and installed package license files",
+      "status": "notice inventory required before listing"
+    },
+    {
+      "asset": "typography and icons",
+      "source": "existing implementation; no purchased kit introduced",
+      "status": "listing redistribution review required"
+    }
+  ]
+}

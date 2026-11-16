@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "implementationRepository": "frankxai/creator-launch-os",
+  "designReference": {
+    "file": "m2wi20fAoCgFOKGXkJJGAm",
+    "inspectedNode": "150:206",
+    "role": "portfolio identity reference only; not used by this template",
+    "parity": "not_asserted"
+  },
+  "components": [
+    {
+      "module": "components/product-card.tsx",
+      "figmaNode": null,
+      "status": "code-canonical; product-specific Figma mapping pending"
+    },
+    {
+      "module": "components/product-explorer.tsx",
+      "figmaNode": null,
+      "status": "code-canonical; product-specific Figma mapping pending"
+    },
+    {
+      "module": "components/home-motion.tsx",
+      "figmaNode": null,
+      "status": "code-canonical; product-specific Figma mapping pending"
+    }
+  ]
+}

@@ -66,7 +66,13 @@ export function buildRelease({ root = ROOT, output = join(root, "dist", "release
   const files = [...config.files].sort()
   files.forEach(safePath)
   if (new Set(files).size !== files.length) throw new Error("Duplicate package paths")
-  for (const path of REQUIRED) {
+  if (config.packageProfile && !["npm", "pnpm"].includes(config.packageProfile)) {
+    throw new Error("Unsupported package profile")
+  }
+  const required = config.packageProfile === "npm"
+    ? [...REQUIRED.filter((path) => !["pnpm-lock.yaml", "pnpm-workspace.yaml"].includes(path)), "package-lock.json"]
+    : REQUIRED
+  for (const path of required) {
     if (!files.includes(path)) throw new Error("Required delivery file is missing: " + path)
   }
   const tree = new Map(

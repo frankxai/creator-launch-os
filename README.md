@@ -72,3 +72,7 @@ Run `pnpm package:release` from a clean commit to create a versioned source ZIP,
 ## License
 
 MIT. Use it for personal or commercial projects. Attribution is appreciated but not required.
+
+## Release review
+
+See [release evidence and channels](docs/release/README.md), [offline setup guide](docs/release/setup.html), [component contracts](docs/release/COMPONENTS.md), [rights metadata](release/rights.json) and [changelog](CHANGELOG.md). Packaging is a review candidate; publication requires separate approval.
