@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);const sharp=createRequire(require.resolve('next/package.json'))('sharp');
-const golden=JSON.parse(await readFile('release/visual-baseline.json','utf8')); 
+const golden=JSON.parse(await readFile('release/visual-baseline.json','utf8'));
 const config=JSON.parse(await readFile('release/pipeline.json','utf8'));
 const revision=execFileSync('git',['rev-parse','HEAD']).toString().trim();
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
