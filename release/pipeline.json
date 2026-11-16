@@ -4,8 +4,10 @@
   "promise": "A portable storefront and release workspace for independent creators.",
   "boundary": "Hosted checkout handoff only; no payment processing, entitlement service or customer database.",
   "demo": {
-    "state": "existing-preview-needs-current-commit-verification",
-    "url": "https://creator-launch-os-starlight-intelligence.vercel.app"
+    "state": "protected_staging_review",
+    "url": "https://creator-launch-33gln97dn-starlight-intelligence.vercel.app/",
+    "production": "approval_required",
+    "verification": "Serving commit is recorded separately in the PR evidence; this reference is not a self-verification receipt."
   },
   "tokenSources": [
     {
