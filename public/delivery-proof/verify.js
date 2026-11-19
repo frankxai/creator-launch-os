@@ -22,8 +22,13 @@ form.addEventListener("submit", async (event) => {
   try {
     if (receipt.size > 2 * 1024 ** 2 || file.size > 32 * 1024 ** 2) throw Error("File exceeds the workbench size limit.")
     const record = JSON.parse(await receipt.text())
-    if (record.schema_version !== "1.0.0" || record.name !== "creator-launch-os" ||
-        record.source?.repository !== "https://github.com/frankxai/creator-launch-os" ||
+    const isCore = record.name === "creator-launch-os" &&
+      record.source?.repository === "https://github.com/frankxai/creator-launch-os"
+    const isKit = record.sku_id === "sku_creator_launch_os_v1" &&
+      typeof record.version === "string" && /^[0-9]+\.[0-9]+\.[0-9]+$/.test(record.version) &&
+      typeof record.source?.revision === "string" &&
+      record.artifact?.filename === "creator-launch-os-commercial-kit-" + record.version + "-" + record.source.revision.slice(0, 12) + ".zip"
+    if (record.schema_version !== "1.0.0" || !(isCore || isKit) ||
         typeof record.source?.revision !== "string" || !/^[0-9a-f]{40}$/.test(record.source.revision) || !Array.isArray(record.files)) {
       throw Error("Choose a Creator Launch OS package receipt.")
     }

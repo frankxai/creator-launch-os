@@ -14,9 +14,18 @@ def compare(receipt, artifact, member):
     if not isinstance(data, dict):
         raise ValueError("Expected a receipt object")
     source = data.get("source")
-    if (data.get("schema_version") != "1.0.0" or data.get("name") != "creator-launch-os"
-            or not isinstance(source, dict)
-            or source.get("repository") != "https://github.com/frankxai/creator-launch-os"
+    if not isinstance(source, dict):
+        raise ValueError("Missing release source")
+    core = (data.get("name") == "creator-launch-os"
+            and source.get("repository") == "https://github.com/frankxai/creator-launch-os")
+    version = data.get("version")
+    revision = source.get("revision")
+    artifact_info = data.get("artifact")
+    kit = (data.get("sku_id") == "sku_creator_launch_os_v1" and isinstance(version, str)
+           and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version) and isinstance(revision, str)
+           and isinstance(artifact_info, dict)
+           and artifact_info.get("filename") == f"creator-launch-os-commercial-kit-{version}-{revision[:12]}.zip")
+    if (data.get("schema_version") != "1.0.0" or not (core or kit)
             or not isinstance(source.get("revision"), str)
             or not re.fullmatch("[0-9a-f]{40}", source["revision"])
             or not isinstance(data.get("files"), list)):

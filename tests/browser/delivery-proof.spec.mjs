@@ -34,3 +34,22 @@ for (const width of [320, 390, 1280]) {
     await expect(page.getByRole("status")).toContainText("Mismatch.")
   })
 }
+
+test("accepts the commercial kit receipt format and rejects a different SKU", async ({ page }) => {
+  const { createHash } = await import("node:crypto")
+  const file = Buffer.from("operator fixture, no commercial content")
+  const revision = "a".repeat(40)
+  const kit = {
+    schema_version:"1.0.0", sku_id:"sku_creator_launch_os_v1", version:"1.1.0", source:{revision}, files:[],
+    artifact:{filename:"creator-launch-os-commercial-kit-1.1.0-aaaaaaaaaaaa.zip", bytes:file.length,
+      sha256:createHash("sha256").update(file).digest("hex")}
+  }
+  await page.goto("/delivery-proof/index.html")
+  await page.locator("#file").setInputFiles({name:"received.zip", mimeType:"application/zip", buffer:file})
+  for (const [sku, output] of [["sku_creator_launch_os_v1","Match."], ["unrelated","Unable to compare."]]) {
+    await page.locator("#receipt").setInputFiles({name:"receipt.json", mimeType:"application/json",
+      buffer:Buffer.from(JSON.stringify({...kit, sku_id:sku}))})
+    await page.getByRole("button", {name:"Compare files"}).click()
+    await expect(page.getByRole("status")).toContainText(output)
+  }
+})

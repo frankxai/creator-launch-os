@@ -12,3 +12,5 @@ Instrument Serif and Instrument Sans (Fontsource 5.3.0, Latin regular) are distr
 
 Support: https://github.com/frankxai/creator-launch-os/issues
 Include the edition, route and sanitized reproduction steps. Keep payment, account and personal data out of public issues.
+
+Both the free-core packager receipt and the commercial-kit packager receipt are supported. Obtain the latter from the release owner. The comparison checks received bytes and cannot grant a commercial license.
