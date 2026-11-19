@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto"
+import { createHash, createHmac } from "node:crypto"
 import { readFileSync } from "node:fs"
 
 /**
@@ -46,6 +46,14 @@ const delivered = await open(paid.body.deliveryToken)
 expect(delivered.status === 200 && delivered.body.ok, "delivery", delivered)
 steps.push(["delivery opened", delivered.status, delivered.body.delivery])
 
+if (process.env.COMMERCE_TEST_KIT_SHA256) {
+  const download = await fetch(new URL("/api/commerce/delivery?download=1&token=" + encodeURIComponent(paid.body.deliveryToken), base))
+  const bytes = Buffer.from(await download.arrayBuffer())
+  const hash = createHash("sha256").update(bytes).digest("hex")
+  expect(download.status === 200 && hash === process.env.COMMERCE_TEST_KIT_SHA256, "kit bytes", { status: download.status, hash })
+  steps.push(["verified kit download", download.status, bytes.length, hash])
+}
+
 const refunded = await post(fixture("refunded"))
 expect(refunded.status === 200 && refunded.body.outcome === "revoked", "order.refunded", refunded)
 steps.push(["order.refunded", refunded.status, refunded.body.outcome])
@@ -53,6 +61,12 @@ steps.push(["order.refunded", refunded.status, refunded.body.outcome])
 const revoked = await open(paid.body.deliveryToken)
 expect(revoked.status === 410 && revoked.body.code === "E_REVOKED", "revoked delivery", revoked)
 steps.push(["delivery after refund", revoked.status, revoked.body.code])
+
+if (process.env.COMMERCE_TEST_KIT_SHA256) {
+  const revokedFile = await fetch(new URL("/api/commerce/delivery?download=1&token=" + encodeURIComponent(paid.body.deliveryToken), base))
+  expect(revokedFile.status === 410, "revoked kit download", revokedFile.status)
+  steps.push(["kit download after refund", revokedFile.status])
+}
 
 const forged = await fetch(new URL("/api/commerce/webhook", base), { method: "POST", body: fixture("paid"), headers: { "x-commerce-signature": "sha256=00" } })
 expect(forged.status === 401, "forged signature", forged.status)

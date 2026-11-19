@@ -40,7 +40,8 @@ export interface Order {
   currency: string
   email: string
   status: OrderStatus
-  paidAt: string
+  /** Null when a signed refund arrived before its payment; that order can never grant access. */
+  paidAt: string | null
   refundedAt: string | null
   test: boolean
 }
@@ -63,7 +64,11 @@ export interface Activity {
   at: string
 }
 
-/** Durable storage is a deployment decision; the loop only needs these calls. */
+/**
+ * Durable storage is a deployment decision; the loop only needs these calls.
+ * applyEvent writes state before markEvent, so every put must be an idempotent
+ * upsert and markEvent must only run after the writes it guards succeed.
+ */
 export interface CommerceStore {
   hasEvent(id: string): boolean
   markEvent(id: string): void
@@ -103,6 +108,7 @@ export class CommerceError extends Error {
       | "E_EVENT_SHAPE"
       | "E_UNKNOWN_SKU"
       | "E_UNKNOWN_ORDER"
+      | "E_ORDER_CONFLICT"
       | "E_MODE_MISMATCH"
       | "E_TOKEN"
       | "E_TOKEN_EXPIRED"
@@ -175,7 +181,7 @@ export type ApplyResult =
 
 const entitlementIdFor = (orderId: string) => "ent_" + orderId
 
-/** Apply one verified event. Idempotent per event id and per order state. */
+/** Apply one verified event. Idempotent per event id; retries after a partial failure converge. */
 export function applyEvent(store: CommerceStore, event: CommerceEvent, options: ApplyOptions): ApplyResult {
   if (event.test !== (options.mode === "test")) {
     throw new CommerceError("E_MODE_MISMATCH", `A ${options.mode}-mode store refuses ${event.test ? "test" : "live"} events`)
@@ -194,54 +200,94 @@ export function applyEvent(store: CommerceStore, event: CommerceEvent, options: 
       store.markEvent(event.id)
       return { outcome: "duplicate", eventId: event.id }
     }
-    const order: Order = existing ?? {
+    if (existing && conflicts(existing, event)) {
+      // Same merchant order id, different buyer or purchase: never grant on it silently.
+      throw new CommerceError("E_ORDER_CONFLICT", "A payment reuses an order id with a different buyer, SKU, amount or currency")
+    }
+    // Write state first and mark the event last. Each step converges, so a
+    // merchant retry after a partial failure completes only what is missing.
+    let order = existing
+    if (!order) {
+      order = {
+        orderId: event.orderId,
+        merchant: event.merchant,
+        sku: event.sku,
+        amount: event.amount,
+        currency: event.currency,
+        email: event.email.toLowerCase(),
+        status: "paid",
+        paidAt: event.occurredAt,
+        refundedAt: null,
+        test: event.test,
+      }
+      store.putOrder(order)
+    }
+    recordOnce(store, { name: "order_paid", orderId: order.orderId, at: order.paidAt ?? event.occurredAt })
+    let entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
+    if (!entitlement) {
+      entitlement = {
+        entitlementId: entitlementIdFor(order.orderId),
+        orderId: order.orderId,
+        sku: order.sku,
+        email: order.email,
+        status: "active",
+        grantedAt: event.occurredAt,
+        revokedAt: null,
+      }
+      store.putEntitlement(entitlement)
+    }
+    recordOnce(store, { name: "entitlement_granted", orderId: order.orderId, at: entitlement.grantedAt })
+    store.markEvent(event.id)
+    return { outcome: "granted", order, entitlement }
+  }
+
+  let order = store.getOrder(event.orderId)
+  if (!order) {
+    // Merchants may deliver a refund before its payment. Record the signed
+    // refund as a refunded order so the later payment can never grant access.
+    order = {
       orderId: event.orderId,
       merchant: event.merchant,
       sku: event.sku,
       amount: event.amount,
       currency: event.currency,
       email: event.email.toLowerCase(),
-      status: "paid",
-      paidAt: event.occurredAt,
-      refundedAt: null,
+      status: "refunded",
+      paidAt: null,
+      refundedAt: event.occurredAt,
       test: event.test,
     }
-    const entitlement: Entitlement = store.getEntitlement(entitlementIdFor(order.orderId)) ?? {
-      entitlementId: entitlementIdFor(order.orderId),
-      orderId: order.orderId,
-      sku: order.sku,
-      email: order.email,
-      status: "active",
-      grantedAt: event.occurredAt,
-      revokedAt: null,
-    }
-    store.markEvent(event.id)
-    if (!existing) {
-      store.putOrder(order)
-      store.putEntitlement(entitlement)
-      store.record({ name: "order_paid", orderId: order.orderId, at: event.occurredAt })
-      store.record({ name: "entitlement_granted", orderId: order.orderId, at: event.occurredAt })
-    }
-    return { outcome: "granted", order, entitlement }
+    store.putOrder(order)
   }
-
-  const order = store.getOrder(event.orderId)
-  if (!order) {
-    throw new CommerceError("E_UNKNOWN_ORDER", "Refund names an order this storefront never recorded")
+  // Same order of operations: a refund retried after any partial failure must
+  // still revoke access. A refunded order can never keep an active entitlement.
+  const refunded: Order = order.status === "refunded" ? order : { ...order, status: "refunded", refundedAt: event.occurredAt }
+  if (order.status !== "refunded") store.putOrder(refunded)
+  recordOnce(store, { name: "order_refunded", orderId: order.orderId, at: refunded.refundedAt ?? event.occurredAt })
+  let entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
+  if (entitlement?.status === "active") {
+    entitlement = { ...entitlement, status: "revoked", revokedAt: refunded.refundedAt ?? event.occurredAt }
+    store.putEntitlement(entitlement)
   }
+  if (entitlement) recordOnce(store, { name: "entitlement_revoked", orderId: order.orderId, at: entitlement.revokedAt ?? event.occurredAt })
   store.markEvent(event.id)
-  const refunded: Order = { ...order, status: "refunded", refundedAt: order.refundedAt ?? event.occurredAt }
-  const entitlement = store.getEntitlement(entitlementIdFor(order.orderId))
-  const revoked = entitlement && { ...entitlement, status: "revoked" as const, revokedAt: entitlement.revokedAt ?? event.occurredAt }
-  if (order.status !== "refunded") {
-    store.putOrder(refunded)
-    store.record({ name: "order_refunded", orderId: order.orderId, at: event.occurredAt })
-    if (revoked) {
-      store.putEntitlement(revoked)
-      store.record({ name: "entitlement_revoked", orderId: order.orderId, at: event.occurredAt })
-    }
+  return { outcome: "revoked", order: refunded, entitlement }
+}
+
+/** Payment facts that must match when a merchant repeats an order id. */
+function conflicts(order: Order, event: CommerceEvent) {
+  return order.merchant !== event.merchant || order.sku !== event.sku || order.email !== event.email.toLowerCase() ||
+    order.amount !== event.amount || order.currency !== event.currency
+}
+
+/**
+ * One ledger entry per order transition, so a retry neither duplicates nor
+ * drops it. A durable store should back this with a unique (name, orderId) key.
+ */
+function recordOnce(store: CommerceStore, activity: Activity) {
+  if (!store.activity().some((entry) => entry.name === activity.name && entry.orderId === activity.orderId)) {
+    store.record(activity)
   }
-  return { outcome: "revoked", order: refunded, entitlement: revoked }
 }
 
 const base64url = (value: string) => Buffer.from(value, "utf8").toString("base64url")
@@ -264,7 +310,7 @@ export interface DeliveryGrant {
   sku: string
 }
 
-export function redeemDeliveryToken(store: CommerceStore, token: string, secret: string, now: Date): DeliveryGrant {
+export function inspectDeliveryToken(store: CommerceStore, token: string, secret: string, now: Date): DeliveryGrant {
   const [body, signature, extra] = token.split(".")
   if (!body || !signature || extra !== undefined) {
     throw new CommerceError("E_TOKEN", "Delivery link is malformed")
@@ -288,8 +334,13 @@ export function redeemDeliveryToken(store: CommerceStore, token: string, secret:
   if (entitlement.status !== "active") {
     throw new CommerceError("E_REVOKED", "This entitlement was refunded and no longer grants delivery")
   }
-  store.record({ name: "delivery_opened", orderId: entitlement.orderId, at: now.toISOString() })
   return { entitlement, sku: entitlement.sku }
+}
+
+export function redeemDeliveryToken(store: CommerceStore, token: string, secret: string, now: Date): DeliveryGrant {
+  const grant = inspectDeliveryToken(store, token, secret, now)
+  store.record({ name: "delivery_opened", orderId: grant.entitlement.orderId, at: now.toISOString() })
+  return grant
 }
 
 export interface Reconciliation {

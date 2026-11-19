@@ -8,7 +8,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..")
 const MANIFEST = "commercial/kit/kit.manifest.json"
 
 const git = (root, args) =>
-  execFileSync("git", args, { cwd: root, env: { ...process.env, GIT_LITERAL_PATHSPECS: "1" }, maxBuffer: 32 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] })
+  execFileSync("git", args, { cwd: root, env: { ...process.env, TZ: "UTC", GIT_LITERAL_PATHSPECS: "1" }, maxBuffer: 32 * 1024 * 1024, stdio: ["ignore", "pipe", "pipe"] })
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex")
 
 /** Package the Commercial Kit from one clean commit. Never asserts a sale or a release. */
