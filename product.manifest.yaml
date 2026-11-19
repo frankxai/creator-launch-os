@@ -31,3 +31,16 @@ support:
 maintenance:
   cadence: monthly_and_on_nextjs_security_or_platform_change
 stop_rule: pause_paid_extension_if_checkout_delivery_or_support_cannot_be_proven_end_to_end
+
+operator_companion:
+  edition: "01"
+  version: "0.1.0-rc.1"
+  path: public/delivery-proof/index.html
+  downloadable: public/delivery-proof/delivery-proof.pdf
+  skill: public/delivery-proof/skill/verify-creator-delivery/SKILL.md
+  demo: public/delivery-proof/example/receipt.json
+  first_value: recipient_compares_real_file_and_records_result
+  fulfillment_event: delivery_opened
+  buyer_acceptance: recipient_confirms_promised_task_completed
+  visual_authority: https://www.figma.com/design/oRqlKKNwWyaNwUqdAGSymq?node-id=28-3
+  design_status: review_candidate

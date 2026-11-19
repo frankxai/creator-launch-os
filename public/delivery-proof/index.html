@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>The delivery proof · Creator Launch OS</title><link rel="stylesheet" href="edition.css"><script src="verify.js" defer></script></head>
+<body><a class="skip" href="#check">Skip to file check</a><main>
+<section class="sheet cover"><header>GenCreator <span>/</span> Creator Launch OS</header>
+<h1>The delivery<br>proof</h1><p class="deck">A field edition for independent creators</p>
+<div class="plate" role="img" aria-label="Three sheets represent the artifact, its fingerprint and the release receipt"><div class="stack"><i></i><i></i><i>File &nbsp; / &nbsp; SHA-256 &nbsp; / &nbsp; Receipt</i></div></div>
+<p class="folio">Operator edition 01 <span>·</span> November 2026</p>
+<nav aria-label="Edition actions"><a class="button" href="#check">Check a delivery</a><a href="delivery-proof.pdf" download>Download the field edition (PDF)</a></nav></section>
+<section class="sheet"><header>Field notes <span>/</span> The handoff</header><h2>What did your buyer actually receive?</h2>
+<p class="lead">A customer says the setup instructions are missing. Your source repository contains them. Which file did the customer open?</p>
+<p>Start with the exact release ZIP you offered. Its receipt names the source commit, the archive and the files inside it. A matching fingerprint gets you past the question of which edition arrived. The next question is whether a reader can use it.</p>
+<div class="pair"><article><h3>At the release desk</h3><p>Commit the product. Run <code>node scripts/package-release.mjs</code> from a clean checkout. Keep the ZIP and its <code>receipt.json</code> together; retain a trusted copy of the receipt at the release source.</p></article><article><h3>At the receiving desk</h3><p>Download the artifact through the intended delivery route. Get the receipt from the release owner. Check the bytes here, then open the promised file and complete one named task.</p></article></div>
+<aside><strong>Worked case</strong><p>The sample is the original product contract from commit <code>a6ac97df0800</code>. Use the path <code>docs/PRODUCT-CONTRACT.md</code> in its receipt. After a match, add one space to a copy and check again. That second result should fail.</p></aside>
+<p class="folio">01 <span>/</span> Release evidence</p></section>
+<section class="sheet" id="check"><header>Workbench <span>/</span> Local file inspection</header><h2>Compare the bytes.</h2>
+<p>Choose a receipt from a source you trust. Select its ZIP or an extracted member. Files stay in your browser. The receipt records identity and integrity. It cannot establish ownership, a payment or a buyer’s acceptance.</p>
+<div class="webonly"><p class="examples"><a href="example/receipt.json" download>Example receipt</a> · <a href="example/PRODUCT-CONTRACT.md" download>Example artifact</a></p>
+<form id="form"><label for="receipt">Release receipt (.json, up to 2 MiB)</label><input required type="file" accept=".json,application/json" id="receipt"><label for="file">Delivered file (up to 32 MiB)</label><input required type="file" id="file"><label for="path">Receipt member path</label><input id="path" type="text" aria-describedby="hint" placeholder="docs/PRODUCT-CONTRACT.md"><small id="hint">Leave empty when checking the complete ZIP.</small><button type="submit">Compare files</button></form>
+<div id="result" role="status" aria-live="polite">Waiting for a receipt and file.</div><button type="button" id="save" hidden>Save comparison record</button></div>
+<div class="printonly"><h3>Run the same check offline</h3><p>Open <code>index.html</code> in the companion folder. For a terminal check, run the included skill verifier. From the companion directory:</p><pre>python3 skill/verify-creator-delivery/verify.py
+  example/receipt.json example/PRODUCT-CONTRACT.md
+  --member docs/PRODUCT-CONTRACT.md</pre><p>Type the command on one line. Exit 0 means the length and SHA-256 match the selected receipt entry. Exit 1 indicates a mismatch or invalid input.</p></div>
+<p class="folio">02 <span>/</span> Verification</p></section>
+<section class="sheet"><header>Receiving notes <span>/</span> Acceptance</header><h2>Close the handoff.</h2>
+<dl><dt>Bytes differ</dt><dd>Keep the failed copy and its comparison record. Download the same edition again. A second mismatch goes back to the release owner with the commit and member path. Preserve the original receipt.</dd>
+<dt>Bytes match, task fails</dt><dd>Capture the first failing instruction, platform and observed result. The release owner can now reproduce the content issue against a known edition.</dd>
+<dt>Task succeeds</dt><dd>Ask the recipient to record the output they made, the step they completed unaided and what they would keep. A publisher’s own rehearsal is an internal check.</dd></dl>
+<aside><strong>Handoff note</strong><p>“I opened [file] from [edition] on [device]. I used it to produce [output]. I could complete [task] without help. The remaining issue is [detail].”</p></aside>
+<p class="webonly"><a href="verification-skill.zip" download>Download the verification skill (ZIP)</a> · <a href="README.txt">Installation notes</a> · <a href="https://github.com/frankxai/creator-launch-os/issues">Report a release issue</a></p><p class="folio">03 <span>/</span> Creator Launch OS · MIT core</p></section>
+</main></body></html>

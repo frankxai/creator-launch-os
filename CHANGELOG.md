@@ -1,5 +1,9 @@
 # Changelog
 
+## Operator edition 0.1.0-rc.1
+
+Adds an offline delivery comparison, printable field edition, verification skill and source-bound example. Normalizes archive timestamps to UTC.
+
 ## Unreleased
 
 - Add source-bound token projection, canonical listing exports, portable setup documentation, rights metadata and release checks.

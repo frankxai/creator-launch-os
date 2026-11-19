@@ -31,7 +31,7 @@ Those are provider-specific production concerns. A commercial extension may add 
 
 ## Activation event
 
-The eventual product activation event is `delivery_opened`: a paying customer reached the promised file or feed. Page views and checkout clicks are supporting signals, not activation.
+The template activates when a creator deploys a storefront with their first real product configured. For a paid extension, record `delivery_opened` when a buyer opens their entitled file. Record buyer acceptance separately when the buyer completes the promised task and confirms the result. A local file comparison establishes only byte integrity.
 
 ## Release states
 
