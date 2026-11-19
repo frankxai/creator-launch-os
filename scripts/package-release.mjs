@@ -16,7 +16,7 @@ const REQUIRED = [
 function git(root, args) {
   return execFileSync("git", args, {
     cwd: root,
-    env: { ...process.env, GIT_LITERAL_PATHSPECS: "1" },
+    env: { ...process.env, TZ: "UTC", GIT_LITERAL_PATHSPECS: "1" },
     maxBuffer: 32 * 1024 * 1024,
     stdio: ["ignore", "pipe", "pipe"],
   })

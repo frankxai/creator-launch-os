@@ -1,4 +1,5 @@
-import { CommerceError, redeemDeliveryToken } from "@/lib/commerce/engine"
+import { readTestKit } from "@/lib/commerce/test-kit"
+import { CommerceError, inspectDeliveryToken, redeemDeliveryToken } from "@/lib/commerce/engine"
 import { offer } from "@/lib/commerce/config"
 import { commerceContext, noStore, unavailable } from "@/lib/commerce/server"
 
@@ -10,7 +11,18 @@ export async function GET(request: Request) {
 
   const token = new URL(request.url).searchParams.get("token") ?? ""
   try {
-    const grant = redeemDeliveryToken(store, token, runtime.deliverySecret, new Date())
+    if (new URL(request.url).searchParams.get("download") === "1") {
+      const candidate = inspectDeliveryToken(store, token, runtime.deliverySecret, new Date())
+      const kit = await readTestKit(candidate.sku)
+      if (!kit) return unavailable()
+      // Recheck after I/O so a refund during the read takes effect.
+      redeemDeliveryToken(store, token, runtime.deliverySecret, new Date())
+      return new Response(kit.bytes, { headers: {
+        ...noStore, "Content-Type": "application/zip", "X-Content-Type-Options": "nosniff",
+        "Content-Disposition": 'attachment; filename="' + kit.filename + '"',
+      } })
+    }
+    const grant = inspectDeliveryToken(store, token, runtime.deliverySecret, new Date())
     return Response.json(
       {
         ok: true,
@@ -18,7 +30,8 @@ export async function GET(request: Request) {
         entitlementId: grant.entitlement.entitlementId,
         // Test mode proves the gate, not the file. Live delivery serves the
         // packaged kit from private storage chosen with the merchant.
-        delivery: runtime.mode === "test" ? "test_fixture_no_files" : "live",
+        delivery: "entitlement_metadata",
+        fileRequest: "Use the same authorized URL with download=1 for the pinned test kit.",
         contents: offer.kit.includes,
       },
       { headers: noStore },

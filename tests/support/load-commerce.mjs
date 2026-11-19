@@ -11,7 +11,7 @@ const offerUrl = new URL("offer.facts.json", root).href
 export async function loadCommerce() {
   const dir = mkdtempSync(join(tmpdir(), "creator-commerce-"))
   process.once("exit", () => rmSync(dir, { recursive: true, force: true }))
-  for (const name of ["engine", "config"]) {
+  for (const name of ["engine", "config", "test-kit"]) {
     const source = readFileSync(new URL(`lib/commerce/${name}.ts`, root), "utf8")
     const output = ts
       .transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } })
@@ -21,5 +21,6 @@ export async function loadCommerce() {
   }
   const engine = await import(pathToFileURL(join(dir, "engine.mjs")).href)
   const config = await import(pathToFileURL(join(dir, "config.mjs")).href)
-  return { engine, config }
+  const testKit = await import(pathToFileURL(join(dir, "test-kit.mjs")).href)
+  return { engine, config, testKit }
 }
