@@ -23,5 +23,13 @@
       "figmaNode": null,
       "status": "code-canonical; product-specific Figma mapping pending"
     }
-  ]
+  ],
+  "operatorEdition": {
+    "role": "editable cover direction, proposed",
+    "file": "oRqlKKNwWyaNwUqdAGSymq",
+    "desktop": "28:3",
+    "mobile": "28:15",
+    "implementation": "public/delivery-proof/index.html",
+    "approval": "pending"
+  }
 }

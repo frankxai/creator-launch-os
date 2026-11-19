@@ -75,7 +75,11 @@ function unzip(bytes) {
 
 test("delivery ZIP is repeatable and every extracted byte matches its receipt", (t) => {
   const root = fixture(t)
+  const originalTZ = process.env.TZ
+  t.after(() => { if (originalTZ === undefined) delete process.env.TZ; else process.env.TZ = originalTZ })
+  process.env.TZ = "Europe/Amsterdam"
   const first = buildRelease({ root, output: join(root, "dist", "first") })
+  process.env.TZ = "America/Los_Angeles"
   const second = buildRelease({ root, output: join(root, "dist", "second") })
   const bytes = readFileSync(join(first.directory, first.receipt.artifact.filename))
   assert.deepEqual(bytes, readFileSync(join(second.directory, second.receipt.artifact.filename)))

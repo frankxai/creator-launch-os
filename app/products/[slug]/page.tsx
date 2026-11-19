@@ -68,7 +68,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               <p className="font-mono text-[10px] tracking-[0.16em]">{product.format}</p>
               <h1 className="text-balance mt-3 max-w-xl font-serif text-6xl leading-[0.92] sm:text-7xl">{product.title}</h1>
             </div>
-            <span aria-hidden="true" className="absolute -bottom-16 -right-10 font-serif text-[15rem] leading-none opacity-[0.08]">{product.edition}</span>
           </div>
 
           <div className="flex flex-col justify-between py-2 lg:py-5">
@@ -135,7 +134,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="shell grid gap-6 sm:grid-cols-3">
           <div className="flex gap-3">
             <PackageCheck className="size-5 text-coral" aria-hidden="true" />
-            <div><p className="text-sm font-semibold">Delivery</p><p className="mt-1 text-sm text-muted">{product.delivery}</p></div>
+            <div><p className="text-sm font-semibold">Sample delivery</p><p className="mt-1 text-sm text-muted">{product.delivery}</p><a href="/delivery-proof/index.html" className="mt-2 inline-block text-sm underline underline-offset-4">Try the delivery proof workbook</a></div>
           </div>
           <div className="flex gap-3">
             <Clock3 className="size-5 text-coral" aria-hidden="true" />
